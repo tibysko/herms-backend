@@ -1,2 +1,2 @@
-# probable-winner
+# brewery-backend
 Brewery backend

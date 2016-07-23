@@ -1,0 +1,20 @@
+{
+    "LED_GREEN": {
+        "board": "raspberry",
+        "type": "digital",
+        "direction": "out",
+        "id": "36"
+    },
+    "LED_BLUE": {
+        "board": "raspberry",
+        "type": "digital",
+        "direction": "out",
+        "id": "38"
+    },
+    "INVALID": {
+        "board": "raspberry",
+        "type": "digital",
+        "direction": "out",
+        "id": "3800"
+    }
+}
