@@ -2,29 +2,29 @@
     "LED_GREEN": {
         "board": "raspberry_eclude",
         "type": "digital",
-        "direction": "out",
+        "mode": "out",
         "id": "36",
         "initValue": "0"
     },
     "LED_BLUE": {
         "board": "raspberry_eclude",
         "type": "digital",
-        "direction": "out",
+        "mode": "out",
         "id": "38",
         "initValue": "0"
     },
     "LED_RED": {
         "board": "arduino",
         "type": "digital",
-        "direction": "out",
+        "mode": "out",
         "id": "12",
         "initValue": "0"
     },
      "BUTTON_1": {
         "board": "arduino",
         "type": "digital",
-        "direction": "in",
-        "id": "4",
-        "initValue": "0"
+        "mode": "in",
+        "id": "5",
+        "initValue": "1"
     }
 }
