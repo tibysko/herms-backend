@@ -1,20 +1,23 @@
-{
+{    
     "LED_GREEN": {
-        "board": "raspberry",
+        "board": "raspberry_eclude",
         "type": "digital",
         "direction": "out",
-        "id": "36"
+        "id": "36",
+        "initValue": "0"
     },
     "LED_BLUE": {
-        "board": "raspberry",
+        "board": "raspberry_eclude",
         "type": "digital",
         "direction": "out",
-        "id": "38"
+        "id": "38",
+        "initValue": "0"
     },
-    "INVALID": {
-        "board": "raspberry",
+    "LED_RED": {
+        "board": "arduino",
         "type": "digital",
-        "direction": "out",
-        "id": "3800"
+        "direction": "in",
+        "id": "12",
+        "initValue": "0"
     }
 }

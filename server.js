@@ -13,8 +13,12 @@ var server = app.listen(8081, function () {
   logger.logInfo("Server started on: " + host + ":" + port);
 
   setTimeout(function () {
-    hermsGpio.writeToPin('LED_GREEN', 1, function () { })
-  }, 1000);
+    hermsGpio.writeToPin('LED_RED', 1, function () {
+      console.log('wrote to led');
+     })
+  }, 5000);
+
+  
 
 });
 
