@@ -16,8 +16,15 @@
     "LED_RED": {
         "board": "arduino",
         "type": "digital",
-        "direction": "in",
+        "direction": "out",
         "id": "12",
+        "initValue": "0"
+    },
+     "BUTTON_1": {
+        "board": "arduino",
+        "type": "digital",
+        "direction": "in",
+        "id": "4",
         "initValue": "0"
     }
 }

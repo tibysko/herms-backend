@@ -40,7 +40,7 @@ class HermsGpio {
 
                 });
             } else if (pinMetaData.board === 'arduino') {
-                this.pins[pinName].physcialPin = new five.Pin(pinMetaData.id, {value: pinMetaData.initValue}); //, { board: this.board });                               
+                this.pins[pinName].physcialPin = new five.Pin(pinMetaData.id, { value: pinMetaData.initValue }); //, { board: this.board });                               
             }
         });
     }
@@ -51,23 +51,23 @@ class HermsGpio {
             return;
         }
 
-        let pin = pins[pinName];
+        let pin = this.pins[pinName];
 
-        if (pin.direction !== 'out') {
+        if (pin.direction !== 'in') {
             logErrorAndExecuteCallBack('readPin', 'Pin ' + pinName + ' not setup for IN', cb);
             return;
         }
 
         if (pin.board === 'arduino') {
-            new five.Pin(pin.id).read(function (error, value) {
-                cb(value);
+            pin.physcialPin.read(function (error, value) {
+                cb(null, value); // null = no error
             });
         } else if (pin.board === 'raspberry') {
             // TODO ?
         }
     }
 
-    logErrorAndExecuteCallBack(functionName, errorMessage, cb) {
+    static logErrorAndExecuteCallBack(functionName, errorMessage, cb) {
         logger.logError('HermsGpio.' + functionName, errorMessage);
         cb(new Error(errorMessage));
     }
@@ -89,11 +89,12 @@ class HermsGpio {
 
         let pin = pins[pinName];
 
-        if (pin.direction !== 'in') {
+        if (pin.direction !== 'out') {
             let errorMessage = 'Pin ' + pinName + ' not configured as IN';
 
             logger.logError('HermsGpio.writeToPin', errorMessage)
             cb(new Error(errorMessage));
+            return;
         }
 
         if (pin.board === 'raspberry') {
@@ -113,10 +114,9 @@ class HermsGpio {
             let options = {
                 // TODO stuff here
             }
-            
-            
+
             pin.physcialPin.write(value);
-            //HermsGpio.logSuccessfully(pinName, value, pin);
+            HermsGpio.logSuccessfully(pinName, value, pin);
             cb(); // successfully written to pin, call callback     
         }
     }
