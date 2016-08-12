@@ -9,10 +9,12 @@ var logger = require('./core/logger');
 
 var HermsGpio = require('./core/herms-gpio');
 var hermsGpio = new HermsGpio();
+hermsGpio.setup();
 
+// API routes
 app.use(bodyParser.json());
 
-app.get('/api/gpio/pin/:name', (req, res) => {
+app.get('/api/pin/:name', (req, res) => {
   if (!req.params.name) {
     res.send('Missing parameter: name');
   }
@@ -27,7 +29,7 @@ app.get('/api/gpio/pin/:name', (req, res) => {
   });
 });
 
-app.post('/api/gpio/pin/:name', (req, res) => {
+app.post('/api/pin/:name', (req, res) => {
   if (!req.params.name) {
     res.status(400).send('Missing parameter: name');
   } else if (req.body.value === undefined) {
@@ -46,6 +48,7 @@ app.post('/api/gpio/pin/:name', (req, res) => {
     });
   }
 });
+
 
 app.listen(8081, function () {
   logger.logInfo("server", "Server started on 8081");

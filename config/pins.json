@@ -1,13 +1,13 @@
 {    
     "LED_GREEN": {
-        "board": "raspberry_eclude",
+        "board": "raspberry",
         "type": "digital",
         "mode": "out",
         "id": "36",
         "initValue": "0"
     },
     "LED_BLUE": {
-        "board": "raspberry_eclude",
+        "board": "raspberry",
         "type": "digital",
         "mode": "out",
         "id": "38",

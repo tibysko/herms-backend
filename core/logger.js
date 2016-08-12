@@ -13,7 +13,7 @@ class Logger {
     }
 
     static logWarning(moduleName, message) {
-        winston.log('warning', '[' + moduleName + '] ' + message);
+        winston.log('warn', '[' + moduleName + '] ' + message);
     }
 
 }
