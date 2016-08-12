@@ -22,14 +22,15 @@ class HermsGpio {
         logger.logInfo('HermsGpio.setupPins', 'Setting up pins');
 
         lodash.map(this.pins, (pinMetaData, pinName) => {
-            if (pinMetaData.board === 'raspberry') {
-                logger.logWarning('HermsGpio.setupPins', 'raspberry currently not supported, pin:' + pinName + ' was not setup');
-            } else if (pinMetaData.board === 'arduino') {
+            if (pinMetaData.board === 'arduino') {
                 logger.logInfo('HermsGpio.setupPins', 'Arduino: setting up pin: ' + pinName + ' with setting: ' + JSON.stringify(pinMetaData));
 
                 let mode = pinMetaData.mode === 'in' ? five.Pin.INPUT : five.Pin.OUTPUT;
                 this.pins[pinName].physcialPin = new five.Pin({ 'pin': pinMetaData.id, 'mode': mode, value: pinMetaData.initValue });
+            } else {
+                logger.logWarning('HermsGpio.setupPins', 'Pin [' + pinName + '] error, board [' + pinMetaData.board + '] not supported');
             }
+
         });
     }
 
@@ -54,8 +55,6 @@ class HermsGpio {
                 cb(null, state.value); // execute cb and return value, null = no error;
                 return;
             });
-        } else if (pin.board === 'raspberry') {
-            // TODO ?
         }
     }
 
@@ -87,24 +86,7 @@ class HermsGpio {
             return;
         }
 
-        if (pin.board === 'raspberry') {
-            /* gpio.write(pin.id, value, function (err) {
-                 if (err) {
-                     let errorMessage = 'Error writing to pin ' + pinName + '. Error: ' + err.message;
-                     logErrorAndExecuteCallBack('writePin', errorMessage, cb);
- 
-                     return;
-                 }
- 
-                 HermsGpio.logSuccessfully(pinName, value, pin);
-                 cb(); // successfully written to pin, call callback                
-             });*/
-
-            let errorMessage = 'raspberry not supported';
-            HermsGpio.logErrorAndExecuteCallBack('writePin', errorMessage, cb);
-
-            return;
-        } else if (pin.board === 'arduino') {
+       if (pin.board === 'arduino') {
             let options = {
                 // TODO which options
             }
@@ -121,6 +103,19 @@ class HermsGpio {
 
     static logSuccessfully(pinName, value, pin) {
         logger.logInfo('HermsGpio.writeToPin', 'Wrote ' + value + ' to pin ' + pinName + ' on board ' + pin.board);
+    }
+
+    getPins(){
+        let pinsToReturn = this.pins;
+
+        for (let key in pinsToReturn){
+            if(pinsToReturn.hasOwnProperty(key)){
+                console.log('key => ' + key);
+                pinsToReturn[key].physcialPin = undefined;
+            }
+        }
+
+        return pinsToReturn;
     }
 }
 

@@ -14,26 +14,33 @@ hermsGpio.setup();
 // API routes
 app.use(bodyParser.json());
 
+app.get('/api/pins', (req, res) => {
+  res.send(hermsGpio.getPins());
+});
+
 app.get('/api/pin/:name', (req, res) => {
   if (!req.params.name) {
-    res.send('Missing parameter: name');
+    res.status(400).send('Missing parameter: name');
+  } else if (req.body.value === undefined) {
+    res.status(400).send({ "error": "Missing pin value" });
+  } else {
+
+    let pinName = req.params.name;
+
+    hermsGpio.readPin(pinName, (error, value) => {
+      if (error)
+        res.status(500).send({ 'error': error });
+      else
+        res.send({ 'pin': pinName, 'value': value });
+    });
   }
-
-  let pinName = req.params.name;
-
-  hermsGpio.readPin(pinName, (error, value) => {
-    if (error)
-      res.send({ 'error': error });
-    else
-      res.send({ 'pin': pinName, 'value': value });
-  });
 });
 
 app.post('/api/pin/:name', (req, res) => {
   if (!req.params.name) {
     res.status(400).send('Missing parameter: name');
   } else if (req.body.value === undefined) {
-    res.status(400).send({"error": "Missing pin value"});
+    res.status(400).send({ "error": "Missing pin value" });
   } else {
 
     let pinName = req.params.name;
