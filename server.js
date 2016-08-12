@@ -15,7 +15,26 @@ hermsGpio.setup();
 app.use(bodyParser.json());
 
 app.get('/api/pins', (req, res) => {
-  res.send(hermsGpio.getPins());
+  let pins = hermsGpio.getPins();
+  let pinToReturn = [];
+
+  // convert from map to array
+  for (let key in pins) {
+    if (pins.hasOwnProperty(key)) {
+      let newPin = {
+        "name": key,
+        "board": pins[key].board,
+        "type": pins[key].type,
+        "mode": pins[key].mode,
+        "id": pins[key].id,
+        "initValue": pins[key].initValue
+      }
+
+      pinToReturn.push(newPin);
+    }
+  }
+
+  return res.send(pinToReturn);
 });
 
 app.get('/api/pins/:name', (req, res) => {
@@ -26,10 +45,10 @@ app.get('/api/pins/:name', (req, res) => {
     let pinName = req.params.name;
 
     hermsGpio.readPin(pinName, (error, value) => {
-      if (error){
+      if (error) {
         console.log(error);
         res.status(500).send({ 'error': error.message });
-      } else{
+      } else {
         res.send({ 'pin': pinName, 'value': value });
       }
     });

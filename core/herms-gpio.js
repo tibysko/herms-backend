@@ -108,9 +108,9 @@ class HermsGpio {
     getPins(){
         let pinsToReturn = this.pins;
 
+        // remove physcialPin before return
         for (let key in pinsToReturn){
-            if(pinsToReturn.hasOwnProperty(key)){
-                console.log('key => ' + key);
+            if(pinsToReturn.hasOwnProperty(key)){            
                 pinsToReturn[key].physcialPin = undefined;
             }
         }
