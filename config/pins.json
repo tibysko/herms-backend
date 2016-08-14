@@ -1,30 +1,34 @@
-{    
-    "LED_GREEN": {
-        "board": "raspberry",
-        "type": "digital",
-        "mode": "out",
-        "id": "36",
-        "initValue": "0"
-    },
-    "LED_BLUE": {
-        "board": "raspberry",
-        "type": "digital",
-        "mode": "out",
-        "id": "38",
-        "initValue": "0"
-    },
-    "LED_RED": {
+{
+    "HE_HW_IN_OPEN": {
         "board": "arduino",
         "type": "digital",
         "mode": "out",
-        "id": "12",
-        "initValue": "0"
+        "id": "2",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.1"
     },
-     "BUTTON_1": {
+    "HE_HW_IN_CLOSE": {
         "board": "arduino",
         "type": "digital",
-        "mode": "in",
-        "id": "34",
-        "initValue": "1"
+        "mode": "out",
+        "id": "3",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.2"
+    },
+     "HE_HW_OUT_OPEN": {
+        "board": "arduino",
+        "type": "digital",
+        "mode": "out",
+        "id": "4",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.3"
+    },
+     "HE_HW_OUT_CLOSE": {
+        "board": "arduino",
+        "type": "digital",
+        "mode": "out",
+        "id": "5",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.4"
     }
 }

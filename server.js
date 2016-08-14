@@ -33,7 +33,8 @@ app.get('/api/pins', (req, res) => {
         "type": pins[key].type,
         "mode": pins[key].mode,
         "id": pins[key].id,
-        "initValue": pins[key].initValue
+        "initValue": pins[key].initValue,
+        "comment": pins[key].comment
       }
 
       pinToReturn.push(newPin);
