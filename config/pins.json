@@ -24,7 +24,7 @@
         "board": "arduino",
         "type": "digital",
         "mode": "in",
-        "id": "5",
+        "id": "34",
         "initValue": "1"
     }
 }
