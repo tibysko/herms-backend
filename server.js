@@ -22,26 +22,8 @@ app.use(function (req, res, next) {
 
 app.get('/api/pins', (req, res) => {
   let pins = hermsGpio.getPins();
-  let pinToReturn = [];
-
-  // convert from map to array
-  for (let key in pins) {
-    if (pins.hasOwnProperty(key)) {
-      let newPin = {
-        "name": key,
-        "board": pins[key].board,
-        "type": pins[key].type,
-        "mode": pins[key].mode,
-        "id": pins[key].id,
-        "initValue": pins[key].initValue,
-        "comment": pins[key].comment
-      }
-
-      pinToReturn.push(newPin);
-    }
-  }
-
-  return res.send(pinToReturn);
+  
+  return res.send(pins);
 });
 
 app.get('/api/pins/:name', (req, res) => {

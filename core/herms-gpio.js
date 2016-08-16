@@ -86,7 +86,7 @@ class HermsGpio {
             return;
         }
 
-       if (pin.board === 'arduino') {
+        if (pin.board === 'arduino') {
             let options = {
                 // TODO which options
             }
@@ -105,13 +105,24 @@ class HermsGpio {
         logger.logInfo('HermsGpio.writeToPin', 'Wrote ' + value + ' to pin ' + pinName + ' on board ' + pin.board);
     }
 
-    getPins(){
-        let pinsToReturn = this.pins;
+    getPins() {
+        let pins = this.pins;
+        let pinsToReturn = [];
 
-        // remove physcialPin before return
-        for (let key in pinsToReturn){
-            if(pinsToReturn.hasOwnProperty(key)){            
-                pinsToReturn[key].physcialPin = undefined;
+        for (let key in pins) {
+            if (pins.hasOwnProperty(key)) {
+
+                let newPin = {
+                    "name": key,
+                    "board": pins[key].board,
+                    "type": pins[key].type,
+                    "mode": pins[key].mode,
+                    "id": pins[key].id,
+                    "initValue": pins[key].initValue,
+                    "comment": pins[key].comment
+                }
+
+                pinsToReturn.push(newPin);
             }
         }
 
