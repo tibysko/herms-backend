@@ -3,8 +3,9 @@
 var five = require('johnny-five');
 var logger = require('./logger');
 var fs = require('fs');
+const EventEmitter = require('events');
 
-class HermsGpio {
+class HermsGpio extends EventEmitter {
 
     setup(cb) {
         this.pins = JSON.parse(fs.readFileSync("./config/pins.json"));
