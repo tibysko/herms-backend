@@ -3,35 +3,53 @@
 var five = require('johnny-five');
 var logger = require('./logger');
 var fs = require('fs');
-var lodash = require('lodash');
 
 class HermsGpio {
 
-    setup() {
+    setup(cb) {
         this.pins = JSON.parse(fs.readFileSync("./config/pins.json"));
+
         var Board = five.Board;
         this.board = new Board({
             repl: false
         });
 
         logger.logInfo('HermsGpio.constructor', 'Initiating Board');
-        this.board.on('ready', () => this.setupPins());
+        this.board.on('ready', () => this.setupPins(cb));
     }
 
-    setupPins() {
+    setupPins(cb) {        
         logger.logInfo('HermsGpio.setupPins', 'Setting up pins');
 
-        lodash.map(this.pins, (pinMetaData, pinName) => {
-            if (pinMetaData.board === 'arduino') {
-                logger.logInfo('HermsGpio.setupPins', 'Arduino: setting up pin: ' + pinName + ' with setting: ' + JSON.stringify(pinMetaData));
+        for (let key in this.pins) {
+            if (this.pins.hasOwnProperty(key)) {
+                let pinMetaData = this.pins[key];
+                let pinName = key;                
 
-                let mode = pinMetaData.mode === 'in' ? five.Pin.INPUT : five.Pin.OUTPUT;
-                this.pins[pinName].physcialPin = new five.Pin({ 'pin': pinMetaData.id, 'mode': mode, value: pinMetaData.initValue });
-            } else {
-                logger.logWarning('HermsGpio.setupPins', 'Pin [' + pinName + '] error, board [' + pinMetaData.board + '] not supported');
+                logger.logInfo('HermsGpio.setupPins', 'Setting up pin: ' + pinName + ' with setting: ' + JSON.stringify(pinMetaData));
+
+                let config = {
+                    'pin': pinMetaData.id,
+                    'type': pinMetaData.type
+                };
+
+                let mode;
+
+                if (pinMetaData.mode === 'in') {
+                    mode = five.Pin.INPUT;
+                    config.type = pinMetaData.type;
+                } else if (pinMetaData.mode === 'out') {
+                    mode = five.Pin.OUTPUT;
+                    config.type = pinMetaData.type;
+                } else if (pinMetaData.mode === 'pwm') {
+                    mode = five.Pin.PWM;
+                }
+                // TODO add 'value': pinMetaData.initValue
+                config.mode = mode;
+
+                this.pins[pinName].physcialPin = ""; // new five.Pin(config);
             }
-
-        });
+        }
     }
 
     readPin(pinName, cb) {
@@ -47,15 +65,14 @@ class HermsGpio {
             return;
         }
 
-        if (pin.board === 'arduino') {
-            pin.physcialPin.query(function (state) {
-                // TODO error handling. currently not supported by query()
+        pin.physcialPin.query(function (state) {
+            // TODO error handling. currently not supported by query()
 
-                logger.logInfo('HermsGpio.readPin', 'Reading pin: ' + pinName + ' value ' + JSON.stringify(state));
-                cb(null, state.value); // execute cb and return value, null = no error;
-                return;
-            });
-        }
+            logger.logInfo('HermsGpio.readPin', 'Reading pin: ' + pinName + ' value ' + JSON.stringify(state));
+            cb(null, state.value); // execute cb and return value, null = no error;
+            return;
+        });
+
     }
 
     static logErrorAndExecuteCallBack(functionName, errorMessage, cb) {
@@ -79,30 +96,21 @@ class HermsGpio {
 
         let pin = pins[pinName];
 
-        if (pin.mode !== 'out') {
+        if (!(pin.mode !== 'out' || pin.mode !== 'pwm')) {
             let errorMessage = 'Pin ' + pinName + ' not configured as OUT';
             HermsGpio.logErrorAndExecuteCallBack('writePin', errorMessage, cb);
 
             return;
         }
 
-        if (pin.board === 'arduino') {
-            let options = {
-                // TODO which options
-            }
+        // Write to pin
+        pin.physcialPin.write(value);
 
-            // Write to pin
-            pin.physcialPin.write(value);
+        logger.logInfo('HermsGpio.writeToPin', 'Wrote ' + value + ' to pin ' + pinName);
+        cb(null); // successfully written to pin, call callback. Null = no error   
 
-            HermsGpio.logSuccessfully(pinName, value, pin);
-            cb(null); // successfully written to pin, call callback. Null = no error   
+        return;
 
-            return;
-        }
-    }
-
-    static logSuccessfully(pinName, value, pin) {
-        logger.logInfo('HermsGpio.writeToPin', 'Wrote ' + value + ' to pin ' + pinName + ' on board ' + pin.board);
     }
 
     getPins() {
@@ -114,7 +122,6 @@ class HermsGpio {
 
                 let newPin = {
                     "name": key,
-                    "board": pins[key].board,
                     "type": pins[key].type,
                     "mode": pins[key].mode,
                     "id": pins[key].id,
@@ -125,7 +132,6 @@ class HermsGpio {
                 pinsToReturn.push(newPin);
             }
         }
-
         return pinsToReturn;
     }
 }

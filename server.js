@@ -22,7 +22,7 @@ app.use(function (req, res, next) {
 
 app.get('/api/pins', (req, res) => {
   let pins = hermsGpio.getPins();
-  
+
   return res.send(pins);
 });
 

@@ -1,6 +1,5 @@
 {
     "HE_HW_IN_OPEN": {
-        "board": "arduino",
         "type": "digital",
         "mode": "out",
         "id": "2",
@@ -8,7 +7,6 @@
         "comments": "Reläbrygga 2.1"
     },
     "HE_HW_IN_CLOSE": {
-        "board": "arduino",
         "type": "digital",
         "mode": "out",
         "id": "3",
@@ -16,7 +14,6 @@
         "comments": "Reläbrygga 2.2"
     },
      "HE_HW_OUT_OPEN": {
-        "board": "arduino",
         "type": "digital",
         "mode": "out",
         "id": "4",
@@ -24,11 +21,23 @@
         "comments": "Reläbrygga 2.3"
     },
      "HE_HW_OUT_CLOSE": {
-        "board": "arduino",
         "type": "digital",
         "mode": "out",
         "id": "5",
         "initValue": "0",
         "comments": "Reläbrygga 2.4"
+    },
+     "HLT_HEATER": {
+        "mode": "pwm",
+        "id": "8",
+        "initValue": "0",
+        "comments": "Direkttrådad"
+    },
+     "T1_HLT": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A0",
+        "initValue": "0",
+        "comments": "Temppuck 1"
     }
 }
