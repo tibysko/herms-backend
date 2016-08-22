@@ -48,9 +48,11 @@ class HermsGpio extends EventEmitter {
                 // TODO add 'value': pinMetaData.initValue
                 config.mode = mode;
 
-                this.pins[pinName].physcialPin = ""; // new five.Pin(config);
+                this.pins[pinName].physcialPin = new five.Pin(config);
             }
         }
+
+        cb(null);
     }
 
     readPin(pinName, cb) {

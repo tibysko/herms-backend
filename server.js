@@ -9,7 +9,9 @@ var logger = require('./core/logger');
 
 var HermsGpio = require('./core/herms-gpio');
 var hermsGpio = new HermsGpio();
-hermsGpio.setup();
+
+var PidHLT = require('./core/pid-hlt');
+var pidHLT = new PidHLT();
 
 // API routes
 app.use(bodyParser.json());
@@ -78,6 +80,10 @@ function isParamValueValid(value) {
 }
 app.listen(8081, function () {
   logger.logInfo("server", "Server started on 8081");
+
+  hermsGpio.setup(function() {
+    pidHLT.start(hermsGpio);  
+  });
 });
 
 
