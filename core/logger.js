@@ -4,16 +4,16 @@ var winston = require('winston');
 
 class Logger {
     
-    static logInfo(moduleName, message) {
-        winston.log('info', '[' + moduleName + '] ' + message);
+    static logInfo(moduleName, functionName, message) {
+        winston.log('info', '[' + moduleName + '.' + functionName + '] ' + message);
     }
 
-    static logError(moduleName, message) {
-        winston.log('error', '[' + moduleName + '] ' + message);
+    static logError(moduleName, functionName, message) {
+        winston.log('error', '[' + moduleName + '.' + functionName + '] ' + message);
     }
 
-    static logWarning(moduleName, message) {
-        winston.log('warn', '[' + moduleName + '] ' + message);
+    static logWarning(moduleName, functionName, message) {
+        winston.log('warn', '[' + moduleName + '.' + functionName + '] ' + message);
     }
 
 }

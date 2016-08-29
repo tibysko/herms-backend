@@ -1,85 +1,99 @@
-﻿"use strict"
+"use strict"
 
 var five = require('johnny-five');
 var logger = require('./logger');
 var fs = require('fs');
-const EventEmitter = require('events');
+var io = require('./socket-io');
 
-class HermsGpio extends EventEmitter {
-
-    setup(cb) {
-        this.pins = JSON.parse(fs.readFileSync("./config/pins.json"));
-
-        var Board = five.Board;
-        this.board = new Board({
-            repl: false
-        });
-
-        logger.logInfo('HermsGpio.constructor', 'Initiating Board');
-        this.board.on('ready', () => this.setupPins(cb));
+class Pins {
+    constructor() {
+        this.className = 'Pins';
     }
 
-    setupPins(cb) {        
-        logger.logInfo('HermsGpio.setupPins', 'Setting up pins');
+    setup() {
+        logger.logInfo(this.className, 'setup', 'Setting up pins');
+        this.pins = JSON.parse(fs.readFileSync("./config/pins.json"));
 
         for (let key in this.pins) {
             if (this.pins.hasOwnProperty(key)) {
                 let pinMetaData = this.pins[key];
-                let pinName = key;                
+                let pinName = key;
 
-                logger.logInfo('HermsGpio.setupPins', 'Setting up pin: ' + pinName + ' with setting: ' + JSON.stringify(pinMetaData));
+                logger.logInfo(this.className, 'setup', 'Setting up pin: ' + pinName + ' with setting: ' + JSON.stringify(pinMetaData));
 
                 let config = {
                     'pin': pinMetaData.id,
-                    'type': pinMetaData.type
+                    'type': pinMetaData.type,
+                    'value': pinMetaData.initValue
                 };
 
-                let mode;
-
                 if (pinMetaData.mode === 'in') {
-                    mode = five.Pin.INPUT;
-                    config.type = pinMetaData.type;
-                } else if (pinMetaData.mode === 'out') {
-                    mode = five.Pin.OUTPUT;
-                    config.type = pinMetaData.type;
-                } else if (pinMetaData.mode === 'pwm') {
-                    mode = five.Pin.PWM;
-                }
-                // TODO add 'value': pinMetaData.initValue
-                config.mode = mode;
+                    config.mode = five.Pin.INPUT;
+                    config.freq = '250'; //emits data events every 250ms
+                    config.id = pinName;
 
-                this.pins[pinName].physcialPin = new five.Pin(config);
+                    this.pins[pinName].physcialPin = new five.Sensor(config);
+
+                    this.pins[pinName].physcialPin.on('change', function (data) {
+                        console.log('id: ' + this.id + ' value: ' + data);
+                        io.emit('pins', { pin: this.id, data: data });
+                    });
+
+                } else if (pinMetaData.mode === 'out') {
+                    config.mode = five.Pin.OUTPUT;
+
+                    this.pins[pinName].physcialPin = new five.Pin(config);
+
+                } else if (pinMetaData.mode === 'pwm') {
+                    config.mode = five.Pin.PWM;
+
+                    this.pins[pinName].physcialPin = new five.Pin(config);
+                }
             }
         }
-
-        cb(null);
     }
 
     readPin(pinName, cb) {
         if (!this.isPinRegistered(pinName)) {
-            HermsGpio.logErrorAndExecuteCallBack('readPin', 'Pin ' + pinName + ' not found', cb);
+            Pins.logErrorAndExecuteCallBack('readPin', 'Pin ' + pinName + ' not found', cb);
+
+            return;
+        }
+
+        this.pins[pinName].physcialPin.on('change', cb());
+
+    }
+
+    readPinOnce(pinName, cb) {
+        if (!this.isPinRegistered(pinName)) {
+            Pins.logErrorAndExecuteCallBack('readPinOnce', 'Pin ' + pinName + ' not found', cb);
+
             return;
         }
 
         let pin = this.pins[pinName];
 
         if (pin.mode !== 'in') {
-            HermsGpio.logErrorAndExecuteCallBack('readPin', 'Pin ' + pinName + ' not setup for IN', cb);
+            Pins.logErrorAndExecuteCallBack('readPinOnce', 'Pin ' + pinName + ' not setup for IN', cb);
+
             return;
         }
 
         pin.physcialPin.query(function (state) {
             // TODO error handling. currently not supported by query()
 
-            logger.logInfo('HermsGpio.readPin', 'Reading pin: ' + pinName + ' value ' + JSON.stringify(state));
+            logger.logInfo(this.className, 'readPinOnce', 'Reading pin: ' + pinName + ' value ' + JSON.stringify(state));
+            io.sockets.emit('pins', { pin: pinName, data: state.value });
+
             cb(null, state.value); // execute cb and return value, null = no error;
+
             return;
         });
 
     }
 
     static logErrorAndExecuteCallBack(functionName, errorMessage, cb) {
-        logger.logError('HermsGpio.' + functionName, errorMessage);
+        logger.logError(this.className, functionName, errorMessage);
         cb(new Error(errorMessage));
     }
 
@@ -92,7 +106,7 @@ class HermsGpio extends EventEmitter {
 
         if (!this.isPinRegistered(pinName)) {
             let errorMessage = 'Pin ' + pinName + ' not found';
-            HermsGpio.logErrorAndExecuteCallBack('writePin', errorMessage, cb);
+            Pins.logErrorAndExecuteCallBack('writePin', errorMessage, cb);
 
             return;
         }
@@ -101,7 +115,7 @@ class HermsGpio extends EventEmitter {
 
         if (!(pin.mode !== 'out' || pin.mode !== 'pwm')) {
             let errorMessage = 'Pin ' + pinName + ' not configured as OUT';
-            HermsGpio.logErrorAndExecuteCallBack('writePin', errorMessage, cb);
+            Pins.logErrorAndExecuteCallBack('writePin', errorMessage, cb);
 
             return;
         }
@@ -109,7 +123,9 @@ class HermsGpio extends EventEmitter {
         // Write to pin
         pin.physcialPin.write(value);
 
-        logger.logInfo('HermsGpio.writeToPin', 'Wrote ' + value + ' to pin ' + pinName);
+        logger.logInfo(this.className, 'writePin', 'Wrote ' + value + ' to pin ' + pinName);
+        io.sockets.emit('pins', { pin: pinName, data: value });
+
         cb(null); // successfully written to pin, call callback. Null = no error   
 
         return;
@@ -139,4 +155,4 @@ class HermsGpio extends EventEmitter {
     }
 }
 
-module.exports = HermsGpio;
+module.exports = Pins;
