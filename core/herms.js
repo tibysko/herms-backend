@@ -4,12 +4,16 @@ var Pins = require('./pins');
 class Herms {
 
     start(){
-        let arduino = new Arduino();
-        let pins = new Pins();
+        this.arduino = new Arduino();
+        this.pins = new Pins();
 
-        arduino.setup(function(){
-            pins.setup();
+        this.arduino.setup(() => {
+            this.pins.setup();
         });        
+    }
+
+    getPins(){
+        return this.pins.getPins();
     }
 
 }

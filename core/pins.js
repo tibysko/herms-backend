@@ -34,9 +34,8 @@ class Pins {
 
                     this.pins[pinName].physcialPin = new five.Sensor(config);
 
-                    this.pins[pinName].physcialPin.on('change', function (data) {
-                        console.log('id: ' + this.id + ' value: ' + data);
-                        io.emit('pins', { pin: this.id, data: data });
+                    this.pins[pinName].physcialPin.on('change', (data) => {
+                        this.pins[pinName].value = data;
                     });
 
                 } else if (pinMetaData.mode === 'out') {
@@ -60,8 +59,7 @@ class Pins {
             return;
         }
 
-        this.pins[pinName].physcialPin.on('change', cb());
-
+        this.pins[pinName].physcialPin.on('change', cb(data));
     }
 
     readPinOnce(pinName, cb) {
@@ -83,7 +81,7 @@ class Pins {
             // TODO error handling. currently not supported by query()
 
             logger.logInfo(this.className, 'readPinOnce', 'Reading pin: ' + pinName + ' value ' + JSON.stringify(state));
-            io.sockets.emit('pins', { pin: pinName, data: state.value });
+            pin.value = state.value;
 
             cb(null, state.value); // execute cb and return value, null = no error;
 
@@ -124,7 +122,6 @@ class Pins {
         pin.physcialPin.write(value);
 
         logger.logInfo(this.className, 'writePin', 'Wrote ' + value + ' to pin ' + pinName);
-        io.sockets.emit('pins', { pin: pinName, data: value });
 
         cb(null); // successfully written to pin, call callback. Null = no error   
 
@@ -134,23 +131,21 @@ class Pins {
 
     getPins() {
         let pins = this.pins;
-        let pinsToReturn = [];
+        let pinsToReturn = {};
 
         for (let key in pins) {
-            if (pins.hasOwnProperty(key)) {
-
-                let newPin = {
-                    "name": key,
-                    "type": pins[key].type,
-                    "mode": pins[key].mode,
+            if (pins.hasOwnProperty(key)) {                      
+                pinsToReturn[key] = {
+                    "comment": pins[key].comment,
                     "id": pins[key].id,
                     "initValue": pins[key].initValue,
-                    "comment": pins[key].comment
+                    "mode": pins[key].mode,                  
+                    "type": pins[key].type,
+                    "value": pins[key].value
                 }
-
-                pinsToReturn.push(newPin);
             }
         }
+
         return pinsToReturn;
     }
 }

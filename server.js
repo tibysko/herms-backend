@@ -78,6 +78,19 @@ function isParamValueValid(value) {
     value === 'true' ||
     value === 'false');
 }
+
+io.on('connect', function(){
+  console.log('Client connected');
+});
+
+// TODO remove crap 
+setInterval(function(){
+  // TODO remove logging
+  console.log(herms.getPins());
+
+  io.emit('pins', herms.getPins());
+}, 3000);
+
 app.listen(8081, function () {
   logger.logInfo("server", "Server started on 8081");
 
