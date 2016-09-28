@@ -1,0 +1,333 @@
+{
+    "HE_HW_IN_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "2",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.1"
+    },
+    "HE_HW_IN_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "3",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.2"
+    },
+    "HE_HW_OUT_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "4",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.3"
+    },
+    "HE_HW_OUT_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "5",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.4"
+    },
+    "HE_CW_IN_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "6",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.5"
+    },
+    "HE_CW_IN_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "7",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.6"
+    },
+    "HE_CW_OUT_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "8",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.7"
+    },
+    "HE_CW_OUT_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "9",
+        "initValue": "0",
+        "comments": "Reläbrygga 2.8"
+    },
+    "HLT_HEATER": {
+        "mode": "pwm",
+        "id": "10",
+        "initValue": "0",
+        "comments": "Direkttrådad"
+    },
+    "HW_PUMP": {
+        "type": "digital",
+        "mode": "out",
+        "id": "12",
+        "initValue": "0",
+        "comments": "Reläbrygga 1.1"
+    },
+    "WORT_PUMP": {
+        "type": "digital",
+        "mode": "out",
+        "id": "13",
+        "initValue": "0",
+        "comments": "Reläbrygga 1.2"
+    },
+    "MLT_MIXER": {
+        "type": "digital",
+        "mode": "out",
+        "id": "22",
+        "initValue": "0",
+        "comments": "Reläbrygga 1.3"
+    },
+    "MLT_HW_IN_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "26",
+        "initValue": "0",
+        "comments": "Reläbrygga 3.1"
+    },
+    "MLT_HW_IN_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "27",
+        "initValue": "0",
+        "comments": "Reläbrygga 3.2"
+    },
+    "MLT_WORT_IN_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "28",
+        "initValue": "0",
+        "comments": "Reläbrygga 3.3"
+    },
+    "MLT_WORT_IN_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "29",
+        "initValue": "0",
+        "comments": "Reläbrygga 3.4"
+    },
+    "MLT_WORT_OUT_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "30",
+        "initValue": "0",
+        "comments": "Reläbrygga 3.5"
+    },
+    "MLT_WORT_OUT_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "31",
+        "initValue": "0",
+        "comments": "Reläbrygga 3.6"
+    },
+    "MLT_KET_BYPASS_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "32",
+        "initValue": "0",
+        "comments": "Reläbrygga 3.7"
+    },
+    "MLT_KET_BYPASS_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "33",
+        "initValue": "0",
+        "comments": "Reläbrygga 3.8"
+    },
+    "KET_RECIRC_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "34",
+        "initValue": "0",
+        "comments": "Reläbrygga 4.1"
+    },
+    "KET_RECIRC_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "35",
+        "initValue": "0",
+        "comments": "Reläbrygga 4.2"
+    },
+    "KET_WORT_IN_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "36",
+        "initValue": "0",
+        "comments": "Reläbrygga 4.3"
+    },
+    "KET_WORT_IN_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "37",
+        "initValue": "0",
+        "comments": "Reläbrygga 4.4"
+    },
+    "KET_WORT_OUT_OPEN": {
+        "type": "digital",
+        "mode": "out",
+        "id": "38",
+        "initValue": "0",
+        "comments": "Reläbrygga 4.5"
+    },
+    "KET_WORT_OUT_CLOSE": {
+        "type": "digital",
+        "mode": "out",
+        "id": "39",
+        "initValue": "0",
+        "comments": "Reläbrygga 4.6"
+    },
+    "MLT_HW_IN_OPENED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "40",
+        "comments": "Reläbrygga 3.1"
+    },
+    "MLT_HW_IN_CLOSED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "41",
+        "comments": "Reläbrygga 3.2"
+    },
+    "MLT_WORT_IN_OPENED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "42",
+        "comments": "Reläbrygga 3.3"
+    },
+    "MLT_WORT_IN_CLOSED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "43",
+        "comments": "Reläbrygga 3.4"
+    },
+    "MLT_WORT_OUT_OPENED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "44",
+        "comments": "Reläbrygga 3.5"
+    },
+    "MLT_WORT_OUT_CLOSED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "45",
+        "comments": "Reläbrygga 3.6"
+    },
+    "MLT_KET_BYPASS_OPENED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "46",
+        "comments": "Reläbrygga 3.7"
+    },
+    "MLT_KET_BYPASS_CLOSED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "47",
+        "comments": "Reläbrygga 3.8"
+    },
+    "KET_RECIRC_OPENED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "48",
+        "comments": "Reläbrygga 4.1"
+    },
+    "KET_RECIRC_CLOSED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "49",
+        "comments": "Reläbrygga 4.2"
+    },
+    "KET_WORT_IN_OPENED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "50",
+        "comments": "Reläbrygga 4.3"
+    },
+    "KET_WORT_IN_CLOSED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "51",
+        "comments": "Reläbrygga 4.4"
+    },
+    "KET_WORT_OUT_OPENED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "52",
+        "comments": "Reläbrygga 4.5"
+    },
+    "KET_WORT_OUT_CLOSED": {
+        "type": "digital",
+        "mode": "in",
+        "id": "53",
+        "comments": "Reläbrygga 4.6"
+    },
+    "T1_HLT": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A0",
+        "comments": "Temppuck 1"
+    },
+    "T2_HE_WORT_OUT": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A1",
+        "comments": "Temppuck 2"
+    },
+    "L1_HLT": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A3",
+        "comments": "Level indication (mm) HLT"
+    },
+    "HE_HW_IN_OPENED": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A6",
+        "comments": "Ingångskort 2.1"
+    },
+    "HE_HW_IN_CLOSED": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A7",
+        "comments": "Ingångskort 2.2"
+    },
+    "HE_HW_OUT_OPENED": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A8",
+        "comments": "Ingångskort 2.3"
+    },
+    "HE_HW_OUT_CLOSED": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A9",
+        "comments": "Ingångskort 2.4"
+    },
+    "HE_CW_IN_OPENED": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A10",
+        "comments": "Ingångskort 2.5"
+    },
+    "HE_CW_IN_CLOSED": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A11",
+        "comments": "Ingångskort 2.6"
+    },
+    "HE_CW_OUT_OPENED": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A12",
+        "comments": "Ingångskort 2.7"
+    },
+    "HE_CW_OUT_CLOSED": {
+        "type": "analog",
+        "mode": "in",
+        "id": "A13",
+        "comments": "Ingångskort 2.8"
+    }
+}
