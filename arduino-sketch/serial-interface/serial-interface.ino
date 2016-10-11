@@ -3,11 +3,10 @@
   Created  2016
   by Ola Adolfsson & Martin Berglund
 
-  http://www.arduino.cc/en/Tutorial/SerialEvent
-
 */
 
 String inputString = "";         // a string to hold incoming data
+String resultString = "d";
 boolean stringComplete = false;  // whether the string is complete
 
 String cmd;
@@ -51,7 +50,7 @@ void loop() {
        A10 = pin ('A' is for analog, 0 (zero) for digital) Length 3 char
        0255 = chars pin value. Length 4 char
     */
-    
+
     cmd = inputString.substring(0, 2);
     pin = inputString.substring(2, 5);
     value = inputString.substring(5, 9).toInt();
@@ -84,6 +83,43 @@ void loop() {
     // clear the string:
     inputString = "";
     stringComplete = false;
+  }
+
+  readPins();
+}
+
+void readPins() {
+
+  // Read digital pins
+  for (int pinId = 40 ; pinId < 54; pinId++) {
+    resultString = "D";
+    resultString += pinId;
+    resultString += '|';
+    resultString += digitalRead(pinId);
+
+    Serial.println(resultString);
+  }
+
+  // Read analog to digital pins
+  for (int pinId = 60 ; pinId < 68; pinId++) {
+    int actualPin = pinId - 54; // (53 + 1)
+    resultString = "A";
+    resultString += actualPin;
+    resultString += '|';
+    resultString += digitalRead(pinId);
+
+    Serial.println(resultString);
+  }
+
+  // Read analog pins
+  for (int pinId = 54 ; pinId < 60; pinId++) {
+    int actualPin = pinId - 54; // (53 + 1)
+    resultString = "A";
+    resultString += actualPin;
+    resultString += '|';
+    resultString += analogRead(pinId);
+
+    Serial.println(resultString);
   }
 }
 
