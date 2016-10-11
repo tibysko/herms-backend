@@ -15,7 +15,7 @@ String pin;
 int value;
 
 void setup() {
-  // initialize serial:
+  // initialize serial
   Serial.begin(9600);
 
   cmd.reserve(2);
@@ -46,7 +46,11 @@ void setup() {
 void loop() {
 
   if (stringComplete) {
-    // Command example 
+    /* Command example AWA100255
+       AW = cmd. Length 2 char
+       A10 = pin ('A' is for analog, 0 (zero) for digital) Length 3 char
+       0255 = chars pin value. Length 4 char
+    */
     
     cmd = inputString.substring(0, 2);
     pin = inputString.substring(2, 5);
