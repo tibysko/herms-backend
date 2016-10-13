@@ -3,41 +3,56 @@
   Created  2016
   by Ola Adolfsson & Martin Berglund
 
+  A0 = 54
+  A15= 69
+
 */
 
 String inputString = "";         // a string to hold incoming data
-String resultString = "d";
+String resultString = "";
 boolean stringComplete = false;  // whether the string is complete
 
 String cmd;
-String pin;
+int pin;
 int value;
+
+// Pin ranges
+const int DIGITAL_IN_START = 40;
+const int DIGITAL_IN_END = 53;
+
+const int DIGITAL_2_ANALOG_START = 60;
+const int DIGITAL_2_ANALOG_END = 67;
+
+const int DIGITAL_OUT_START = 2;
+const int DIGITAL_OUT_END = 22;
+
+const int ANALOG_IN_START = 54;
+const int ANALOG_IN_END = 57;
 
 void setup() {
   // initialize serial
   Serial.begin(9600);
 
   cmd.reserve(2);
-  pin.reserve(3);
 
   // ENABLE PULLUP for digital IN pins 40 - 53
-  for (int pinId = 40 ; pinId < 54; pinId++) {
+  for (int pinId = DIGITAL_IN_START ; pinId <= DIGITAL_IN_END; pinId++) {
     pinMode(pinId, INPUT_PULLUP);
   }
 
   // ENABLE PULLUP for analog (to digital) IN pins 60 - 67
-  for (int pinId = 60 ; pinId < 68; pinId++) {
+  for (int pinId = DIGITAL_2_ANALOG_START ; pinId <= DIGITAL_2_ANALOG_END; pinId++) {
     pinMode(pinId, INPUT);
     digitalWrite(pinId, HIGH);
   }
 
   // ENABLE PULLUP for digital OUT pins 2 - 22
-  for (int pinId = 2 ; pinId < 23; pinId++) {
+  for (int pinId = DIGITAL_OUT_START ; pinId <= DIGITAL_OUT_END; pinId++) {
     pinMode(pinId, OUTPUT);
   }
 
   // ENABLE PULLUP for analog IN pins 54 - 57
-  for (int pinId = 54 ; pinId < 57; pinId++) {
+  for (int pinId = ANALOG_IN_START ; pinId <= ANALOG_IN_END; pinId++) {
     pinMode(pinId, INPUT);
   }
 }
@@ -52,31 +67,24 @@ void loop() {
     */
 
     cmd = inputString.substring(0, 2);
-    pin = inputString.substring(2, 5);
+    pin = inputString.substring(2, 5).toInt();
     value = inputString.substring(5, 9).toInt();
-
-    int actualPin = -1;
-    if (pin.substring(0, 1) == "A") {
-      actualPin = pin.substring(1, 3).toInt() + 54; // Analog Pin = Max digital no + analog pin no + 1 (eg A2 = 53 + 2 + 1)
-    } else {
-      actualPin = pin.toInt();
-    }
 
     if (cmd == "DW") {
       Serial.println("id dw");
-      digitalWrite(actualPin, value);
+      digitalWrite(pin, value);
 
     } else if (cmd == "DR") {
       Serial.print("Value: ");
-      Serial.println(digitalRead(actualPin));
+      Serial.println(digitalRead(pin));
 
     } else if (cmd == "AR") {
       Serial.print("AR Value: ");
-      Serial.println(analogRead(actualPin));
+      Serial.println(analogRead(pin));
 
     } else if (cmd == "AW") {
       Serial.print("AW Value: ");
-      analogWrite(actualPin, value);
+      analogWrite(pin, value);
 
     }
 
@@ -86,36 +94,32 @@ void loop() {
   }
 
   readPins();
+  delay(500); 
 }
 
 void readPins() {
 
   // Read digital pins
-  for (int pinId = 40 ; pinId < 54; pinId++) {
-    resultString = "D";
-    resultString += pinId;
+  for (int pinId = DIGITAL_IN_START ; pinId <= DIGITAL_IN_END; pinId++) {
+    resultString = pinId;
     resultString += '|';
-    resultString += digitalRead(pinId);
+    resultString += !digitalRead(pinId);
 
     Serial.println(resultString);
   }
 
   // Read analog to digital pins
-  for (int pinId = 60 ; pinId < 68; pinId++) {
-    int actualPin = pinId - 54; // (53 + 1)
-    resultString = "A";
-    resultString += actualPin;
+  for (int pinId = DIGITAL_2_ANALOG_START ; pinId <= DIGITAL_2_ANALOG_END; pinId++) {
+    resultString = pinId;
     resultString += '|';
-    resultString += digitalRead(pinId);
+    resultString += !digitalRead(pinId);
 
     Serial.println(resultString);
   }
 
   // Read analog pins
-  for (int pinId = 54 ; pinId < 60; pinId++) {
-    int actualPin = pinId - 54; // (53 + 1)
-    resultString = "A";
-    resultString += actualPin;
+  for (int pinId = ANALOG_IN_START ; pinId <= ANALOG_IN_END; pinId++) {
+    resultString = pinId;
     resultString += '|';
     resultString += analogRead(pinId);
 
