@@ -1,94 +1,93 @@
 'use strict';
 
+const EventEmitter = require('events');
+
 var logger = require('../core/logger');
 var PID = require('./pid-controller');
-var pins = require('../board/pins');
 
-class PidHLT {
-    constructor(Kp, Ki, Kd, setPoint, setPointDuration) {
-        this.Kp = Kp;
-        this.Ki = Ki;
-        this.Kd = Kd;
-        this.setPoint = setPoint;
-        this.setPointDuration = setPointDuration;
-        this.process = -10; // dummy value
+class PidHLT extends EventEmitter {
+
+    constructor(board) {
+        super(); // EventEmitter constructor 
+
+        this.actTemperatureValue = 0;
+        this.board = board;
+        this.dummyId = -10; // dummy value
+        this.process = this.dummyId;
         this.moduleName = 'pidHLT'; // TODO: another way to get class name?
+
+        // pidController
+        this.HLT_HEATER = 10;
+        this.Kp = 300;
+        this.Ki = 100;
+        this.Kd = 50;
+        this.pidController = {};
+        this.setPoint = 0;
+        this.T1_HLT = 54;
+        this.timeframe = 1000;
     }
 
     start() {
-        // default values
-        let Kp = 300,
-            Ki = 100,
-            Kd = 50,
-            setPoint = 30;
+        if (this.process !== this.dummyId) {
+            logger.logInfo(this.moduleName, 'start', 'Already started');
+            return;
+        }
 
-        start(Kp, Ki, Kd, setPoint, 10, function () { });
-    }
+        logger.logInfo(this.moduleName, 'start', 'Starting with settings: Kp=' + this.Kp + ' Ki=' + this.Ki + ' Kd=' + this.Kd + ' setPoint=' + this.setPoint);
 
-    start(cb) {
-        logger.logInfo(this.moduleName, 'start', 'Starting with settings: Kp=' + Kp + ' Ki=' + Ki + ' Kd=' + Kd + ' setPoint=' + setPoint + ' setPointDuration=' + setPointDuration);
-
-        // setup reading from T1_HLT
-        let actTemperatureValue = 0;
-        pin.readPin('T1_HLT', function (error, value) {
-            actTemperatureValue = value;
+        this.board.on('data', (data) => {
+            this.actTemperatureValue = data[this.T1_HLT].value;
         });
 
-        let timeframe = 1000;
-        let ctr = new PID(actTemperatureValue, this.setPoint, this.Kp, Ki, Kd, 'direct');
+        this.pidController = new PID(this.actTemperatureValue, this.setPoint, this.Kp, this.Ki, this.Kd, 'direct');
 
-        ctr.setSampleTime(timeframe);
-        ctr.setOutputLimits(0, 255);
-        ctr.setMode('automatic');
-
-        let targetPointReached = false;
-        let endTime = new Date();
-        endTime.setHours = endTime.setHours(endTime.getHours() - 1); // set expired date
+        this.pidController.setSampleTime(this.timeframe);
+        this.pidController.setOutputLimits(0, 255);
+        this.pidController.setMode('automatic');
 
         logger.logInfo(this.moduleName, 'start', 'Starting intervall...');
 
-        this.process = setInterval(function (parent, cb) {
+        this.process = setInterval(() => {
+            let currTemp = this.actTemperatureValue / 4.7;
+            console.log('currTemp: ' + currTemp);
 
-            let currTemp = actTemperatureValue / 4.7;
-            ctr.setInput(currTemp);
-            ctr.compute();
+            this.pidController.setInput(currTemp);
+            this.pidController.compute();
+            let output = this.pidController.getOutput();
+            console.log(output);
 
-            let output = ctr.getOutput();
+            this.board.writePin(this.HLT_HEATER, output, function () {});
 
-            ping.writePin('HLT_HEATER', output, function () { });
+            this.emit('data', {
+                output: output,
+                temp: currTemp
+            });
 
-            // set point reached.. time to start duration
-            if (currTemp >= setPoint && !targetPointReached) {
-                let now = new Date();
-                endTime.setMinutes(now.getMinutes() + setPointDuration);
-                targetPointReached = true;
-             
-                logger.logInfo(this.moduleName, 'start', 'set point [' + setPoint + '] reached, will boiling until ' + endTime.toDateString());
-            } else if (targetPointReached && endTime.getTime() > no.getTime()) {
-                clearInterval(parent.intervallRef);
-                logger.logInfo(this.moduleName, 'start', 'set point duraction reached [' + endTime.toDateString() + '], exiting...');
-
-                cb(); // phase eneded.. call callback
-                return;
-            }
-
-        }, timeframe)
+        }, this.timeframe);
     }
 
     stop() {
-        if (this.process === -10)
-            logger.logWarning(this.moduleName, 'stop', 'intervallRef not set');
-        else {
-            try {
-                logger.logInfo(this.moduleName, 'stop', 'tring to stop ' + this.moduleName);
-                clearInterval(this.intervallRef);
-                logger.logInfo(this.moduleName, 'stop', 'successfully stoppped ' + this.moduleName);
+        logger.logInfo(this.moduleName, 'start', 'Stopping pid ...');
 
-            } catch (error) {
-                logger.logError(this.moduleName, 'stop', 'could not stop ' + this.moduleName);
+        clearInterval(this.process);
+    }
 
-            }
-        }
+    setSetPoint(value) {
+        logger.logInfo(this.moduleName, 'setOutput', 'Setting setPoint: ' + value);
+
+        this.pidController.setPoint(value);
+    }
+
+    setOutput(value) {
+        logger.logInfo(this.moduleName, 'setOutput', 'Setting output: ' + value);
+
+        this.pidController.setOutput(value);
+    }
+
+    setMode(mode) {
+        logger.logInfo(this.moduleName, 'setMode', 'Setting mode: ' + mode);
+        console.log(JSON.stringify(this.pidController));
+        this.pidController.setMode(mode);
     }
 }
 

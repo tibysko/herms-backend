@@ -1,0 +1,71 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Herms_APIs",
+		"_postman_id": "07bc2638-c3f8-a715-fcda-660c14550ea1",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/pins",
+			"request": {
+				"url": "http://localhost:8081/api/pins/MLT_WORT_OUT_CLOSE",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"pinValue\": true\n\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/pins",
+			"request": {
+				"url": "http://localhost:8081/api/pins",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"pinValue\": true\n\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/pid-controller",
+			"request": {
+				"url": "http://localhost:8081/api/pid-controller",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"setPoint\": 30,\n\t\"command\": \"stop\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

@@ -1,24 +1,19 @@
-﻿"use strict"
+"use strict"
 
 var five = require('johnny-five');
 var logger = require('./../core/logger');
 var Firmata = require('mock-firmata').Firmata;
 
-class Arduino {
+class ArduinoMock {
 
     setup(cb) {
-        /*var io = new Firmata();
+        var io = new Firmata();
 
         io.SERIAL_PORT_IDs.DEFAULT = 0x08;
 
         var board = new five.Board({
             io: io,
             debug: false,
-            repl: false
-        });*/
-
-        var Board = five.Board;
-        this.board = new Board({
             repl: false
         });
 
@@ -29,9 +24,9 @@ class Arduino {
             return;
         });
         
-        //io.emit("connect");
-        //io.emit("ready");
+        io.emit("connect");
+        io.emit("ready");
     }
 }
 
-module.exports = Arduino;
+module.exports = ArduinoMock;

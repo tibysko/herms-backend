@@ -1,332 +1,307 @@
 {
-    "HE_HW_IN_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "2": {
+        "name": "HE_HW_IN_OPEN",
         "id": "2",
-        "initValue": "0",
+        "mode": "DW",
         "comments": "Reläbrygga 2.1"
     },
-    "HE_HW_IN_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "3": {
+        "name": "HE_HW_IN_CLOSE",
         "id": "3",
-        "initValue": "0",
+        "mode": "DW",
         "comments": "Reläbrygga 2.2"
     },
-    "HE_HW_OUT_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "4": {
+        "name": "HE_HW_OUT_OPEN",
         "id": "4",
-        "initValue": "0",
+        "mode": "DW",
         "comments": "Reläbrygga 2.3"
     },
-    "HE_HW_OUT_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "5": {
+        "name": "HE_HW_OUT_CLOSE",
         "id": "5",
-        "initValue": "0",
+        "mode": "DW",
         "comments": "Reläbrygga 2.4"
     },
-    "HE_CW_IN_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "6": {
+        "name": "HE_CW_IN_OPEN",
+        "mode": "DW",
         "id": "6",
-        "initValue": "0",
         "comments": "Reläbrygga 2.5"
     },
-    "HE_CW_IN_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "7": {
+        "name": "HE_CW_IN_CLOSE",
+        "mode": "DW",
         "id": "7",
-        "initValue": "0",
         "comments": "Reläbrygga 2.6"
     },
-    "HE_CW_OUT_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "8": {
+        "name": "HE_CW_OUT_OPEN",
+        "mode": "DW",
         "id": "8",
-        "initValue": "0",
         "comments": "Reläbrygga 2.7"
     },
-    "HE_CW_OUT_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "9": {
+        "name": "HE_CW_OUT_CLOSE",
+        "mode": "DW",
         "id": "9",
-        "initValue": "0",
         "comments": "Reläbrygga 2.8"
     },
-    "HLT_HEATER": {
-        "mode": "pwm",
+    "10": {
+        "name": "HLT_HEATER",
+        "mode": "AW",
         "id": "10",
-        "initValue": "0",
         "comments": "Direkttrådad"
     },
-    "HW_PUMP": {
-        "type": "digital",
-        "mode": "out",
+    "12": {
+        "name": "HW_PUMP",
+        "mode": "DW",
         "id": "12",
-        "initValue": "0",
         "comments": "Reläbrygga 1.1"
     },
-    "WORT_PUMP": {
-        "type": "digital",
-        "mode": "out",
+    "13": {
+        "name": "WORT_PUMP",
+        "mode": "DW",
         "id": "13",
-        "initValue": "0",
         "comments": "Reläbrygga 1.2"
     },
-    "MLT_MIXER": {
-        "type": "digital",
-        "mode": "out",
+    "22": {
+        "name": "MLT_MIXER",
+        "mode": "DW",
         "id": "22",
-        "initValue": "0",
         "comments": "Reläbrygga 1.3"
     },
-    "MLT_HW_IN_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "26": {
+        "name": "MLT_HW_IN_OPEN",
+        "mode": "DW",
         "id": "26",
-        "initValue": "0",
         "comments": "Reläbrygga 3.1"
     },
-    "MLT_HW_IN_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "27": {
+        "name": "MLT_HW_IN_CLOSE",
+        "mode": "DW",
         "id": "27",
-        "initValue": "0",
         "comments": "Reläbrygga 3.2"
     },
-    "MLT_WORT_IN_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "28": {
+        "name": "MLT_WORT_IN_OPEN",
+        "mode": "DW",
         "id": "28",
-        "initValue": "0",
         "comments": "Reläbrygga 3.3"
     },
-    "MLT_WORT_IN_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "29": {
+        "name": "MLT_WORT_IN_CLOSE",
+        "mode": "DW",
         "id": "29",
-        "initValue": "0",
         "comments": "Reläbrygga 3.4"
     },
-    "MLT_WORT_OUT_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "30": {
+        "name": "MLT_WORT_OUT_OPEN",
+        "mode": "DW",
         "id": "30",
-        "initValue": "0",
         "comments": "Reläbrygga 3.5"
     },
-    "MLT_WORT_OUT_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "31": {
+        "name": "MLT_WORT_OUT_CLOSE",
+        "mode": "DW",
         "id": "31",
-        "initValue": "0",
         "comments": "Reläbrygga 3.6"
     },
-    "MLT_KET_BYPASS_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "32": {
+        "name": "MLT_KET_BYPASS_OPEN",
+        "mode": "DW",
         "id": "32",
-        "initValue": "0",
         "comments": "Reläbrygga 3.7"
     },
-    "MLT_KET_BYPASS_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "33": {
+        "name": "MLT_KET_BYPASS_CLOSE",
+        "mode": "DW",
         "id": "33",
-        "initValue": "0",
         "comments": "Reläbrygga 3.8"
     },
-    "KET_RECIRC_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "34": {
+        "name": "KET_RECIRC_OPEN",
+        "mode": "DW",
         "id": "34",
-        "initValue": "0",
         "comments": "Reläbrygga 4.1"
     },
-    "KET_RECIRC_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "35": {
+        "name": "KET_RECIRC_CLOSE",
+        "mode": "DW",
         "id": "35",
-        "initValue": "0",
         "comments": "Reläbrygga 4.2"
     },
-    "KET_WORT_IN_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "36": {
+        "name": "KET_WORT_IN_OPEN",
+        "mode": "DW",
         "id": "36",
-        "initValue": "0",
         "comments": "Reläbrygga 4.3"
     },
-    "KET_WORT_IN_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "37": {
+        "name": "KET_WORT_IN_CLOSE",
+        "mode": "DW",
         "id": "37",
-        "initValue": "0",
         "comments": "Reläbrygga 4.4"
     },
-    "KET_WORT_OUT_OPEN": {
-        "type": "digital",
-        "mode": "out",
+    "38": {
+        "name": "KET_WORT_OUT_OPEN",
+        "mode": "DW",
         "id": "38",
-        "initValue": "0",
         "comments": "Reläbrygga 4.5"
     },
-    "KET_WORT_OUT_CLOSE": {
-        "type": "digital",
-        "mode": "out",
+    "39": {
+        "name": "KET_WORT_OUT_CLOSE",
+        "mode": "DW",
         "id": "39",
-        "initValue": "0",
         "comments": "Reläbrygga 4.6"
     },
-    "MLT_HW_IN_OPENED": {
-        "type": "digital",
-        "mode": "in",
+    "40": {
+        "name": "MLT_HW_IN_OPENED",
+        "mode": "DR",
         "id": "40",
         "comments": "Reläbrygga 3.1"
     },
-    "MLT_HW_IN_CLOSED": {
-        "type": "digital",
-        "mode": "in",
+    "41": {
+        "name": "MLT_HW_IN_CLOSED",
+        "mode": "DR",
         "id": "41",
         "comments": "Reläbrygga 3.2"
     },
-    "MLT_WORT_IN_OPENED": {
-        "type": "digital",
-        "mode": "in",
+    "42": {
+        "name": "MLT_WORT_IN_OPENED",
+        "mode": "DR",
         "id": "42",
         "comments": "Reläbrygga 3.3"
     },
-    "MLT_WORT_IN_CLOSED": {
-        "type": "digital",
-        "mode": "in",
+    "43": {
+        "name": "MLT_WORT_IN_CLOSED",
+        "mode": "DR",
         "id": "43",
         "comments": "Reläbrygga 3.4"
     },
-    "MLT_WORT_OUT_OPENED": {
-        "type": "digital",
-        "mode": "in",
+    "44": {
+        "name": "MLT_WORT_OUT_OPENED",
+        "mode": "DR",
         "id": "44",
         "comments": "Reläbrygga 3.5"
     },
-    "MLT_WORT_OUT_CLOSED": {
-        "type": "digital",
-        "mode": "in",
+    "45": {
+        "name": "MLT_WORT_OUT_CLOSED",
+        "mode": "DR",
         "id": "45",
         "comments": "Reläbrygga 3.6"
     },
-    "MLT_KET_BYPASS_OPENED": {
-        "type": "digital",
-        "mode": "in",
+    "46": {
+        "name": "MLT_KET_BYPASS_OPENED",
+        "mode": "DR",
         "id": "46",
         "comments": "Reläbrygga 3.7"
     },
-    "MLT_KET_BYPASS_CLOSED": {
-        "type": "digital",
-        "mode": "in",
+    "47": {
+        "name": "MLT_KET_BYPASS_CLOSED",
+        "mode": "DR",
         "id": "47",
         "comments": "Reläbrygga 3.8"
     },
-    "KET_RECIRC_OPENED": {
-        "type": "digital",
-        "mode": "in",
+    "48": {
+        "name": "KET_RECIRC_OPENED",
+        "mode": "DR",
         "id": "48",
         "comments": "Reläbrygga 4.1"
     },
-    "KET_RECIRC_CLOSED": {
-        "type": "digital",
-        "mode": "in",
+    "49": {
+        "name": "KET_RECIRC_CLOSED",
+        "mode": "DR",
         "id": "49",
         "comments": "Reläbrygga 4.2"
     },
-    "KET_WORT_IN_OPENED": {
-        "type": "digital",
-        "mode": "in",
+    "50": {
+        "name": "KET_WORT_IN_OPENED",
+        "mode": "DR",
         "id": "50",
         "comments": "Reläbrygga 4.3"
     },
-    "KET_WORT_IN_CLOSED": {
-        "type": "digital",
-        "mode": "in",
+    "51": {
+        "name": "KET_WORT_IN_CLOSED",
+        "mode": "DR",
         "id": "51",
         "comments": "Reläbrygga 4.4"
     },
-    "KET_WORT_OUT_OPENED": {
-        "type": "digital",
-        "mode": "in",
+    "52": {
+        "name": "KET_WORT_OUT_OPENED",
+        "mode": "DR",
         "id": "52",
         "comments": "Reläbrygga 4.5"
     },
-    "KET_WORT_OUT_CLOSED": {
-        "type": "digital",
-        "mode": "in",
+    "53": {
+        "name": "KET_WORT_OUT_CLOSED",
+        "mode": "DR",
         "id": "53",
         "comments": "Reläbrygga 4.6"
     },
-    "T1_HLT": {
-        "type": "analog",
-        "mode": "in",
+    "54": {
+        "name": "T1_HLT",
+        "mode": "AR",
         "id": "A0",
         "comments": "Temppuck 1"
     },
-    "T2_HE_WORT_OUT": {
-        "type": "analog",
-        "mode": "in",
+    "55": {
+        "name": "T2_HE_WORT_OUT",
+        "mode": "AR",
         "id": "A1",
         "comments": "Temppuck 2"
     },
-    "L1_HLT": {
-        "type": "analog",
-        "mode": "in",
+    "57": {
+        "name": "L1_HLT",
+        "mode": "AR",
         "id": "A3",
         "comments": "Level indication (mm) HLT"
     },
-    "HE_HW_IN_OPENED": {
-        "type": "analog",
-        "mode": "in",
+    "60": {
+        "name": "HE_HW_IN_OPENED",
+        "mode": "DR",
         "id": "A6",
         "comments": "Ingångskort 2.1"
     },
-    "HE_HW_IN_CLOSED": {
-        "type": "analog",
-        "mode": "in",
+    "61": {
+        "name": "HE_HW_IN_CLOSED",
+        "mode": "DR",
         "id": "A7",
         "comments": "Ingångskort 2.2"
     },
-    "HE_HW_OUT_OPENED": {
-        "type": "analog",
-        "mode": "in",
+    "62": {
+        "name": "HE_HW_OUT_OPENED",
+        "mode": "DR",
         "id": "A8",
         "comments": "Ingångskort 2.3"
     },
-    "HE_HW_OUT_CLOSED": {
-        "type": "analog",
-        "mode": "in",
+    "63": {
+        "name": "HE_HW_OUT_CLOSED",
+        "mode": "DR",
         "id": "A9",
         "comments": "Ingångskort 2.4"
     },
-    "HE_CW_IN_OPENED": {
-        "type": "analog",
-        "mode": "in",
+    "64": {
+        "name": "HE_CW_IN_OPENED",
+        "mode": "DR",
         "id": "A10",
         "comments": "Ingångskort 2.5"
     },
-    "HE_CW_IN_CLOSED": {
-        "type": "analog",
-        "mode": "in",
+    "65": {
+        "name": "HE_CW_IN_CLOSED",
+        "mode": "DR",
         "id": "A11",
         "comments": "Ingångskort 2.6"
     },
-    "HE_CW_OUT_OPENED": {
-        "type": "analog",
-        "mode": "in",
+    "66": {
+        "name": "HE_CW_OUT_OPENED",
+        "mode": "DR",
         "id": "A12",
         "comments": "Ingångskort 2.7"
     },
-    "HE_CW_OUT_CLOSED": {
-        "type": "analog",
-        "mode": "in",
+    "67": {
+        "name": "HE_CW_OUT_CLOSED",
+        "mode": "DR",
         "id": "A13",
         "comments": "Ingångskort 2.8"
     }
