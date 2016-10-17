@@ -33,8 +33,8 @@ class Herms extends EventEmitter{
         return this.pins.getPins();
     }
 
-    writePin(pinId, value, cb){
-        this.board.writePin(pinId, value, cb);
+    writePin(pinName, value, cb){
+        this.board.writePin(pinName, value, cb);
     }
 
     setSetPoint(value){
@@ -47,6 +47,14 @@ class Herms extends EventEmitter{
 
     setMode(mode){ 
         this.pidHLT.setMode(mode);
+    }
+
+    setTunings(Kp, Ki, Kd) {
+        this.pidHLT.setTunings(Kp, Ki, Kd);
+    }
+
+    getPidControllerStatus(){
+        return this.pidHLT.getStatus();
     }
 }
 

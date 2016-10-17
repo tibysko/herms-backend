@@ -24,7 +24,7 @@ const int DIGITAL_2_ANALOG_START = 60;
 const int DIGITAL_2_ANALOG_END = 67;
 
 const int DIGITAL_OUT_START = 2;
-const int DIGITAL_OUT_END = 22;
+const int DIGITAL_OUT_END = 39;
 
 const int ANALOG_IN_START = 54;
 const int ANALOG_IN_END = 57;
@@ -46,7 +46,7 @@ void setup() {
     digitalWrite(pinId, HIGH);
   }
 
-  // ENABLE PULLUP for digital OUT pins 2 - 22
+  // ENABLE PULLUP for digital OUT pins 2 - 39
   for (int pinId = DIGITAL_OUT_START ; pinId <= DIGITAL_OUT_END; pinId++) {
     pinMode(pinId, OUTPUT);
   }
@@ -135,7 +135,7 @@ void readPins() {
   response.  Multiple bytes of data may be available.
 */
 void serialEvent() {
-  while (Serial.available()) {
+  while (Serial.available() && !stringComplete) {
     // get the new byte:
     char inChar = (char)Serial.read();
     // add it to the inputString:

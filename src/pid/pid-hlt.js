@@ -16,14 +16,12 @@ class PidHLT extends EventEmitter {
         this.process = this.dummyId;
         this.moduleName = 'pidHLT'; // TODO: another way to get class name?
 
-        // pidController
-        this.HLT_HEATER = 10;
+        // pidController        
         this.Kp = 300;
         this.Ki = 100;
         this.Kd = 50;
         this.pidController = {};
         this.setPoint = 0;
-        this.T1_HLT = 54;
         this.timeframe = 1000;
     }
 
@@ -36,7 +34,7 @@ class PidHLT extends EventEmitter {
         logger.logInfo(this.moduleName, 'start', 'Starting with settings: Kp=' + this.Kp + ' Ki=' + this.Ki + ' Kd=' + this.Kd + ' setPoint=' + this.setPoint);
 
         this.board.on('data', (data) => {
-            this.actTemperatureValue = data[this.T1_HLT].value;
+            this.actTemperatureValue = data['T1_HLT'].value;
         });
 
         this.pidController = new PID(this.actTemperatureValue, this.setPoint, this.Kp, this.Ki, this.Kd, 'direct');
@@ -49,18 +47,16 @@ class PidHLT extends EventEmitter {
 
         this.process = setInterval(() => {
             let currTemp = this.actTemperatureValue / 4.7;
-            console.log('currTemp: ' + currTemp);
 
             this.pidController.setInput(currTemp);
             this.pidController.compute();
             let output = this.pidController.getOutput();
-            console.log(output);
 
-            this.board.writePin(this.HLT_HEATER, output, function () {});
+            this.board.writePin('HLT_HEATER', output, function () {});
 
             this.emit('data', {
                 output: output,
-                temp: currTemp
+                temperature: currTemp
             });
 
         }, this.timeframe);
@@ -89,6 +85,25 @@ class PidHLT extends EventEmitter {
         console.log(JSON.stringify(this.pidController));
         this.pidController.setMode(mode);
     }
+
+    setTunings(Kp, Ki, Kd) {
+        this.pidController.setTunings(Kp, Ki, Kd);
+        logger.logInfo(this.moduleName, 'setTunings', 'Setting tunings: Kp=' + Kp + ' Ki=' + Ki + ' Kd=' + Kd);
+    }
+
+    getStatus(){
+        let status = {
+            kp: this.pidController.getKp(),
+            ki: this.pidController.getKi(),
+            kd: this.pidController.getKd(),
+            mode: this.pidController.getMode(),
+            output: this.pidController.getOutput(),
+            setPoint: this.pidController.getSetPoint()
+        }
+
+        return status;
+    }
+
 }
 
 module.exports = PidHLT;

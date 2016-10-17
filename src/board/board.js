@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const fs = require('fs');
 const SerialPort = require('serialport');
+const logger = require('../core/logger');
 
 class Board extends EventEmitter {
 
@@ -8,6 +9,7 @@ class Board extends EventEmitter {
         super(); // EventEmitter constructor
         this.pins = {};
         this.serialPort = {};
+        this.moduleName = 'Board';
     }
 
     setup() {
@@ -37,23 +39,54 @@ class Board extends EventEmitter {
         });
 
         setInterval(() => {
-            this.emit('data', this.pins);
+            this.emit('data', this.getPinData());
         }, 500);
     }
 
-    writePin(pinId, value, cb) {
-        let pin = this.pins[pinId];
+    writePin(pinName, value, cb) {
+        let foundPin = {};
 
-        let pinIdTemp = "000" + pinId;
-        pinIdTemp = pinIdTemp.substring(pinIdTemp.length - 3, pinIdTemp.length);
+        for (var key in this.pins) {
+            if (this.pins.hasOwnProperty(key)) {
+                let pin = this.pins[key];
 
-        let pinValueTemp = "0000" + value;
-        pinValueTemp = pinValueTemp.substring(pinValueTemp.length - 4, pinValueTemp.length);
+                if (pin.name === pinName) { // pin found
+                    foundPin = pin;
+                    break;
+                }
+            }
+        }
 
-        let cmd = pin.mode + pinIdTemp + pinValueTemp + '\n';
-        console.log('Cmd: ' + cmd)
+        if (foundPin) {
 
-        this.serialPort.write(cmd, cb);
+            let pinIdTemp = "000" + foundPin.id;
+            pinIdTemp = pinIdTemp.substring(pinIdTemp.length - 3, pinIdTemp.length);
+
+            let pinValueTemp = "0000" + value;
+            pinValueTemp = pinValueTemp.substring(pinValueTemp.length - 4, pinValueTemp.length);
+
+            console.log(pinName + ' ' + value);
+
+            let cmd = foundPin.mode + pinIdTemp + pinValueTemp + '\n';                        
+
+            this.serialPort.write(cmd, cb);
+        } else {
+            logger.logWarning(this.moduleName, 'WitePin', 'Pin with name [' + pinName + '] was not found');
+        }
+    }
+
+    getPinData() {
+        let pinObject = {};
+
+        for (var key in this.pins) {
+            if (this.pins.hasOwnProperty(key)) {
+
+                let pin = this.pins[key];                
+                pinObject[pin.name] = pin;
+            }
+        }
+
+        return pinObject;
     }
 }
 

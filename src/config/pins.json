@@ -242,67 +242,67 @@
     "54": {
         "name": "T1_HLT",
         "mode": "AR",
-        "id": "A0",
+        "id": "54",
         "comments": "Temppuck 1"
     },
     "55": {
         "name": "T2_HE_WORT_OUT",
         "mode": "AR",
-        "id": "A1",
+        "id": "55",
         "comments": "Temppuck 2"
     },
     "57": {
         "name": "L1_HLT",
         "mode": "AR",
-        "id": "A3",
+        "id": "57",
         "comments": "Level indication (mm) HLT"
     },
     "60": {
         "name": "HE_HW_IN_OPENED",
         "mode": "DR",
-        "id": "A6",
+        "id": "60",
         "comments": "Ingångskort 2.1"
     },
     "61": {
         "name": "HE_HW_IN_CLOSED",
         "mode": "DR",
-        "id": "A7",
+        "id": "61",
         "comments": "Ingångskort 2.2"
     },
     "62": {
         "name": "HE_HW_OUT_OPENED",
         "mode": "DR",
-        "id": "A8",
+        "id": "62",
         "comments": "Ingångskort 2.3"
     },
     "63": {
         "name": "HE_HW_OUT_CLOSED",
         "mode": "DR",
-        "id": "A9",
+        "id": "63",
         "comments": "Ingångskort 2.4"
     },
     "64": {
         "name": "HE_CW_IN_OPENED",
         "mode": "DR",
-        "id": "A10",
+        "id": "64",
         "comments": "Ingångskort 2.5"
     },
     "65": {
         "name": "HE_CW_IN_CLOSED",
         "mode": "DR",
-        "id": "A11",
+        "id": "65",
         "comments": "Ingångskort 2.6"
     },
     "66": {
         "name": "HE_CW_OUT_OPENED",
         "mode": "DR",
-        "id": "A12",
+        "id": "66",
         "comments": "Ingångskort 2.7"
     },
     "67": {
         "name": "HE_CW_OUT_CLOSED",
         "mode": "DR",
-        "id": "A13",
+        "id": "67",
         "comments": "Ingångskort 2.8"
     }
 }

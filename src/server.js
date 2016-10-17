@@ -31,52 +31,45 @@ app
 app.post('/api/pins/:name', (req, res) => {
   let pinName = req.params.name;
   let value = req.body.pinValue;
-/*
-  logger.logInfo('server.js', 'app.post(/api/pins/:name)', 'Name: ' + pinName + ' body:' + JSON.stringify(req.body));
 
-  if (!pinName) {
-    res.status(400).send('Missing parameter: name');
-  } else if (value === 'undefined') {
-    res.status(400).send({
-      "error": "Missing pin value"
-    });
-  } else if (!isParamValueValid(value)) {
-    res.status(400).send({
-      "error": "value must be true or false"
-    })
-  } else {
-    value = (value === 'false' || value === false ? 0 : 1);
-*/
-
-    herms.writePin(pinName, value, (err) => {
-      if (err) {
-        res.status(400).send({
-          'error': err.message
-        });
-      } else {
-        res.send({
-          'pin': pinName,
-          'value': value
-        });
-      }
-    });
+  herms.writePin(pinName, value, (err) => {
+    if (err) {
+      res.status(400).send({
+        'error': err.message
+      });
+    } else {
+      res.send({
+        'pin': pinName,
+        'value': value
+      });
+    }
+  });
   //}
 });
 
 app.post('/api/pid-controller', (req, res) => {
   let body = req.body;
 
-  if(body){
-    if (body.setPoint){
+  if (body) {
+    if (body.setPoint) {
       herms.setSetPoint(body.setPoint);
-    } else if (body.output){
+    } else if (body.output) {
       herms.setOutput(body.output);
-    } else if(body.mode){
+    } else if (body.mode) {
       herms.setMode(body.mode);
+    } else if (body.tunings) {
+      let tunings = body.tunings;
+      herms.setTunings(tunings.kp, tunings.ki, tunings.kd);
     }
   }
 
   res.status(200).send();
+}); 
+
+app.get('/api/pid-controller', (req, res) => {
+  let status = herms.getPidControllerStatus();
+
+  res.send(status);
 });
 
 function isParamValueValid(value) {
@@ -115,8 +108,8 @@ app.listen(8081, function () {
   //  setup emiting data
   setInterval(function () {
     io.emit('pins', pinsData);
-    io.emit('pidController', pidControllerData);    
-    //sconsole.log(pidControllerData);
+    io.emit('pidController', pidControllerData);
+    console.log(pidControllerData);
 
   }, 1000)
 });
