@@ -51,23 +51,18 @@ app.post('/api/pid-controller', (req, res) => {
   let body = req.body;
 
   if (body) {
-    if (body.setPoint) {
-      herms.setSetPoint(body.setPoint);
-    } else if (body.output) {
-      herms.setOutput(body.output);
-    } else if (body.mode) {
-      herms.setMode(body.mode);
-    } else if (body.tunings) {
-      let tunings = body.tunings;
-      herms.setTunings(tunings.kp, tunings.ki, tunings.kd);
-    }
-  }
+    let config = body;
+    herms.setPidController(config);
 
-  res.status(200).send();
-}); 
+    res.status(200).send(herms.getPidController());
+
+  } else {
+    res.status(400).send();
+  }
+});
 
 app.get('/api/pid-controller', (req, res) => {
-  let status = herms.getPidControllerStatus();
+  let status = herms.getPidController();
 
   res.send(status);
 });
@@ -109,7 +104,6 @@ app.listen(8081, function () {
   setInterval(function () {
     io.emit('pins', pinsData);
     io.emit('pidController', pidControllerData);
-    console.log(pidControllerData);
 
   }, 1000)
 });

@@ -68,27 +68,13 @@ class PidHLT extends EventEmitter {
         clearInterval(this.process);
     }
 
-    setSetPoint(value) {
-        logger.logInfo(this.moduleName, 'setOutput', 'Setting setPoint: ' + value);
+    setConfig(config){           
+        logger.logInfo(this.moduleName, 'setConfig', 'Setting config: ' + JSON.stringify(config));        
 
-        this.pidController.setPoint(value);
-    }
-
-    setOutput(value) {
-        logger.logInfo(this.moduleName, 'setOutput', 'Setting output: ' + value);
-
-        this.pidController.setOutput(value);
-    }
-
-    setMode(mode) {
-        logger.logInfo(this.moduleName, 'setMode', 'Setting mode: ' + mode);
-        console.log(JSON.stringify(this.pidController));
-        this.pidController.setMode(mode);
-    }
-
-    setTunings(Kp, Ki, Kd) {
-        this.pidController.setTunings(Kp, Ki, Kd);
-        logger.logInfo(this.moduleName, 'setTunings', 'Setting tunings: Kp=' + Kp + ' Ki=' + Ki + ' Kd=' + Kd);
+        this.pidController.setPoint(config.setPoint);
+        this.pidController.setOutput(config.output);
+        this.pidController.setTunings(config.kp, config.ki, config.kd);
+        this.pidController.setMode(config.mode);   
     }
 
     getStatus(){

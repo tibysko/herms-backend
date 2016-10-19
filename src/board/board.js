@@ -65,8 +65,6 @@ class Board extends EventEmitter {
             let pinValueTemp = "0000" + value;
             pinValueTemp = pinValueTemp.substring(pinValueTemp.length - 4, pinValueTemp.length);
 
-            console.log(pinName + ' ' + value);
-
             let cmd = foundPin.mode + pinIdTemp + pinValueTemp + '\n';                        
 
             this.serialPort.write(cmd, cb);
