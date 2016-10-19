@@ -22,6 +22,13 @@ class Board extends EventEmitter {
             }
         }
 
+        // List ports
+        SerialPort.list(function (err, ports) {
+            ports.forEach(function (port) {
+                console.log(port.comName+ ' ' + port.manufacturer);                
+            });
+        });
+
         this.serialPort = new SerialPort('com3', {
             parser: SerialPort.parsers.readline('\n')
         });
@@ -65,7 +72,7 @@ class Board extends EventEmitter {
             let pinValueTemp = "0000" + value;
             pinValueTemp = pinValueTemp.substring(pinValueTemp.length - 4, pinValueTemp.length);
 
-            let cmd = foundPin.mode + pinIdTemp + pinValueTemp + '\n';                        
+            let cmd = foundPin.mode + pinIdTemp + pinValueTemp + '\n';
 
             this.serialPort.write(cmd, cb);
         } else {
@@ -79,7 +86,7 @@ class Board extends EventEmitter {
         for (var key in this.pins) {
             if (this.pins.hasOwnProperty(key)) {
 
-                let pin = this.pins[key];                
+                let pin = this.pins[key];
                 pinObject[pin.name] = pin;
             }
         }
