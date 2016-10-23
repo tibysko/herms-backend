@@ -12,8 +12,8 @@ class Board extends EventEmitter {
         this.moduleName = 'Board';
     }
 
-    setup() {
-        this.pins = JSON.parse(fs.readFileSync("src/config/pins.json"));
+    setup(cb) {
+        this.pins = JSON.parse(fs.readFileSync("/home/pi/projects/herms-backend/src/config/pins.json"));
 
         // Initialize this.pins with value 0
         for (var key in this.pins) {
@@ -29,25 +29,36 @@ class Board extends EventEmitter {
             });
         });
 
-        this.serialPort = new SerialPort('com3', {
+        this.serialPort = new SerialPort('/dev/ttyACM0', {
             parser: SerialPort.parsers.readline('\n')
-        });
+        }, (err) => {
+            if (err) {
+                logger.logError(this.moduleName, 'Setup', 'Could not open port');
+                logger.logError(this.moduleName, 'Setup', err);
+                cb(err);
 
-        this.serialPort.on('data', (data) => {
-            let dataArray = data.split("|");
-            let pinId = dataArray[0];
-            let value = dataArray[1];
+                return; 
+            } else {
 
-            let pin = this.pins[pinId];
 
-            if (pin && value) {
-                pin.value = value.replace('\r', '');
-            }
-        });
+            this.serialPort.on('data', (data) => {
+                let dataArray = data.split("|");
+                let pinId = dataArray[0];
+                let value = dataArray[1];
 
-        setInterval(() => {
-            this.emit('data', this.getPinData());
-        }, 500);
+                let pin = this.pins[pinId];
+
+                if (pin && value) {
+                    pin.value = value.replace('\r', '');
+                }
+            });
+
+            setInterval(() => {
+                this.emit('data', this.getPinData());
+            }, 500);
+
+            cb(null); 
+        }});
     }
 
     writePin(pinName, value, cb) {

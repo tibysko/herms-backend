@@ -1,13 +1,19 @@
 'use strict'
 
 var bodyParser = require('body-parser');
-
-var app = require('express')();
+var express = require('express');
+var fs = require('fs');
+var path = require('path');
 
 var logger = require('./core/logger');
 var io = require('./core/socket-io');
+const config = require('./config/config');
 var Herms = require('./herms');
+
+
+var app = express();
 var herms = new Herms();
+const env = process.env;
 
 // setup CORS
 app.use(function (req, res, next) {
@@ -18,6 +24,13 @@ app.use(function (req, res, next) {
 
 app.use(bodyParser.json());
 
+// serve frontend
+if (env.FRONTEND_PATH && fs.existsSync(env.FRONTEND_PATH)) {
+  logger.logInfo('server', 'server', 'Serving frontend from: ' + env.FRONTEND_PATH);
+
+  app.use(express.static(env.FRONTEND_PATH));
+}
+
 // TODO: move routes to seperate class!
 
 app.get('/api/pins', (req, res) => {
@@ -25,8 +38,6 @@ app.get('/api/pins', (req, res) => {
 
   return res.send(pins);
 });
-
-app
 
 app.post('/api/pins/:name', (req, res) => {
   let pinName = req.params.name;
@@ -44,7 +55,6 @@ app.post('/api/pins/:name', (req, res) => {
       });
     }
   });
-  //}
 });
 
 app.post('/api/pid-controller', (req, res) => {
@@ -67,25 +77,25 @@ app.get('/api/pid-controller', (req, res) => {
   res.send(status);
 });
 
-function isParamValueValid(value) {
-  return (value === true ||
-    value === false ||
-    value === 'true' ||
-    value === 'false');
-}
-
 // END TODO: move routes to seperate class!
 
-io.on('disconnect', function () {
-  console.log('Client disconnect');
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: err
+  });
 });
 
-io.on('connect', function () {
-  console.log('Client connected');
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
-
-app.listen(8081, function () {
+console.log(JSON.stringify(config));
+app.listen(config.port, function () {
   logger.logInfo("server", 'app.listen', 'Server started on 8081');
   let pinsData = {},
     pidControllerData = {};

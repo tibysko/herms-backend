@@ -6,6 +6,16 @@
 		"module": "commonjs",
 		"allowSyntheticDefaultImports": true
 	},
+	// Controls if the editor should automatically format the line after typing
+	"beautify.onSave": ["js"],
+	// You can auto formate any files based on extensions type. 
+	"beautify.JSfiles": [
+		"js",
+		"json",
+		"jsbeautifyrc",
+		"jshintrc",
+		"ts"
+	],
 	"exclude": [
 		"node_modules",
 		"bower_components",

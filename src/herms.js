@@ -25,8 +25,11 @@ class Herms extends EventEmitter{
             this.emit('pidController', data);    
         }); 
         
-        this.board.setup();
-        this.pidHLT.start();
+        this.board.setup((err) => {
+            if(!err){
+                this.pidHLT.start();
+            }
+        });
     }
 
     getPins(){

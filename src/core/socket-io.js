@@ -1,4 +1,8 @@
-var io = require('socket.io').listen(8080);
+const config = require('../config/config');
+
+console.log('websocket' + config.websocketPort);
+
+var io = require('socket.io').listen(config.websocketPort);
 
 class SocketIO {
     static emit(channel, message){
