@@ -1,18 +1,26 @@
-//var Arduino = require('./board/arduino');
-//var Pins = require('./board/pins');
-
-var Board = require('./board/board');
-var PidHLT = require('./pid/pid-hlt');
-var io = require('./core/socket-io'); 
 const EventEmitter = require('events');
+
+const logger = require('./core/logger');
+var Board = require('./board/board');
+
+const ValveService = require('./services/valveService');
+const PidHLT = require('./pid/pid-hlt');
+const io = require('./core/socket-io'); 
+
+const env = process.env;
+
+if (env.MOCK){
+    logger.logWarning('Herms', 'Mock', 'Starting with mocked Board')
+    Board = require('./mocks/board-mock');
+}
 
 class Herms extends EventEmitter{
     constructor(){
         super();
-        //this.arduino = new Arduino();
-        //this.pins = new Pins();
+
         this.board = new Board(); 
         this.pidHLT = new PidHLT(this.board);
+        this.valveService = new ValveService(this.board);
     }
 
     start(){
@@ -23,7 +31,11 @@ class Herms extends EventEmitter{
 
         this.pidHLT.on('data', (data) => {
             this.emit('pidController', data);    
-        }); 
+        });
+
+        this.valveService.on('data', (data) => {
+            this.emit('valves', data);
+        }) 
         
         this.board.setup((err) => {
             if(!err){

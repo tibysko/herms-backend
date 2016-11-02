@@ -13,7 +13,7 @@ class Board extends EventEmitter {
     }
 
     setup(cb) {
-        this.pins = JSON.parse(fs.readFileSync("/home/pi/projects/herms-backend/src/config/pins.json"));
+        this.pins = JSON.parse(fs.readFileSync("./src/config/pins.json"));
 
         // Initialize this.pins with value 0
         for (var key in this.pins) {
@@ -25,10 +25,11 @@ class Board extends EventEmitter {
         // List ports
         SerialPort.list(function (err, ports) {
             ports.forEach(function (port) {
-                console.log(port.comName+ ' ' + port.manufacturer);                
+                console.log(port.comName + ' ' + port.manufacturer);
             });
         });
 
+        
         this.serialPort = new SerialPort('/dev/ttyACM0', {
             parser: SerialPort.parsers.readline('\n')
         }, (err) => {
@@ -37,28 +38,27 @@ class Board extends EventEmitter {
                 logger.logError(this.moduleName, 'Setup', err);
                 cb(err);
 
-                return; 
+                return;
             } else {
+                this.serialPort.on('data', (data) => {
+                    let dataArray = data.split("|");
+                    let pinId = dataArray[0];
+                    let value = dataArray[1];
 
+                    let pin = this.pins[pinId];
 
-            this.serialPort.on('data', (data) => {
-                let dataArray = data.split("|");
-                let pinId = dataArray[0];
-                let value = dataArray[1];
+                    if (pin && value) {
+                        pin.value = value.replace('\r', '');
+                    }
+                });
 
-                let pin = this.pins[pinId];
+                setInterval(() => {
+                    this.emit('data', this.getPinData());
+                }, 500);
 
-                if (pin && value) {
-                    pin.value = value.replace('\r', '');
-                }
-            });
-
-            setInterval(() => {
-                this.emit('data', this.getPinData());
-            }, 500);
-
-            cb(null); 
-        }});
+                cb(null);
+            }
+        });
     }
 
     writePin(pinName, value, cb) {

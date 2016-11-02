@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon ./src/server.js",
+    "startMock": "cross-env MOCK=true nodemon ./src/server.js ",
     "test": "npm run test-unit",
     "test-unit": "cross-env NODE_ENV=test mocha --require co-mocha ./src/**/*.spec.js",
     "test-watch": "cross-env NODE_ENV=test mocha -c -w --require co-mocha ./src/**/*.spec.js"

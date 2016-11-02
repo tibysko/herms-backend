@@ -257,6 +257,12 @@
         "id": "57",
         "comments": "Level indication (mm) HLT"
     },
+    "59": {
+        "name": "HE_HW_IN_ACTPOS",
+        "mode": "AR",
+        "id": "59",
+        "comments": "Position HE_HW_IN"
+    },
     "60": {
         "name": "HE_HW_IN_OPENED",
         "mode": "DR",

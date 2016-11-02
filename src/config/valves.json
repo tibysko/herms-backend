@@ -1,0 +1,133 @@
+[
+    {
+        "name": "MLT_HW_IN",
+        "status": "",
+        "pin": {
+            "opened": "MLT_HW_IN_OPENED",
+            "closed": "MLT_HW_IN_CLOSED",
+            "actPos": "",
+            "open": "MLT_HW_IN_OPEN",
+            "close": "MLT_HW_IN_CLOSE"
+        }
+    },
+    {
+        "name": "MLT_WORT_IN",
+        "status": "",
+        "pin": {
+            "opened": "MLT_WORT_IN_OPENED",
+            "closed": "MLT_WORT_IN_CLOSED",
+            "actPos": "",
+            "open": "MLT_WORT_IN_OPEN",
+            "close": "MLT_WORT_IN_CLOSE",
+            "setPos": ""
+        }
+    },
+    {
+        "name": "MLT_WORT_OUT",
+        "status": "",
+        "pin": {
+            "opened": "MLT_WORT_OUT_OPENED",
+            "closed": "MLT_WORT_OUT_CLOSED",
+            "actPos": "",
+            "open": "MLT_WORT_OUT_OPEN",
+            "close": "MLT_WORT_OUT_CLOSE",
+            "setPos": ""
+        }
+    },
+    {
+        "name": "MLT_KET_BYPASS",
+        "status": "",
+        "pin": {
+            "opened": "MLT_KET_BYPASS_OPENED",
+            "closed": "MLT_KET_BYPASS_CLOSED",
+            "actPos": "",
+            "open": "MLT_KET_BYPASS_OPEN",
+            "close": "MLT_KET_BYPASS_CLOSE",
+            "setPos": ""
+        }
+    },
+    {
+        "name": "KET_RECIRC",
+        "status": "",
+        "pin": {
+            "opened": "KET_RECIRC_OPENED",
+            "closed": "KET_RECIRC_CLOSED",
+            "actPos": "",
+            "open": "KET_RECIRC_OPEN",
+            "close": "KET_RECIRC_CLOSE",
+            "setPos": ""
+        }
+    },
+    {
+        "name": "KET_WORT_IN",
+        "status": "",
+        "pin": {
+            "opened": "KET_WORT_IN_OPENED",
+            "closed": "KET_WORT_IN_CLOSED",
+            "actPos": "",
+            "open": "KET_WORT_IN_OPEN",
+            "close": "KET_WORT_IN_CLOSE",
+            "setPos": ""
+        }
+    },
+    {
+        "name": "KET_WORT_OUT",
+        "status": "",
+        "pin": {
+            "opened": "KET_WORT_OUT_OPENED",
+            "closed": "KET_WORT_OUT_CLOSED",
+            "actPos": "",
+            "open": "KET_WORT_OUT_OPEN",
+            "close": "KET_WORT_OUT_CLOSE",
+            "setPos": ""
+        }
+    },
+    {
+        "name": "HE_HW_IN",
+        "status": "",
+        "pin": {
+            "opened": "HE_HW_IN_OPENED",
+            "closed": "HE_HW_IN_CLOSED",
+            "actPos": "HE_HW_IN_ACTPOS",
+            "open": "HE_HW_IN_OPEN",
+            "close": "HE_HW_IN_CLOSE",
+            "setPos": ""
+        }
+    },
+    {
+        "name": "HE_HW_OUT",
+        "status": "",
+        "pin": {
+            "opened": "HE_HW_OUT_OPENED",
+            "closed": "HE_HW_OUT_CLOSED",
+            "actPos": "",
+            "open": "HE_HW_OUT_OPEN",
+            "close": "HE_HW_OUT_CLOSE",
+            "setPos": ""
+        }
+    },
+    {
+        "name": "HE_CW_IN",
+        "status": "",
+        "pin": {
+            "opened": "HE_CW_IN_OPENED",
+            "closed": "HE_CW_IN_CLOSED",
+            "actPos": "",
+            "open": "HE_CW_IN_OPEN",
+            "close": "HE_CW_IN_CLOSE",
+            "setPos": ""
+        }
+    },
+    {
+        "name": "HE_CW_OUT",
+        "status": "",
+        "pin": {
+            "opened": "HE_CW_OUT_OPENED",
+            "closed": "HE_CW_OUT_CLOSED",
+            "actPos": "",
+            "open": "HE_CW_OUT_OPEN",
+            "close": "HE_CW_OUT_CLOSE",
+            "setPos": ""
+        }
+    }
+]

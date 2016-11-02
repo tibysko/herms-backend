@@ -94,11 +94,12 @@ app.use(function (req, res, next) {
   next(err);
 });
 
-console.log(JSON.stringify(config));
+// Start backend
 app.listen(config.port, function () {
   logger.logInfo("server", 'app.listen', 'Server started on 8081');
   let pinsData = {},
-    pidControllerData = {};
+    pidControllerData = {},
+    valvesData = {};
 
   herms.start();
 
@@ -106,14 +107,21 @@ app.listen(config.port, function () {
     pidControllerData = data;
   });
 
-  herms.on('pinData', (data) => {
+  herms.on('pins', (data) => {
     pinsData = data;
+  });
+
+  herms.on('valves', (data) => {
+    valvesData = data;
   });
 
   //  setup emiting data
   setInterval(function () {
     io.emit('pins', pinsData);
     io.emit('pidController', pidControllerData);
+    io.emit('valves', valvesData);
+    io.emit('nisse', 'ddd');
+
 
   }, 1000)
 });

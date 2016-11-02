@@ -10,6 +10,10 @@ Brewery backend
 ## Start backend
 1. Start backend, run: `npm start`
 
+## Start backend with mocked Arduino
+1. Start backend, run: `npm run startMock`
+
+
 Note you might have to change com-port in `src/board/board.js`.
 
 If complaining about "Nodemon.. " run: `npm install -g nomdemon`
