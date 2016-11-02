@@ -95,7 +95,7 @@ void loop() {
 
   readPins();
   
-  delay(500); 
+  delay(100); 
 }
 
 void readPins() {
