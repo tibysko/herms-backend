@@ -11,8 +11,10 @@ Brewery backend
 1. Start backend, run: `npm start`
 
 ## Start backend with mocked Arduino
-1. Start backend, run: `npm run startMock`
+Start backend, run: `npm run start-mock`
 
+## List ports
+Run `npm run list-ports` will list which port the Arduino is connected to.  
 
 Note you might have to change com-port in `src/board/board.js`.
 

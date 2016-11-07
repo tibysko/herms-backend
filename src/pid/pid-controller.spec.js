@@ -1,6 +1,6 @@
 'use strict'
 
-var PidHlt = require('./pid-hlt');
+var PidController = require('./pid-controller');
 var chai = require('chai');
 const assert = require('chai').assert;
 const sinon = require('sinon');
@@ -8,8 +8,8 @@ const sinonChai = require('sinon-chai');
 chai.should();
 chai.use(sinonChai);
 
-describe('Pid HLT', function () {
-    var pidHlt;
+describe('PidController', function () {
+    var PidController;
     var pins = {
         readPin: function () {},
         writePin: function () {}
@@ -26,18 +26,18 @@ describe('Pid HLT', function () {
             writePin: function () {}
         };
 
-        pidHlt = new PidHlt(setPoint, pins);
+        pidController = new PidController(setPoint, pins);
     });
 
     afterEach(function () {
-        pidHlt = {};
+        pidController = {};
         pins = {};
     });
 
     // TODO need to find a proper way of testing start stop
     it('Test start & stop', function (done) {
-        pidHlt.start();
-        pidHlt.stop();
+        pidController.start();
+        pidController.stop();
 
         done();
     });
@@ -69,7 +69,7 @@ describe('Pid HLT', function () {
         };
 
         // Run heating
-        pidHlt.heating(fakeParent);
+        pidController.heating(fakeParent);
 
         // Assert
         compute.should.have.been.calledOnce;

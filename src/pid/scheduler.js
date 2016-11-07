@@ -14,7 +14,6 @@ class Scheduler {
         asyncSeries(this.tasks, done);
     }
 
-
     getTasks() {
         return this.tasks;
     }

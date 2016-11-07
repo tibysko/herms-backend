@@ -1,7 +1,10 @@
 const EventEmitter = require('events');
 const fs = require('fs');
+const path = require('path');
 const SerialPort = require('serialport');
 const logger = require('../core/logger');
+
+const config = require('../config/config.js');
 
 class Board extends EventEmitter {
 
@@ -13,7 +16,7 @@ class Board extends EventEmitter {
     }
 
     setup(cb) {
-        this.pins = JSON.parse(fs.readFileSync("./src/config/pins.json"));
+        this.pins = JSON.parse(fs.readFileSync(path.join(__dirname, './src/config/pins.json')));
 
         // Initialize this.pins with value 0
         for (var key in this.pins) {
@@ -22,15 +25,7 @@ class Board extends EventEmitter {
             }
         }
 
-        // List ports
-        SerialPort.list(function (err, ports) {
-            ports.forEach(function (port) {
-                console.log(port.comName + ' ' + port.manufacturer);
-            });
-        });
-
-        
-        this.serialPort = new SerialPort('/dev/ttyACM0', {
+        this.serialPort = new SerialPort(config.usbPort, {
             parser: SerialPort.parsers.readline('\n')
         }, (err) => {
             if (err) {
@@ -76,7 +71,6 @@ class Board extends EventEmitter {
         }
 
         if (foundPin) {
-
             let pinIdTemp = "000" + foundPin.id;
             pinIdTemp = pinIdTemp.substring(pinIdTemp.length - 3, pinIdTemp.length);
 
