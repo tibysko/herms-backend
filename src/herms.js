@@ -3,7 +3,7 @@ const EventEmitter = require('events');
 const logger = require('./core/logger');
 var Board = require('./board/board');
 
-const ValveService = require('./services/valveService');
+const ValveController = require('./valve/valve-controller');
 const PidController = require('./pid/pid-controller');
 const io = require('./core/socket-io');
 
@@ -27,17 +27,22 @@ class Herms extends EventEmitter {
         this.pidControllers.push(new PidController(this.board, 'pidCtrlMLT', 'HLT_HEATER', 'T1_HLT'));
 
         // Setup valve
-        this.valveService = new ValveService(this.board);
-
-        this.pidControllerData = {};
-        this.aggregatedData = {};
+        this.valveController = new ValveController(this.board);
 
         // Add eventhandlers
-        this._addEventHandler('pins', this.board);
-        this._addEventHandler('valves', this.valveService);
+        this._addEmitter('pins', this.board, false);
+        this._addEmitter('valves', this.valveController, false);
 
+        this.aggregatedCtrlData = [];
         for (let pidController of this.pidControllers) {
-            this._addEventHandler(pidController.name, pidController);
+            this._aggregateEventData(pidController, this.aggregatedCtrlData);
+        }
+
+        // take first controller and emit all controller data
+        if (this.pidControllers.length > 0) {
+            this.pidControllers[0].on('data', (ignore) => {
+                this.emit('controllers', this.aggregatedCtrlData);
+            });
         }
     }
 
@@ -59,25 +64,69 @@ class Herms extends EventEmitter {
         this.board.writePin(pinName, value, cb);
     }
 
-    setPidController(config) {
+    setPidController(name, config) {
+        let controller = {};
+
         for (let pidController of this.pidControllers) {
-            if (pidController.getName() === config.name) {
-                this.pidHLT.setConfig(config);
+            if (pidController.getName() === name) {
+                controller = pidController;
                 break;
             }
+        }
+
+        if (controller) {
+            controller.setConfig(config);
+        } else {
+            logger.logWarning(this.module, 'setPidController', 'Could not find controller: ' + name);
         }
     }
 
     getPidControllers() {
-        return this.pidHLT.getStatus();
+        let controllerData = [];
+
+        for (let controller of this.pidControllers) {
+            controllerData.push(controller.getStatus());
+        }
+
+        return controllerData;
+    }
+
+    setValve(name, state, cb) {
+       this.valveController.setState(name, state, cb);
+    }
+
+    getStatus() {
+        return this.aggregatedData;
     }
 
     // Underscore means private methods.. ugly!
-    _addEventHandler(propertyName, eventObject) {
+    _addEmitter(eventName, eventObject) {
         eventObject.on('data', (data) => {
-            this.aggregatedData[propertyName] = data;
+            this.emit(eventName, data);
+        });
+    }
+
+    _aggregateEventData(eventObject, dataArray) {
+        eventObject.on('data', (data) => {
+            let itemIndex = -1;
+
+            for (let i = 0; i < dataArray.length; i++) {
+                if (dataArray[i].name == data.name) {
+                    itemIndex = i;
+                    break;
+                }
+            }
+
+            if (itemIndex >= 0) {
+                dataArray[itemIndex] = data;
+            } else {
+                dataArray.push(data);
+            }
         });
     }
 }
 
-module.exports = Herms;
+// create singleton
+var herms = new Herms();
+
+module.exports = herms;

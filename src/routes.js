@@ -1,10 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-// Start Herms. A bit ugly to do it in routes.config. Want to start it in server.js
-const Herms = new require('./herms');
-var herms = new Herms();
-herms.start();
+herms = new require('./herms');
 
 router.route('/pins').get((req, res) => {
     let pins = herms.getPins();
@@ -30,24 +27,55 @@ router.route('/pins/:name').post((req, res) => {
     });
 });
 
-router.route('/api/pid-controller').post((req, res) => {
+router.route('/pid-controllers/:name').post((req, res) => {
     let body = req.body;
+    let controllerName = req.params.name;
 
     if (body) {
         let config = body;
-        herms.setPidController(config);
+        herms.setPidController(controllerName, config);
 
-        res.status(200).send(herms.getPidController());
+        res.status(200).send(herms.getPidControllers());
 
     } else {
         res.status(400).send();
     }
 });
 
-router.route('/api/pid-controller').get((req, res) => {
-    let status = herms.getPidController();
+router.route('/pid-controllers').get((req, res) => {
+    let status = herms.getPidControllers();
 
     res.send(status);
 });
+
+router.route('/valves/:name').post((req, res) => {
+    let name = req.params.name;
+    let body = req.body;
+
+    if (body && body.state) {
+        herms.setValve(name, body.state, function (err) {
+            errorHandler(err, res);
+        });
+
+    } else {
+        res.status(400).send({
+            error: 'body not found'
+        });
+    }
+});
+
+router.route('/status').get((req, res) => {
+    res.send(herms.getStatus());
+});
+
+function errorHandler(err, res) {
+    if (err) {
+        res.status(400).send({
+            'error': err.message
+        });
+    } else {
+        res.send();
+    }
+}
 
 module.exports = router;

@@ -16,7 +16,7 @@ class Board extends EventEmitter {
     }
 
     setup(cb) {
-        this.pins = JSON.parse(fs.readFileSync(path.join(__dirname, './src/config/pins.json')));
+        this.pins = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/pins.json')));
 
         // Initialize this.pins with value 0
         for (var key in this.pins) {

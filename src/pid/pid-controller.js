@@ -57,6 +57,7 @@ class PidController extends EventEmitter {
             this.board.writePin(this.heaterPinName, output, function () {});
 
             this.emit('data', {
+                name: this.name,
                 output: output,
                 temperature: currTemp
             });
@@ -70,30 +71,34 @@ class PidController extends EventEmitter {
         clearInterval(this.process);
     }
 
-    setConfig(config){           
-        logger.logInfo(this.name, 'setConfig', 'Setting config: ' + JSON.stringify(config));        
+    setConfig(config) {
+        logger.logInfo(this.name, 'setConfig', 'Setting config: ' + JSON.stringify(config));
 
         this.pidController.setPoint(config.setPoint);
         this.pidController.setOutput(config.output);
         this.pidController.setTunings(config.kp, config.ki, config.kd);
-        this.pidController.setMode(config.mode);   
+        this.pidController.setMode(config.mode);
     }
 
-    getStatus(){
+    getStatus() {
         let status = {
-            kp: this.pidController.getKp(),
-            ki: this.pidController.getKi(),
-            kd: this.pidController.getKd(),
             name: this.name,
-            mode: this.pidController.getMode(),
-            output: this.pidController.getOutput(),
-            setPoint: this.pidController.getSetPoint()
+            config: {
+                kp: this.pidController.getKp(),
+                ki: this.pidController.getKi(),
+                kd: this.pidController.getKd(),
+                mode: this.pidController.getMode(),
+                output: this.pidController.getOutput(),
+                setPoint: this.pidController.getSetPoint()
+            },
+            data: {} ,
+            newConfig: {}
         }
 
         return status;
     }
 
-    getName(){
+    getName() {
         return this.name;
     }
 

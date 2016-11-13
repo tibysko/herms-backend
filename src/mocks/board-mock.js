@@ -30,7 +30,7 @@ class BoardMock extends EventEmitter {
     }
 
     writePin(pinName, value, cb) {
-        logger.logWarning(this.moduleName, 'WitePin', 'Wrote ' + value + ' to pin ' + pinName);
+        //logger.logWarning(this.moduleName, 'WitePin', 'Wrote ' + value + ' to pin ' + pinName);
         cb(null);
     }
 
