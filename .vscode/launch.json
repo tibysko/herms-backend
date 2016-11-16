@@ -3,11 +3,11 @@
     "configurations": [
         {
             "name": "Launch",
-            "type": "node2",
+            "type": "node",
             "request": "launch",
-            "program": "${workspaceRoot}/src/server.js",
+            "program": "${workspaceRoot}/node_modules/nodemon/bin/nodemon.js",
             "stopOnEntry": false,
-            "args": [],
+            "args": ["${workspaceRoot}/src/server.js"],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": null,
             "runtimeExecutable": null,
@@ -15,7 +15,8 @@
                 "--nolazy"
             ],
             "env": {
-                "NODE_ENV": "development"
+                "NODE_ENV": "development",
+                "MOCK":"true"
             },
             "console": "internalConsole",
             "sourceMaps": false,
@@ -25,7 +26,7 @@
             "name": "Attach",
             "type": "node2",
             "request": "attach",
-            "port": 8081,
+            "port": 8080,
             "address": "localhost",
             "restart": false,
             "sourceMaps": false,

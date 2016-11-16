@@ -7,7 +7,7 @@ const PID = require('./pid');
 
 class PidController extends EventEmitter {
 
-    constructor(board, name, heaterPinName, temperaturePinName) {
+    constructor(board, name, longName, heaterPinName, temperaturePinName) {
         super(); // EventEmitter constructor 
 
         this.actTemperatureValue = 0;
@@ -15,6 +15,7 @@ class PidController extends EventEmitter {
         this.dummyId = -10; // dummy value
         this.heaterPinName = heaterPinName;
         this.name = name; // pid-controller name, used in logging
+        this.longName = longName;
         this.pidController = {};
         this.process = this.dummyId;
         this.temperaturePinName = temperaturePinName;
@@ -83,6 +84,7 @@ class PidController extends EventEmitter {
     getStatus() {
         let status = {
             name: this.name,
+            longName: this.longName,
             config: {
                 kp: this.pidController.getKp(),
                 ki: this.pidController.getKi(),
@@ -91,8 +93,7 @@ class PidController extends EventEmitter {
                 output: this.pidController.getOutput(),
                 setPoint: this.pidController.getSetPoint()
             },
-            data: {} ,
-            newConfig: {}
+            data: {}
         }
 
         return status;

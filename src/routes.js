@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-herms = new require('./herms');
+var herms = require('./herms');
+var logger = require('./core/logger');
 
 router.route('/pins').get((req, res) => {
     let pins = herms.getPins();
@@ -67,6 +68,12 @@ router.route('/valves/:name').post((req, res) => {
 router.route('/status').get((req, res) => {
     res.send(herms.getStatus());
 });
+
+router.route('/logs/error').get((req,res) => {
+    logger.readLogs((results) => {
+        res.send(results);
+    })
+})
 
 function errorHandler(err, res) {
     if (err) {

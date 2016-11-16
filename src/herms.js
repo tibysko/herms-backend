@@ -22,9 +22,9 @@ class Herms extends EventEmitter {
 
         // Setup pid controllers
         this.pidControllers = [];
-        this.pidControllers.push(new PidController(this.board, 'pidCtrlHLT', 'HLT_HEATER', 'T1_HLT'));
+        this.pidControllers.push(new PidController(this.board, 'pidCtrlHLT', 'Pid controller HLT' ,'HLT_HEATER', 'T1_HLT'));
         // TODO insert new pins!
-        this.pidControllers.push(new PidController(this.board, 'pidCtrlMLT', 'HLT_HEATER', 'T1_HLT'));
+        this.pidControllers.push(new PidController(this.board, 'pidCtrlMLT', 'Pid controller MLT', 'HLT_HEATER', 'T1_HLT'));
 
         // Setup valve
         this.valveController = new ValveController(this.board);

@@ -2,6 +2,7 @@
 
 var bodyParser = require('body-parser');
 var cors = require('cors')
+var compression = require('compression');
 var express = require('express');
 var fs = require('fs');
 var path = require('path');
@@ -10,7 +11,7 @@ const config = require('./config/config');
 const logger = require('./core/logger');
 const io = require('./core/socket-io');
 const routes = require('./routes');
-var herms = new require('./herms');
+var herms = require('./herms');
 
 var app = express();
 const env = process.env;
@@ -24,6 +25,8 @@ if (env.FRONTEND_PATH && fs.existsSync(env.FRONTEND_PATH)) {
 
 app.use(bodyParser.json());
 app.use(cors());
+// compress all requests 
+app.use(compression());
 
 // register api routes
 app.use('/api', routes);
@@ -47,3 +50,7 @@ app.listen(config.port, function () {
     io.emit('pins', data);
   });
 });
+
+setTimeout(() => {
+  logger.logError("server", 'app.listen', 'Server started on ' + config.port);
+}, 5000);

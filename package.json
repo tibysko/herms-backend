@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "list-ports": "./node_modules/.bin/serialport-list",
-    "start": "nodemon ./src/server.js",
+    "start": "node ./src/server.js",
     "start-mock": "cross-env MOCK=true nodemon ./src/server.js",
     "start-with-frontend": "cross-env MOCK=true FRONTEND_PATH=../herms-frontend/dist nodemon ./src/server.js",
     "test": "npm run test-unit",
