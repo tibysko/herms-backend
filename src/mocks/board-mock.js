@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const fs = require('fs');
 const logger = require('../core/logger');
+const path = require('path');
 
 class BoardMock extends EventEmitter {
 
@@ -11,8 +12,8 @@ class BoardMock extends EventEmitter {
         this.moduleName = 'BoardMock';
     }
 
-    setup(cb) {
-        this.pins = JSON.parse(fs.readFileSync("./src/config/pins.json"));
+    setup(cb) {        
+        this.pins = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/pins.json')));
 
         // Initialize this.pins with value 0
         for (var key in this.pins) {
