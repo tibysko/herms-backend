@@ -7,6 +7,7 @@ const io = require('./core/socket-io');
 const PhaseController = require('./phase/phase-controller');
 const ValveController = require('./valve/valve-controller');
 const ValveControllerHeHwIn = require('./valve/valve-controller-he-hw-in');
+const parameterController = require('./parameters/parameter-controller');
 
 const env = process.env;
 
@@ -36,6 +37,9 @@ class Herms extends EventEmitter {
 
         // Setup phase
         this.phaseController = new PhaseController(this.valveController, this.board);
+
+        // Setup parameter 
+        this.parameterController = parameterController;
 
         // Add eventhandlers
         this._addEmitter('pins', this.board, false);
@@ -131,7 +135,14 @@ class Herms extends EventEmitter {
         return this.phaseController.getPhases();
     }
 
-    // Underscore means private methods.. ugly!
+    getParameters(){
+        return this.parameterController.getParameters();
+    }
+
+    updateParameters(parameters){
+        return this.parameterController.updateParameters(parameters);
+    }
+
     _addEmitter(eventName, eventObject) {
         eventObject.on('data', (data) => {
             this.emit(eventName, data);

@@ -152,6 +152,23 @@ router.route('/phases').post((req, res) => {
   }
 });
 
+router.route('/parameters').post((req, res) => {
+  let parameters = req.body;
+
+  if (!parameters) {
+    res.status(400).send({
+      error: 'missing body/parameters'
+    });
+  } else {
+    let updatedParameters = herms.updateParameters(parameters);
+    res.send(updatedParameters);
+  }
+});
+
+router.route('/parameters').get((req, res) => {
+    res.send(herms.getParameters());
+});
+
 
 function errorHandler(err, res) {
   if (err) {
