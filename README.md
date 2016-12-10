@@ -19,3 +19,10 @@ Run `npm run list-ports` will list which port the Arduino is connected to.
 Note you might have to change com-port in `src/board/board.js`.
 
 If complaining about "Nodemon.. " run: `npm install -g nomdemon`
+
+
+## Misc
+
+### Code style 
+Code style is based on https://github.com/felixge/node-style-guide#no-nested-closures
+Run `npm run jslint` to lint your code

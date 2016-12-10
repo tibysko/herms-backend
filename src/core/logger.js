@@ -33,6 +33,13 @@ class Logger {
         socketio.emit(level, message);
     }
 
+    static loggErrorAndExecuteCb(moduleName, functionName, message, cb){
+        Logger.logError(moduleName, functionName, message, cb);
+        let err = new Error("message");
+        console.log('err1: ' + JSON.stringify(err));
+        cb(new Error(message));
+    }
+
     static readLogs(cb) {
         var options = {
             from: new Date - 24 * 60 * 60 * 1000,

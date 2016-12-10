@@ -49,8 +49,6 @@ app.listen(config.port, function () {
   herms.on('pins', (data) => {
     io.emit('pins', data);
   });
-});
 
-setTimeout(() => {
-  logger.logError("server", 'app.listen', 'Server started on ' + config.port);
-}, 5000);
+
+});

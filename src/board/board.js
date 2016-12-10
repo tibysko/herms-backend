@@ -49,7 +49,7 @@ class Board extends EventEmitter {
 
                 setInterval(() => {
                     this.emit('data', this.getPinData());
-                }, 500);
+                }, 100);
 
                 cb(null);
             }
@@ -81,7 +81,7 @@ class Board extends EventEmitter {
 
             this.serialPort.write(cmd, cb);
         } else {
-            logger.logWarning(this.moduleName, 'WitePin', 'Pin with name [' + pinName + '] was not found');
+            logger.logWarning(this.moduleName, 'WritePin', 'Pin with name [' + pinName + '] was not found');
         }
     }
 
@@ -90,7 +90,7 @@ class Board extends EventEmitter {
 
         for (var key in this.pins) {
             if (this.pins.hasOwnProperty(key)) {
-
+                // translates pin id to pin name
                 let pin = this.pins[key];
                 pinObject[pin.name] = pin;
             }

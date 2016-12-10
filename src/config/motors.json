@@ -1,0 +1,10 @@
+[
+    {
+        "name": "HW_PUMP",
+        "pin": "HW_PUMP"
+    },
+        {
+        "name": "WORT_PUMP",
+        "pin": "WORT_PUMP"
+    }
+]

@@ -2,10 +2,11 @@ const EventEmitter = require('events');
 
 const logger = require('./core/logger');
 var Board = require('./board/board');
-
-const ValveController = require('./valve/valve-controller');
 const PidController = require('./pid/pid-controller');
 const io = require('./core/socket-io');
+const PhaseController = require('./phase/phase-controller');
+const ValveController = require('./valve/valve-controller');
+const ValveControllerHeHwIn = require('./valve/valve-controller-he-hw-in');
 
 const env = process.env;
 
@@ -20,14 +21,21 @@ class Herms extends EventEmitter {
 
         this.board = new Board();
 
+         // Setup valve
+        this.valveController = new ValveController(this.board);
+
         // Setup pid controllers
         this.pidControllers = [];
         this.pidControllers.push(new PidController(this.board, 'pidCtrlHLT', 'Pid controller HLT' ,'HLT_HEATER', 'T1_HLT'));
-        // TODO insert new pins!
-        this.pidControllers.push(new PidController(this.board, 'pidCtrlMLT', 'Pid controller MLT', 'HLT_HEATER', 'T1_HLT'));
 
-        // Setup valve
-        this.valveController = new ValveController(this.board);
+        let pidControllerMLT = new PidController(this.board, 'pidCtrlMLT', 'Pid controller MLT', undefined, 'T2_HE_WORT_OUT');
+        this.pidControllers.push(pidControllerMLT);
+
+        // Setup special program for valve he-hw-in
+        let valveCtrlHeHwIn = new ValveControllerHeHwIn(pidControllerMLT, this.valveController, this.board);        
+
+        // Setup phase
+        this.phaseController = new PhaseController(this.valveController, this.board);
 
         // Add eventhandlers
         this._addEmitter('pins', this.board, false);
@@ -91,12 +99,36 @@ class Herms extends EventEmitter {
         return controllerData;
     }
 
+    getValves(){
+        return this.valveController.getValves();
+    }
+
     setValve(name, state, cb) {
        this.valveController.setState(name, state, cb);
     }
 
     getStatus() {
         return this.aggregatedData;
+    }
+
+    updatePhase(id, phase) {
+        return this.phaseController.updatePhase(id, phase);
+    }
+
+    activatePhase(id){
+        return this.phaseController.activatePhase(id);
+    }
+
+    createPhase(phase){
+        return this.phaseController.createPhase(phase);
+    }
+
+    deletePhase(id){
+        return this.phaseController.deletePhase(id);
+    }
+
+    getPhases(){
+        return this.phaseController.getPhases();
     }
 
     // Underscore means private methods.. ugly!

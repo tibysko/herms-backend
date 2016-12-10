@@ -55,7 +55,9 @@ class PidController extends EventEmitter {
             this.pidController.compute();
             let output = this.pidController.getOutput();
 
-            this.board.writePin(this.heaterPinName, output, function () {});
+            if (this.heaterPinName) {
+                this.board.writePin(this.heaterPinName, output, function () {});
+            }
 
             this.emit('data', {
                 name: this.name,
@@ -101,6 +103,10 @@ class PidController extends EventEmitter {
 
     getName() {
         return this.name;
+    }
+
+    getMode() {
+        return this.pidController.getMode();
     }
 
 }

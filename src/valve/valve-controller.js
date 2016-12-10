@@ -31,18 +31,17 @@ class ValveController extends EventEmitter {
 
                 valve.in = values;
 
-                let status = {};
+                let state = {};
 
                 if (values.opened > 0) {
-                    status = ValveConstants.OPENED;
+                    state = ValveConstants.OPENED;
                 } else if (values.closed > 0) {
-                    status = ValveConstants.CLOSED;
+                    state = ValveConstants.CLOSED;
                 } else {
-                    status = ValveConstants.ADJUSTING;
+                    state = ValveConstants.ADJUSTING;
                 }
 
-                //valve.status = status;
-                valve.status = ValveConstants.OPENED; // TODO remove this.
+                valve.state = state; 
             }
 
             this.emit('data', this.valves);
@@ -51,7 +50,7 @@ class ValveController extends EventEmitter {
 
     setState(name, state, cb) {
         let valve = this._findValve(name);
-        
+
         if (valve) {
             if (state == ValveConstants.START_OPEN) {
                 this.board.writePin(valve.pin.open, BoardConstants.PIN_HIGH, cb);
@@ -64,13 +63,17 @@ class ValveController extends EventEmitter {
             } else {
                 let err = 'State [' + state + '] not found';
                 logger.logError(this.moduleName, 'setState', err);
-                cb(err);
+                cb(new Error(err));
             }
         } else {
             let err = 'Valve [' + name + '] not found';
             logger.logError(this.moduleName, 'setState', err);
-            cb(err);
+            cb(new Error(err));
         }
+    }
+
+    getValves() {
+        return this.valves;
     }
 
     _findValve(name) {

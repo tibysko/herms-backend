@@ -24,7 +24,7 @@ class BoardMock extends EventEmitter {
 
         setInterval(() => {
             this.emit('data', this.getPinData());
-        }, 500);
+        }, 100);
 
         cb(null);
 
@@ -45,6 +45,12 @@ class BoardMock extends EventEmitter {
                 pinObject[pin.name] = pin;
             }
         }
+
+        pinObject['MLT_KET_BYPASS_OPENED'].value = 1;
+        pinObject['MLT_WORT_IN_CLOSED'].value = 1;     
+        pinObject['T1_HLT'].value = Math.floor(Math.random() * 100) + 100;     
+        pinObject['T2_HE_WORT_OUT'].value = Math.floor(Math.random() * 100) + 100;     
+           
 
         return pinObject;
     }
