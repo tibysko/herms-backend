@@ -139,8 +139,8 @@ class Herms extends EventEmitter {
         return this.parameterController.getParameters();
     }
 
-    updateParameters(parameters){
-        return this.parameterController.updateParameters(parameters);
+    updateParameter(name, value){
+        return this.parameterController.updateParameter(name, value);
     }
 
     _addEmitter(eventName, eventObject) {

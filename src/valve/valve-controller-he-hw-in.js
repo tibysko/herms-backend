@@ -1,6 +1,8 @@
 const ValveConstants = require('./valve-constants');
 const parameterController = require('../parameters/parameter-controller');
 
+const VALVE_STEP = 'valveStep';
+
 class ValveControllerHeHwIn {
 
   constructor(pidController, valveController, board) {
@@ -17,7 +19,7 @@ class ValveControllerHeHwIn {
     this.tempMode = '';
 
     parameterController.on('data', (data) => {
-        console.log('valveStep: ' + data.valveStep);
+        console.log('valveStep: ' + data[VALVE_STEP].value);
     });
 
     this.pidController.on('data', (data) => {
