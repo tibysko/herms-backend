@@ -50,7 +50,7 @@
 		{
 			"name": "/pid-controller",
 			"request": {
-				"url": "http://localhost:8081/api/pid-controller",
+				"url": "http://localhost:8080/api/pid-controllers/pidCtrlHLT",
 				"method": "POST",
 				"header": [
 					{
@@ -61,7 +61,247 @@
 				],
 				"body": {
 					"mode": "raw",
+					"raw": "{\n  \"kp\": 300,\n  \"ki\": 100,\n  \"kd\": 50,\n  \"mode\": \"manual\",\n  \"output\": 0,\n  \"setPoint\": 0\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/pid-controller",
+			"request": {
+				"url": "http://localhost:8080/api/pid-controllers",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
 					"raw": "{\n\t\"setPoint\": 30,\n\t\"command\": \"stop\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/valves",
+			"request": {
+				"url": "http://localhost:8080/api/valves",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"state\": \"open\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/valves",
+			"request": {
+				"url": "http://localhost:8080/api/valves/MLT_KET_BYPASS",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"state\": \"open\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/logs/error",
+			"request": {
+				"url": "http://localhost:8080/api/logs/error",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"pinValue\": true\n\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/phases",
+			"request": {
+				"url": "http://localhost:8080/api/phases",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"kp\": 300,\n  \"ki\": 100,\n  \"kd\": 50,\n  \"mode\": \"manual\",\n  \"output\": 0,\n  \"setPoint\": 0\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/phases/:id",
+			"request": {
+				"url": "http://localhost:8080/api/phases/1",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"updated\",\n  \"valves\": [\n\t    {\n\t      \"name\": \"HW_WORT_IN\",\n\t      \"state\": \"OPENED\"\n\t    }\n    ]\n }"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/phases/:id/activate",
+			"request": {
+				"url": "http://localhost:8080/api/phases/6e549282-51c5-4af5-9489-b3d41967e6cf/activate",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/phases/:id",
+			"request": {
+				"url": "http://localhost:8080/api/phases/1",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"updated\",\n  \"valves\": [\n\t    {\n\t      \"name\": \"HW_WORT_IN\",\n\t      \"state\": \"OPENED\"\n\t    }\n    ]\n }"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/phases",
+			"request": {
+				"url": "http://localhost:8080/api/phases",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"dfdfdfdfd\",\n\t\"valves\" : [\n\t\t\t{ \"name\": \"HW_WORT_IN\", \"state\": \"OPENED\"}\n\t\t]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/phases copy",
+			"request": {
+				"url": "http://localhost:8080/api/phases",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"dfdfdfdfd\",\n\t\"valves\" : [\n\t\t\t{ \"name\": \"HW_WORT_IN\", \"state\": \"OPENED\"}\n\t\t]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/parameters",
+			"request": {
+				"url": "http://localhost:8080/api/parameters",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"dfdfdfdfd\",\n\t\"valves\" : [\n\t\t\t{ \"name\": \"HW_WORT_IN\", \"state\": \"OPENED\"}\n\t\t]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/parameters",
+			"request": {
+				"url": "http://localhost:8080/api/parameters/valveStep",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"value\": \"hejdå igen ola\"\n}"
 				},
 				"description": ""
 			},

@@ -84,7 +84,6 @@ router.route('/phases').get((req, res) => {
 
 router.route('/phases/:id/activate').put((req, res) => {
   let id = req.params.id;
-  console.log('stuff');
 
   let phase = herms.activatePhase(id);
 
@@ -96,7 +95,6 @@ router.route('/phases/:id/activate').put((req, res) => {
 });
 
 router.route('/phases/:id').put((req, res) => {
-  console.log('put stuff');
   let phase = req.body;
   let phaseId = req.params.id;
 
@@ -152,7 +150,7 @@ router.route('/phases').post((req, res) => {
   }
 });
 
-router.route('/parameters/:name').post((req, res) => {
+router.route('/parameters/:name').put((req, res) => {
   let body = req.body;
   let name = req.params.name;
 
