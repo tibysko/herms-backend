@@ -19,7 +19,7 @@ class ValveControllerHeHwIn {
     this.tempMode = '';
 
     parameterController.on('data', (data) => {
-        console.log('valveStep: ' + data[VALVE_STEP].value);
+      console.log('valveStep: ' + data[VALVE_STEP].value);
     });
 
     this.pidController.on('data', (data) => {
@@ -32,9 +32,9 @@ class ValveControllerHeHwIn {
       if (data['HE_HW_IN_ACTPOS']) {
         this.valveActPos = data['HE_HW_IN_ACTPOS'].value;
       }
-
-      this.computeValvePos();
     });
+
+    setInterval(() => this.computeValvePos, 1000);
   }
 
   computeValvePos() {
@@ -42,7 +42,6 @@ class ValveControllerHeHwIn {
       this.tempMode = this.pidController.getMode();
       this.valveController.setState('HE_HW_IN', ValveConstants.STOP_CLOSE, function () {});
       this.valveController.setState('HE_HW_IN', ValveConstants.STOP_OPEN, function () {});
-      console.log('tempmpde run once');
     }
 
     if (this.pidController.getMode().toLowerCase() === 'auto') {

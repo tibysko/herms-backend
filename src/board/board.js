@@ -4,7 +4,7 @@ const path = require('path');
 const SerialPort = require('serialport');
 const logger = require('../core/logger');
 
-const config = require('../config/config.js');
+const config = require('../config/config');
 
 class Board extends EventEmitter {
 
@@ -24,9 +24,11 @@ class Board extends EventEmitter {
                 this.pins[key].value = 0;
             }
         }
+        console.log('usb: ' + config.usbPort);
 
-        this.serialPort = new SerialPort(config.usbPort, {
-            parser: SerialPort.parsers.readline('\n')
+        this.serialPort = new SerialPort('/dev/ttyACM0', {
+            parser: SerialPort.parsers.readline('\n'),
+            baudRate: 115200
         }, (err) => {
             if (err) {
                 logger.logError(this.moduleName, 'Setup', 'Could not open port');
@@ -78,7 +80,7 @@ class Board extends EventEmitter {
             pinValueTemp = pinValueTemp.substring(pinValueTemp.length - 4, pinValueTemp.length);
 
             let cmd = foundPin.mode + pinIdTemp + pinValueTemp + '\n';
-
+            
             this.serialPort.write(cmd, cb);
         } else {
             logger.logWarning(this.moduleName, 'WritePin', 'Pin with name [' + pinName + '] was not found');

@@ -5,7 +5,7 @@ apps:
     exec_mode: 'fork'    
     env      :
       NODE_ENV: production	
-      FRONTEND_PATH: ./
+      FRONTEND_PATH: ./client
       USB_PORT: /dev/ttyACM0
       
 

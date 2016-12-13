@@ -8,6 +8,8 @@ const logger = require('../core/logger');
 const ValveConstants = require('../valve/valve-constants');
 const BoardConstants = require('../board/board-constants');
 
+var async = require('async');
+
 const PHASES_FILE = './phases.json';
 
 class PhaseController {
@@ -35,12 +37,41 @@ class PhaseController {
 
     let valves = this.valveController.getValves();
 
-    for (let valve of valves) {
-      let newValveState = foundPhase[valve.name] === ValveConstants.OPENED ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
-      this.valveController.setState(valve.name, newValveState, function () {});
-    }
+    console.log(JSON.stringify(foundPhase));
 
-    setTimeout(() => this._checkValves(foundPhase), 6000); // check valve state after 6000 ms
+    async.eachSeries(foundPhase.valves, (item, callback) => {
+      setTimeout(() => {
+        let newState = (item.state === ValveConstants.OPENED) ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
+        this.valveController.setState(item.name, newState, function () {});
+        callback();
+      }, 200);
+    }, function (err) {
+      console.log('done');
+    });
+
+    /*
+      let phaseValves = foundPhase.valves;
+      let i = 0;
+      let length = phaseValves.length;
+
+      let ref = setInterval(() => {
+        if (i < length) {
+          let newState = (phaseValves[i].state === ValveConstants.OPENED) ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
+          this.valveController.setState(phaseValves[i].name, newState, function () {});
+        } else {
+          clearInterval(ref);
+        }
+        i = i + 1;
+      }, 200);*/
+
+
+    /* for (let valve of foundPhase.valves) {
+       let newState = (valve.state === ValveConstants.OPENED) ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
+       console.log(valve.name + ' ' + newState);
+       this.valveController.setState(valve.name, newState, function () {});
+     }*/
+
+    setTimeout(() => this._checkValves(foundPhase), 20000); // check valve state after 6000 ms
 
     // set phase to active and "deactivate" all others
     for (let phase of this.phases) {
@@ -52,6 +83,7 @@ class PhaseController {
 
     return foundPhase;
   }
+
 
   createPhase(phase) {
     let validationError = this._validatePhase(phase);
@@ -140,11 +172,18 @@ class PhaseController {
       if (desiredState !== valve.state) {
         valvesNotOk.push(valve.name);
       }
-
-      // Stop all valves movement 
-      this.valveController.setState(valve.name, ValveConstants.STOP_CLOSE, function () {});
-      this.valveController.setState(valve.name, ValveConstants.STOP_OPEN, function () {});
     }
+
+    async.eachSeries(foundPhase.valves, (item, callback) => {
+      setTimeout(() => {
+        // Stop all valves movement 
+        this.valveController.setState(valve.name, ValveConstants.STOP_CLOSE, function () {});
+        this.valveController.setState(valve.name, ValveConstants.STOP_OPEN, function () {});
+        callback();
+      }, 200);
+    }, function (err) {
+      console.log('done');
+    });
 
     if (valvesNotOk.length > 0) {
       logger.logError(this.moduleName, 'activatePhase', 'The following valves was not set: ' + JSON.stringify(valvesNotOk));
