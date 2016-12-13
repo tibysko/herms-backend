@@ -27,11 +27,11 @@ const int DIGITAL_OUT_START = 2;
 const int DIGITAL_OUT_END = 39;
 
 const int ANALOG_IN_START = 54;
-const int ANALOG_IN_END = 57;
+const int ANALOG_IN_END = 59;
 
 void setup() {
   // initialize serial
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   cmd.reserve(2);
 
@@ -51,7 +51,7 @@ void setup() {
     pinMode(pinId, OUTPUT);
   }
 
-  // ENABLE PULLUP for analog IN pins 54 - 57
+  // ENABLE PULLUP for analog IN pins 54 - 59
   for (int pinId = ANALOG_IN_START ; pinId <= ANALOG_IN_END; pinId++) {
     pinMode(pinId, INPUT);
   }
