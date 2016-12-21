@@ -1,14 +1,13 @@
-const ValveConstants = require('./valve-constants');
-const parameterController = require('../parameters/parameter-controller');
+const ValveConstants = require('./valve-controller').ValveContants;
 
 const VALVE_STEP = 'valveStep';
 
 class ValveControllerHeHwIn {
 
-  constructor(pidController, valveController, board) {
-    this.pidController = pidController;
+  constructor(pidController, valveController, boardController, parameterController) {
     this.valveController = valveController;
-    this.board = board;
+    this.boardController = boardController;
+    this.pidController = pidController; 
     this.pidControllerName = '';
     this.output = 0;
     this.temperature = 0;
@@ -28,7 +27,7 @@ class ValveControllerHeHwIn {
       this.temperature = data.temperature;
     });
 
-    this.board.on('data', (data) => {
+    this.boardController.on('data', (data) => {
       if (data['HE_HW_IN_ACTPOS']) {
         this.valveActPos = data['HE_HW_IN_ACTPOS'].value;
       }

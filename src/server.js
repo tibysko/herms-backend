@@ -11,7 +11,7 @@ const config = require('./config/config');
 const logger = require('./core/logger');
 const io = require('./core/socket-io');
 const routes = require('./routes');
-var herms = require('./herms');
+const herms = require('./herms');
 
 var app = express();
 const env = process.env;

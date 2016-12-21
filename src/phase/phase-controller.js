@@ -3,12 +3,11 @@
 const fs = require('fs');
 const path = require('path');
 const uuidV4 = require('uuid/v4');
+const async = require('async');
 
 const logger = require('../core/logger');
-const ValveConstants = require('../valve/valve-constants');
-const BoardConstants = require('../board/board-constants');
-
-var async = require('async');
+const ValveConstants = require('../valve/valve-controller').ValveConstants;
+const BoardConstants = require('../board/board-controller').BoardConstants;
 
 const PHASES_FILE = './phases.json';
 
@@ -31,18 +30,18 @@ class PhaseController {
       return new Error(err);
     }
 
+    // TODO check valves
+
     // stop pumps
     this.board.writePin('HW_PUMP', BoardConstants.PIN_LOW, function () {});
     this.board.writePin('WORT_PUMP', BoardConstants.PIN_LOW, function () {});
 
     let valves = this.valveController.getValves();
 
-    console.log(JSON.stringify(foundPhase));
-
-    async.eachSeries(foundPhase.valves, (item, callback) => {
+    async.eachSeries(foundPhase.valves, (valve, callback) => {
       setTimeout(() => {
-        let newState = (item.state === ValveConstants.OPENED) ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
-        this.valveController.setState(item.name, newState, function () {});
+        let newState = (valve.state === ValveConstants.OPENED) ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
+        this.valveController.setState(valve.name, newState, function () {});
         callback();
       }, 200);
     }, function (err) {
@@ -83,7 +82,6 @@ class PhaseController {
 
     return foundPhase;
   }
-
 
   createPhase(phase) {
     let validationError = this._validatePhase(phase);
@@ -174,7 +172,7 @@ class PhaseController {
       }
     }
 
-    async.eachSeries(foundPhase.valves, (item, callback) => {
+    async.eachSeries(activatedPhase.valves, (valve, callback) => {
       setTimeout(() => {
         // Stop all valves movement 
         this.valveController.setState(valve.name, ValveConstants.STOP_CLOSE, function () {});
@@ -182,7 +180,7 @@ class PhaseController {
         callback();
       }, 200);
     }, function (err) {
-      console.log('done');
+      console.log('done ' + err.message);
     });
 
     if (valvesNotOk.length > 0) {

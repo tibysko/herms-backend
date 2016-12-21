@@ -11,7 +11,7 @@ const T1_SCALING = 't1_scaling';
 
 class PidController extends EventEmitter {
 
-  constructor(board, name, longName, heaterPinName, temperaturePinName) {
+  constructor(board, parameterController, name, longName, heaterPinName, temperaturePinName) {
     super(); // EventEmitter constructor 
 
     this.actTemperatureValue = 0;
@@ -20,6 +20,7 @@ class PidController extends EventEmitter {
     this.heaterPinName = heaterPinName;
     this.name = name; // pid-controller name, used in logging
     this.longName = longName;
+    this.parameterController = parameterController;
     this.pidController = {};
     this.process = this.dummyId;
     this.temperaturePinName = temperaturePinName;
@@ -34,7 +35,7 @@ class PidController extends EventEmitter {
     this.tempOffset = 0;
 
     parameterController.on('data', (data) => {
-      this.tempOffset =  parseFloat(data[T1_OFFSET].value);
+      this.tempOffset = parseFloat(data[T1_OFFSET].value);
       this.tempScaling = parseFloat(data[T1_SCALING].value);
     });
   }
