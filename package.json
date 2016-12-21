@@ -14,7 +14,7 @@
     "test-watch": "cross-env NODE_ENV=test mocha -c -w --require co-mocha ./src/**/*.spec.js"
   },
   "keywords": [],
-  "author": "Ola Adolfsson",
+  "author": "Ola Adolfsson / Martin Berglund",
   "license": "ISC",
   "dependencies": {
     "async": "^2.1.4",
