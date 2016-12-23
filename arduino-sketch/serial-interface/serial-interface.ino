@@ -70,21 +70,13 @@ void loop() {
     pin = inputString.substring(2, 5).toInt();
     value = inputString.substring(5, 9).toInt();
 
-    if (cmd == "DW") {
-      Serial.println("id dw");
-      digitalWrite(pin, value);
-
-    } else if (cmd == "DR") {
-      Serial.print("Value: ");
+   if (cmd == "DR") {
+      //Serial.print("Value: ");
       Serial.println(digitalRead(pin));
 
     } else if (cmd == "AR") {
-      Serial.print("AR Value: ");
+      //Serial.print("AR Value: ");
       Serial.println(analogRead(pin));
-
-    } else if (cmd == "AW") {
-      Serial.print("AW Value: ");
-      analogWrite(pin, value);
 
     }
 

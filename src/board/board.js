@@ -24,9 +24,8 @@ class Board extends EventEmitter {
                 this.pins[key].value = 0;
             }
         }
-        console.log('usb: ' + config.usbPort);
 
-        this.serialPort = new SerialPort('/dev/ttyACM0', {
+        this.serialPort = new SerialPort(config.usbPort, {
             parser: SerialPort.parsers.readline('\n'),
             baudRate: 115200
         }, (err) => {

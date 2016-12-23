@@ -6,6 +6,7 @@ const VALVE_STEP = 'valveStep';
 class ValveControllerHeHwIn {
 
   constructor(pidController, valveController, board) {
+    
     this.pidController = pidController;
     this.valveController = valveController;
     this.board = board;
@@ -34,10 +35,10 @@ class ValveControllerHeHwIn {
       }
     });
 
-    setInterval(() => this.computeValvePos, 1000);
+    setInterval(() => this.computeValvePos(), 1000);
   }
 
-  computeValvePos() {
+  computeValvePos() {    
     if (this.tempMode !== this.pidController.getMode()) {
       this.tempMode = this.pidController.getMode();
       this.valveController.setState('HE_HW_IN', ValveConstants.STOP_CLOSE, function () {});

@@ -29,11 +29,11 @@ class Herms extends EventEmitter {
         this.pidControllers = [];
         this.pidControllers.push(new PidController(this.board, 'pidCtrlHLT', 'Pid controller HLT' ,'HLT_HEATER', 'T1_HLT'));
 
-        //let pidControllerMLT = new PidController(this.board, 'pidCtrlMLT', 'Pid controller MLT', undefined, 'T2_HE_WORT_OUT');
-        //this.pidControllers.push(pidControllerMLT);
+        let pidControllerMLT = new PidController(this.board, 'pidCtrlMLT', 'Pid controller MLT', undefined, 'T2_HE_WORT_OUT');
+        this.pidControllers.push(pidControllerMLT);
 
         // Setup special program for valve he-hw-in
-        //let valveCtrlHeHwIn = new ValveControllerHeHwIn(pidControllerMLT, this.valveController, this.board);        
+        let valveCtrlHeHwIn = new ValveControllerHeHwIn(pidControllerMLT, this.valveController, this.board);        
 
         // Setup phase
         this.phaseController = new PhaseController(this.valveController, this.board);
@@ -54,6 +54,7 @@ class Herms extends EventEmitter {
         if (this.pidControllers.length > 0) {
             this.pidControllers[0].on('data', (ignore) => {
                 this.emit('controllers', this.aggregatedCtrlData);
+                console.log(this.aggregatedCtrlData);
             });
         }
     }
@@ -159,6 +160,8 @@ class Herms extends EventEmitter {
                     break;
                 }
             }
+
+            console.log(dataArray);
 
             if (itemIndex >= 0) {
                 dataArray[itemIndex] = data;
