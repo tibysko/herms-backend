@@ -9,14 +9,13 @@
 
 */
 
-// Setup variables
+// ========== Setup variables ========== //
 
 typedef struct
 {
   String type   = "";  //DI (Digital IN), ADI (Analog to digital IN), DO (Digital OUT), PWM, AI (Analog IN),
   int value     = 0;
-  int closedId  = 0;
-  int openedId  = 0;
+  int sensorId  = 0;  //id in board struct for sensor in position
 }  board_type;
 
 board_type board[69]; //Board setup
@@ -32,7 +31,7 @@ String cmd;
 int pin;
 int value;
 
-// Contants
+// ========== Contants ========== //
 const int DI_START = 40;
 const int DI_END = 53;
 
@@ -45,7 +44,14 @@ const int DO_END = 39;
 const int AI_START = 54;
 const int AI_END = 59;
 
-//Setup program
+const int VALVES_RB2_START = 2;
+const int VALVES_RB2_END = 9;
+
+const int VALVES_RB3_4_START = 26;
+const int VALVES_RB3_4_END = 39;
+
+
+// ========== Setup program ========== //
 void setup() {
 
   // initialize serial
@@ -82,15 +88,27 @@ void setup() {
     pinMode(pinId, INPUT);
     board[pinId].type = "AI";
   }
+
+  // Setup opened and closed signals for valves
+  for (int pinId = VALVES_RB2_START ; pinId <= VALVES_RB2_END; pinId++) {
+    board[pinId].sensorId = pinId + 58;
+  }
+
+  for (int pinId = VALVES_RB3_4_START ; pinId <= VALVES_RB3_4_END; pinId++) {
+    board[pinId].sensorId = pinId + 14;
+  }
+
+
 }
 
-//Main loop
+// ========== Main loop ========== //
 void loop() {
   unsigned long currentMillis = millis();
 
   if (abs(currentMillis - millisWriteTemp) > intervalWrite) {
     millisWriteTemp = currentMillis;
     writeToSerial(); //Write all indata (DI, ADI, AI) to serial port
+    checkLimits();  //Check limit switches and shut of if in position - This program is also called when recieving a digital write from serial.
 
   }
 
@@ -101,7 +119,7 @@ void loop() {
 
 }
 
-
+// ========== Program mask out new string from serial and write to board ========== //
 void writeToBoard() {
   //  Command example AWA100255
   //  AW = cmd. Length 2 char
@@ -114,10 +132,12 @@ void writeToBoard() {
 
   for (int pinId = 1 ; pinId <= 69; pinId++) {
 
-
     if (pin == pinId && board[pinId].type == "DO") {
-      digitalWrite(pin, value);
-
+      //Check if sensor is low before setting output
+      if (digitalRead(board[pin].sensorId) == LOW)  {
+        digitalWrite(pin, value);
+      }
+      
     } else if (pin == pinId && board[pinId].type == "PWM") {
       analogWrite(pin, value);
 
@@ -128,7 +148,7 @@ void writeToBoard() {
   stringComplete = false;
 }
 
-
+// ========== Program write inputdata to serial ========== //
 void writeToSerial() {
 
   // Read digital pins and print to serial port
@@ -161,6 +181,24 @@ void writeToSerial() {
   }
 }
 
+void checkLimits() {
+  // Check opened and closed signals for valves and shut valve off if in position
+  for (int pinId = VALVES_RB2_START ; pinId <= VALVES_RB2_END; pinId++) {
+    if (digitalRead(board[pinId].sensorId) == HIGH)  {
+      digitalWrite(pinId, LOW);
+    }
+  }
+
+  for (int pinId = VALVES_RB3_4_START ; pinId <= VALVES_RB3_4_END; pinId++) {
+    if (digitalRead(board[pinId].sensorId) == HIGH)  {
+      digitalWrite(pinId, LOW);
+    }
+  }
+
+}
+
+
+// ========== Serial event ========== //
 /*
   SerialEvent occurs whenever a new data comes in the
   hardware serial RX.  This routine is run between each

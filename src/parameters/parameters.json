@@ -1,1 +1,2 @@
-{"t1_offset":{"changed":"2016-12-13T19:55:31.904Z","value":"-4.5","description":"Offset for T1"},"t1_scaling":{"changed":"2016-12-13T19:55:34.765Z","value":"10.24","description":"Scaling for T1"}}
+{"t1_offset":{"changed":"2016-12-13T19:55:31.904Z","value":"-4.5","description":"Offset for T1"},
+"t1_scaling":{"changed":"2016-12-13T19:55:34.765Z","value":"10.24","description":"Scaling for T1"}}
