@@ -8,6 +8,7 @@
 "HE_HW_IN_Hysteresis":{"changed":"2016-12-13T19:55:31.904Z","value":"5","description":"Hysteresis for HE_HW_IN"},
 "HE_HW_IN_Step":{"changed":"2016-12-13T19:55:31.904Z","value":"5","description":"Hysteresis for HE_HW_IN"},
 "HE_HW_IN_Interval":{"changed":"2016-12-13T19:55:31.904Z","value":"5","description":"Interval compute pos HE_HW_IN"},
+"MashWater":{"changed":"2016-12-13T19:55:31.904Z","value":"5","description":"Mash water (liter)"},
 "SpargeWater":{"changed":"2016-12-13T19:55:31.904Z","value":"5","description":"Sparge water (liter)"}
 
 
