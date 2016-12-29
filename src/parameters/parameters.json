@@ -1,2 +1,14 @@
-{"t1_offset":{"changed":"2016-12-13T19:55:31.904Z","value":"-4.5","description":"Offset for T1"},
-"t1_scaling":{"changed":"2016-12-13T19:55:34.765Z","value":"10.24","description":"Scaling for T1"}}
+{
+"t1_offset":{"changed":"2016-12-13T19:55:31.904Z","value":"-4.5","description":"Offset for T1: HLT"},
+"t1_scaling":{"changed":"2016-12-13T19:55:34.765Z","value":"10.24","description":"Scaling for T1: HLT"},
+"t2_offset":{"changed":"2016-12-13T19:55:31.904Z","value":"-4.5","description":"Offset for T2: WORT"},
+"t2_scaling":{"changed":"2016-12-13T19:55:34.765Z","value":"10.24","description":"Scaling for T2: WORT"},
+"l1_scaling":{"changed":"2016-12-13T19:55:34.765Z","value":"0.0","description":"Scaling for L1: HLT"},
+"l1_offset":{"changed":"2016-12-13T19:55:31.904Z","value":"0.0","description":"Offset for L1: HLT"},
+"HE_HW_IN_Hysteresis":{"changed":"2016-12-13T19:55:31.904Z","value":"5","description":"Hysteresis for HE_HW_IN"},
+"HE_HW_IN_Step":{"changed":"2016-12-13T19:55:31.904Z","value":"5","description":"Hysteresis for HE_HW_IN"},
+"HE_HW_IN_Interval":{"changed":"2016-12-13T19:55:31.904Z","value":"5","description":"Interval compute pos HE_HW_IN"},
+"SpargeWater":{"changed":"2016-12-13T19:55:31.904Z","value":"5","description":"Sparge water (liter)"}
+
+
+}

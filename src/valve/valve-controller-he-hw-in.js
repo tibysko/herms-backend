@@ -1,7 +1,9 @@
 const ValveConstants = require('./valve-constants');
 const parameterController = require('../parameters/parameter-controller');
 
-const VALVE_STEP = 'valveStep';
+const HYSTERESIS = 'HE_HW_IN_Hysteresis';
+const VALVE_STEP = 'HE_HW_IN_Step';
+const INTERVAL = 'HE_HW_IN_Interval';
 
 class ValveControllerHeHwIn {
 
@@ -16,11 +18,13 @@ class ValveControllerHeHwIn {
     this.valveHysteresis = 5;
     this.valveStep = 25;
     this.valveSetPoint = 0;
-    this.valveActPos = 0; // todo get value from board
+    this.valveActPos = 0; 
     this.tempMode = '';
 
     parameterController.on('data', (data) => {
       console.log('valveStep: ' + data[VALVE_STEP].value);
+      this.valveHysteresis =  parseFloat(data[HYSTERESIS].value);
+      this.valveStep = parseFloat(data[VALVE_STEP].value);
     });
 
     this.pidController.on('data', (data) => {
@@ -35,7 +39,7 @@ class ValveControllerHeHwIn {
       }
     });
 
-    setInterval(() => this.computeValvePos(), 1000);
+    setInterval(() => this.computeValvePos(), INTERVAL);
   }
 
   computeValvePos() {    
