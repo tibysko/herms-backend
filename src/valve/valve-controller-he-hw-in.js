@@ -8,6 +8,7 @@ class ValveControllerHeHwIn {
     this.valveController = valveController;
     this.boardController = boardController;
     this.pidController = pidController; 
+    this.parameterController = parameterController;
     this.pidControllerName = '';
     this.output = 0;
     this.temperature = 0;
@@ -17,7 +18,7 @@ class ValveControllerHeHwIn {
     this.valveActPos = 0; // todo get value from board
     this.tempMode = '';
 
-    parameterController.on('data', (data) => {
+    this.parameterController.on('data', (data) => {
       console.log('valveStep: ' + data[VALVE_STEP].value);
     });
 

@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const fs = require('fs');
 const path = require('path');
+const async = require('async');
 
 
 const config = require('../config/config');
@@ -17,6 +18,7 @@ class BoardController extends EventEmitter {
     this.pins = {};
     this.serialPort = {};
     this.moduleName = 'BoardController';
+    this.writePinQueue = async.queue((task, cb) => this._writePinTask(task, cb), 1);
   }
 
   setup(cb) {
@@ -60,8 +62,32 @@ class BoardController extends EventEmitter {
   }
 
   writePin(pinName, value, cb) {
-    let foundPin = {};
+    
+    this.writePinQueue.push({
+      pinName: pinName,
+      value: value
+    }, cb);
+  }
 
+  getPinData() {
+    let pinObject = {};
+
+    for (let key in this.pins) {
+      if (this.pins.hasOwnProperty(key)) {
+        // translates pin id to pin name
+        let pin = this.pins[key];
+        pinObject[pin.name] = pin;
+      }
+    }
+
+    return pinObject;
+  }
+
+  _writePinTask(task, cb) {
+    let pinName = task.pinName;
+    let value = task.value;
+
+    let foundPin = {};
     for (var key in this.pins) {
       if (this.pins.hasOwnProperty(key)) {
         let pin = this.pins[key];
@@ -83,26 +109,12 @@ class BoardController extends EventEmitter {
       let cmd = foundPin.mode + pinIdTemp + pinValueTemp + '\n';
 
       this.serialPort.write(cmd, () => {
-        sp.drain(cb); // Waits until all output data has been transmitted to the serial port
+        this.serialPort.drain(cb); // Waits until all output data has been transmitted to the serial port
       });
 
     } else {
       logger.logWarning(this.moduleName, 'WritePin', 'Pin with name [' + pinName + '] was not found');
     }
-  }
-
-  getPinData() {
-    let pinObject = {};
-
-    for (let key in this.pins) {
-      if (this.pins.hasOwnProperty(key)) {
-        // translates pin id to pin name
-        let pin = this.pins[key];
-        pinObject[pin.name] = pin;
-      }
-    }
-
-    return pinObject;
   }
 }
 

@@ -34,7 +34,7 @@ class PidController extends EventEmitter {
     this.tempScaling = 1;
     this.tempOffset = 0;
 
-    parameterController.on('data', (data) => {
+    this.parameterController.on('data', (data) => {
       this.tempOffset = parseFloat(data[T1_OFFSET].value);
       this.tempScaling = parseFloat(data[T1_SCALING].value);
     });

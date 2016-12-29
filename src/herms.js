@@ -36,11 +36,11 @@ class Herms extends EventEmitter {
     this.pidControllers = [];
     this.pidControllers.push(new PidController(this.boardController, this.parameterController, 'pidCtrlHLT', 'Pid controller HLT', 'HLT_HEATER', 'T1_HLT'));
 
-    //let pidControllerMLT = new PidController(this.board, 'pidCtrlMLT', 'Pid controller MLT', undefined, 'T2_HE_WORT_OUT');
-    //this.pidControllers.push(pidControllerMLT);
+    let pidControllerMLT = new PidController(this.boardController, this.parameterController, 'pidCtrlMLT', 'Pid controller MLT', undefined, 'T2_HE_WORT_OUT');
+    this.pidControllers.push(pidControllerMLT);
 
     // Setup special program for valve he-hw-in
-    //let valveCtrlHeHwIn = new ValveControllerHeHwIn(pidControllerMLT, this.valveController, this.board);        
+    let valveCtrlHeHwIn = new ValveControllerHeHwIn(pidControllerMLT, this.valveController, this.boardController, this.parameterController);        
 
     // Setup phase
     this.phaseController = new PhaseController(this.valveController, this.boardController);
