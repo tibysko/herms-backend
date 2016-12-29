@@ -25,6 +25,7 @@ if (env.MOCK) {
 class Herms extends EventEmitter {
   constructor() {
     super(); // eventemitter constructor
+    this.moduleName = 'Herms';
 
     this.boardController = new BoardController();
     this.parameterController = new ParameterController();
@@ -40,7 +41,7 @@ class Herms extends EventEmitter {
     this.pidControllers.push(pidControllerMLT);
 
     // Setup special program for valve he-hw-in
-    let valveCtrlHeHwIn = new ValveControllerHeHwIn(pidControllerMLT, this.valveController, this.boardController, this.parameterController);        
+    let valveCtrlHeHwIn = new ValveControllerHeHwIn(pidControllerMLT, this.valveController, this.boardController, this.parameterController);
 
     // Setup phase
     this.phaseController = new PhaseController(this.valveController, this.boardController);
@@ -64,10 +65,11 @@ class Herms extends EventEmitter {
 
   start() {
     this.boardController.setup((err) => {
-      if (!err) {
-        for (let pidController of this.pidControllers) {
-          pidController.start();
-        }
+      if (err) {
+        logger.logError(this.moduleName, 'start', 'Failed to setup board-controller');
+      } else{
+        this._startPidControllers();
+        
       }
     });
   }
@@ -93,7 +95,7 @@ class Herms extends EventEmitter {
     if (controller) {
       controller.setConfig(config);
     } else {
-      logger.logWarning(this.module, 'setPidController', 'Could not find controller: ' + name);
+      logger.logWarning(this.moduleName, 'setPidController', 'Could not find controller: ' + name);
     }
   }
 
@@ -153,6 +155,12 @@ class Herms extends EventEmitter {
     });
   }
 
+  _startPidControllers() {
+    for (let pidController of this.pidControllers) {
+      pidController.start();
+    }
+  }
+
   _aggregateEventData(eventObject, dataArray) {
     eventObject.on('data', (data) => {
       let itemIndex = -1;
@@ -164,6 +172,8 @@ class Herms extends EventEmitter {
         }
       }
 
+      console.log(dataArray);
+
       if (itemIndex >= 0) {
         dataArray[itemIndex] = data;
       } else {
@@ -172,6 +182,7 @@ class Herms extends EventEmitter {
     });
   }
 }
+
 
 let herms = new Herms();
 module.exports = herms;

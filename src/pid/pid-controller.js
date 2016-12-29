@@ -56,7 +56,8 @@ class PidController extends EventEmitter {
 
     this.pidController.setSampleTime(this.timeframe);
     this.pidController.setOutputLimits(0, 255);
-    this.pidController.setMode('automatic');
+    this.pidController.setMode('manual');
+    this.pidController.setOutput(0);
 
     logger.logInfo(this.name, 'start', 'Starting intervall...');
 
