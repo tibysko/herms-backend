@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const logger = require('../core/logger');
+const boardController = require('../board/board-controller').BoardController;
 const BoardConstants = require('../board/board-controller').BoardConstants;
 
 const OPENED = 'OPENED'
@@ -15,7 +16,7 @@ const STOP_CLOSE = 'STOP_CLOSE';
 
 class ValveController extends EventEmitter {
 
-  constructor(boardController) {
+  constructor() {
     super();
 
     this.moduleName = 'ValveController';
@@ -108,4 +109,4 @@ module.exports.ValveConstants = {
   STOP_CLOSE,
 }
 
-module.exports.ValveController = ValveController;
+module.exports.ValveController = new ValveController();

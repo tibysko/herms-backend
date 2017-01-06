@@ -7,14 +7,16 @@ const async = require('async');
 
 const logger = require('../core/logger');
 const ValveConstants = require('../valve/valve-controller').ValveConstants;
+const valveController = require('../valve/valve-controller').ValveController;
 const BoardConstants = require('../board/board-controller').BoardConstants;
+const boardController = require('../board/board-controller').BoardController;
 
 const PHASES_FILE = './phases.json';
 
 class PhaseController {
 
-  constructor(valveController, board) {
-    this.board = board;
+  constructor() {
+    this.boardController = boardController;
     this.moduleName = 'PhaseController';
     this.phases = JSON.parse(fs.readFileSync(path.join(__dirname, (PHASES_FILE))));
     this.valveController = valveController;
@@ -33,8 +35,8 @@ class PhaseController {
     // TODO check valves
 
     // stop pumps
-    this.board.writePin('HW_PUMP', BoardConstants.PIN_LOW, function () {});
-    this.board.writePin('WORT_PUMP', BoardConstants.PIN_LOW, function () {});
+    this.boardController.writePin('HW_PUMP', BoardConstants.PIN_LOW, function () {});
+    this.boardController.writePin('WORT_PUMP', BoardConstants.PIN_LOW, function () {});
 
     let valves = this.valveController.getValves();
 
@@ -222,4 +224,4 @@ class PhaseController {
   }
 }
 
-module.exports = PhaseController;
+module.exports = new PhaseController();

@@ -9,7 +9,7 @@ var path = require('path');
 
 const config = require('./config/config');
 const logger = require('./core/logger');
-const io = require('./core/socket-io');
+const io = require('./socket-server');
 const routes = require('./routes');
 const herms = require('./herms');
 
@@ -33,10 +33,10 @@ app.use('/api', routes);
 
 // Start backend
 app.listen(config.port, function () {
-  logger.logInfo("server", 'app.listen', 'Server started on ' + config.port);
+  logger.logInfo('server', 'app.listen', 'Server started on ' + config.port);
 
   herms.start();
-
+/*
   // Setup websocket
   herms.on('controllers', (data) => {
     io.emit('controllers', data);
@@ -49,6 +49,6 @@ app.listen(config.port, function () {
   herms.on('pins', (data) => {
     io.emit('pins', data);
   });
-
+*/
 
 });

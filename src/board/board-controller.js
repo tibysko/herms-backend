@@ -1,12 +1,16 @@
+const async = require('async');
 const EventEmitter = require('events');
 const fs = require('fs');
 const path = require('path');
-const async = require('async');
-
+let SerialPort = require('serialport');
 
 const config = require('../config/config');
 const logger = require('../core/logger');
-const SerialPort = require('serialport');
+
+if (process.env.MOCK) {
+  logger.logWarning('Board-controller', 'Mock', 'Starting with mocked SerialPort')
+  SerialPort = require('./serial-port-mock');
+}
 
 const PIN_HIGH = 1;
 const PIN_LOW = 0;
@@ -53,7 +57,7 @@ class BoardController extends EventEmitter {
         });
 
         setInterval(() => {
-          this.emit('data', this.getPinData());
+          this.emit('data', this.getPins());
         }, 100);
 
         cb(null);
@@ -69,7 +73,7 @@ class BoardController extends EventEmitter {
     }, cb);
   }
 
-  getPinData() {
+  getPins() {
     let pinObject = {};
 
     for (let key in this.pins) {
@@ -118,7 +122,7 @@ class BoardController extends EventEmitter {
   }
 }
 
-module.exports.BoardController = BoardController;
+module.exports.BoardController = new BoardController();
 module.exports.BoardConstants = {
   PIN_HIGH: PIN_HIGH,
   PIN_LOW: PIN_LOW

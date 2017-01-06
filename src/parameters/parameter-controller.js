@@ -27,9 +27,11 @@ class ParameterController extends EventEmitter {
     parameter.changed = new Date();
     parameter.value = value;
 
-    this.emit('data', this.parameters);
     logger.logInfo(this.moduleName, 'updateParameter', '[' + name + ']: ' + oldValue + ' => ' + value);
 
+    // Notify listeners of new parameter value
+    this.emit('data');
+   
     this._saveParameters();
 
     return parameter;
@@ -39,10 +41,20 @@ class ParameterController extends EventEmitter {
     return this.parameters;
   }
 
-  _saveParameters(){
+  getValue(parameterName) {
+    if (!this.parameters[parameterName]) {
+      logger.logError(this.moduleName, 'GetParameter', `Parameter ${parameterName} not found`);
+      return undefined;
+    } else {
+      return this.parameters[parameterName].value;
+    }
+
+  }
+
+  _saveParameters() {
     fs.writeFileSync(path.join(__dirname, PARAMETERS_FILE), JSON.stringify(this.parameters), null, '  ');
   }
 
 }
 
-module.exports = ParameterController;
+module.exports = new ParameterController();
