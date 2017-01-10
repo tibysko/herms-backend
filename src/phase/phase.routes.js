@@ -2,14 +2,14 @@ const router = require('express').Router();
 
 const phaseController = require('./phase-controller');
 
-router.route('/phases').get((req, res) => {
-  res.send(herms.getPhases());
+router.route('/').get((req, res) => {
+  res.send(phaseController.getPhases());
 });
 
-router.route('/phases/:id/activate').put((req, res) => {
+router.route('/:id/activate').put((req, res) => {
   let id = req.params.id;
 
-  let phase = herms.activatePhase(id);
+  let phase = phaseController.activatePhase(id);
 
   if (phase instanceof Error) {
     res.status(400).send(phase.message);
@@ -18,14 +18,14 @@ router.route('/phases/:id/activate').put((req, res) => {
   }
 });
 
-router.route('/phases/:id').put((req, res) => {
+router.route('/:id').put((req, res) => {
   let phase = req.body;
   let phaseId = req.params.id;
 
   if (!phase) {
     res.status(400).send('Missing phase on body');
   } else {
-    let updatedPhase = herms.updatePhase(phaseId, phase);
+    let updatedPhase = phaseController.updatePhase(phaseId, phase);
 
     if (updatedPhase instanceof Error) {
       res.status(500).send(updatedPhase.message);
@@ -35,7 +35,7 @@ router.route('/phases/:id').put((req, res) => {
   }
 });
 
-router.route('/phases/:id').delete((req, res) => {
+router.route('/:id').delete((req, res) => {
   let phaseId = req.params.id;
 
   if (!phaseId) {
@@ -43,7 +43,7 @@ router.route('/phases/:id').delete((req, res) => {
       error: 'missing phaseId'
     });
   } else {
-    let deletedId = herms.deletePhase(phaseId);
+    let deletedId = phaseController.deletePhase(phaseId);
 
     if (deletedId instanceof Error) {
       res.status(500).send({
@@ -55,7 +55,7 @@ router.route('/phases/:id').delete((req, res) => {
   }
 });
 
-router.route('/phases').post((req, res) => {
+router.route('/').post((req, res) => {
   let phase = req.body;
 
   if (!phase) {
@@ -64,7 +64,7 @@ router.route('/phases').post((req, res) => {
     });
 
   } else {
-    let newPhase = herms.createPhase(phase);
+    let newPhase = phaseController.createPhase(phase);
 
     if (newPhase instanceof Error) {
       res.status(400).send(newPhase.message);
@@ -73,8 +73,5 @@ router.route('/phases').post((req, res) => {
     }
   }
 });
-
-
-
 
 module.exports = router;

@@ -1,13 +1,11 @@
 ﻿"use strict";
 var winston = require('winston');
 const socketio = require('../socket-server');
-/*
 
 winston.add(require('winston-daily-rotate-file'), {
-    level: 'error',
-    filename: './logs/filelog-error.log'
+  level: 'error',
+  filename: './logs/filelog-error.log'
 });
-*/
 
 class Logger {
 
@@ -30,7 +28,7 @@ class Logger {
     }
 
     winston.log(level, message, metadata);
-   // socketio.emit(level, message);
+    socketio.emit(level, message);
   }
 
   loggErrorAndExecuteCb(moduleName, functionName, message, cb) {
@@ -53,13 +51,13 @@ class Logger {
     // Find items logged between today and yesterday.
     //
 
-    /*  winston.query(options, function (err, results) {
-          if (err) {
-              throw err;
-          }
+    winston.query(options, function (err, results) {
+      if (err) {
+        throw err;
+      }
 
-          cb(results);
-      });*/
+      cb(results);
+    });
   }
 
 }

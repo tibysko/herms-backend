@@ -1,6 +1,6 @@
 const boardController = require('../board/board-controller').BoardController;
 const parameterController = require('../parameters/parameter-controller');
-const pidController = require('../pid/mlt-pid-controller');
+const pidController = require('../pid/hlt-pid-controller');
 const ValveConstants = require('./valve-controller').ValveContants;
 const valveController = require('./valve-controller').ValveController;
 

@@ -1,20 +1,19 @@
-const io = require('socket.io');
 
 const config = require('./config/config');
+
+var io = require('socket.io').listen(config.websocketPort);
 
 class SocketIO {
     constructor(){
         this.io = io;
-        
-        io.listen(config.websocketPort);
     }
 
     emit(channel, message) {
-        io.sockets.emit(channel, message);
+        this.io.sockets.emit(channel, message);
     }
 
     on(event, cb) {
-        io.sockets.on(event, cb);
+        this.io.sockets.on(event, cb);
     }
 }
 

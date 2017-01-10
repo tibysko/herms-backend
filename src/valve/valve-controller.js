@@ -30,7 +30,7 @@ class ValveController extends EventEmitter {
   }
 
   setState(name, state, cb) {
-    let valve = this._findValve(name);
+    let valve = this.valves.find(valve => valve.name === name);
 
     if (valve) {
       if (state === START_OPEN) {
@@ -55,19 +55,6 @@ class ValveController extends EventEmitter {
 
   getValves() {
     return this.valves;
-  }
-
-  _findValve(name) {
-    let foundValve;
-
-    for (let valve of this.valves) {
-      if (valve.name === name) {
-        foundValve = valve;
-        break;
-      }
-    }
-
-    return foundValve;
   }
 
   _updateValves(pins) {

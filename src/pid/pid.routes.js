@@ -9,7 +9,7 @@ router.route('/:name').post((req, res) => {
     let config = body;
     pidControllerRegistry.setPidController(controllerName, config);
 
-    res.status(200).send(herms.getPidControllers());
+    res.status(200).send(pidControllerRegistry.getPidControllerStatus());
 
   } else {
     res.status(400).send();

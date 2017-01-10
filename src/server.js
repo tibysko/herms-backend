@@ -25,11 +25,8 @@ if (env.FRONTEND_PATH && fs.existsSync(env.FRONTEND_PATH)) {
 
 app.use(bodyParser.json());
 app.use(cors());
-// compress all requests 
-app.use(compression());
-
-// register api routes
-app.use('/api', routes);
+app.use(compression()); // compress all requests 
+app.use('/api', routes); // register api routes
 
 // Start backend
 app.listen(config.port, function () {

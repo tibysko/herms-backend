@@ -12,8 +12,13 @@ class SerialPortMock extends EventEmitter {
     setTimeout(cb, 500); // emulate successful serialport 
   }
 
-  write(data) {
-    logger.logInfo(this.moduleName, 'Write', data);
+  write(data, cb) {
+    logger.logInfo(this.moduleName, 'Write', data.replace('\n', ''));
+    process.nextTick(cb);
+  }
+
+  drain(cb) {
+    process.nextTick(cb);
   }
 
   _emulateReadBoard() {

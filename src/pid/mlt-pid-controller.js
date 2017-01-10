@@ -1,18 +1,20 @@
 const parameterController = require('../parameters/parameter-controller');
 const PidController = require('./pid-controller');
 
+const LONG_NAME = 'PidController MLT';
+const NAME = 'pidCtrlMLT';
 const T2_OFFSET = 't2_offset';
 const T2_SCALING = 't2_scaling';
 const TEMPERATURE_PIN = 'T2_HE_WORT_OUT';
 
 
-class HltPidController extends PidController{
+class MltPidController extends PidController{
   constructor() {
     let offset = parameterController.getValue(T2_OFFSET);
     let scaling = parameterController.getValue(T2_SCALING);
 
-    super(T2_OFFSET, T2_SCALING, TEMPERATURE_PIN);
+    super(NAME, LONG_NAME, T2_OFFSET, T2_SCALING, TEMPERATURE_PIN);
   }
 }
 
-module.exports = new HltPidController();
+module.exports = new MltPidController();

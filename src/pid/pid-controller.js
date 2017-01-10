@@ -9,14 +9,16 @@ const PID = require('./pid');
 
 class PidController extends EventEmitter {
 
-  constructor(offsetParameter, scalingParameter, temperaturePinName) {
+  constructor(name, longName,offsetParameter, scalingParameter, temperaturePinName) {
     super(); // EventEmitter constructor 
 
     this.actTemperatureValue = 0;
     this.boardController = boardController;
     this.dummyId = -10; // dummy value
-    this.moduleName = 'PidController';
     this.logger = logger;
+    this.longName = longName;
+    this.moduleName = 'PidController';
+    this.name = name;
     this.PID = {};
     this.parameterController = parameterController;
     this.process = this.dummyId;
@@ -44,7 +46,8 @@ class PidController extends EventEmitter {
 
       this.emit('data', {
         output: output,
-        temperature: currTemp
+        temperature: currTemp,
+        name: this.longName
       });
 
     }, this.timeframe);
@@ -67,7 +70,7 @@ class PidController extends EventEmitter {
 
   getStatus() {
     let status = {
-      name: this.moduleName,
+      name: this.name,
       longName: this.longName,
       config: {
         kp: this.PID.getKp(),
@@ -84,7 +87,7 @@ class PidController extends EventEmitter {
   }
 
   getName() {
-    return this.moduleName;
+    return this.name;
   }
 
   getMode() {
