@@ -13,9 +13,10 @@
 
 typedef struct
 {
-  String type   = "";  //DI (Digital IN), ADI (Analog to digital IN), DO (Digital OUT), PWM, AI (Analog IN),
-  int value     = 0;
-  int sensorId  = 0;  //id in board struct for sensor in position
+  int value       = 0;
+  String type     = ""; //DI (Digital IN), ADI (Analog to digital IN), DO (Digital OUT), PWM, AI (Analog IN),
+  String function = ""; //close, open, motor, sensor
+  int sensorId    = 0;  //id in board struct for sensor in position
 }  board_type;
 
 board_type board[69]; //Board setup
@@ -97,6 +98,33 @@ void setup() {
   for (int pinId = VALVES_RB3_4_START ; pinId <= VALVES_RB3_4_END; pinId++) {
     board[pinId].sensorId = pinId + 14;
   }
+
+  // Set function for valves
+  board[2].function = "OPEN";
+  board[3].function = "CLOSE";
+  board[4].function = "OPEN";
+  board[5].function = "CLOSE";
+  board[6].function = "OPEN";
+  board[7].function = "CLOSE";
+  board[8].function = "OPEN";
+  board[9].function = "CLOSE";
+
+  board[26].function = "OPEN";
+  board[27].function = "CLOSE";
+  board[28].function = "OPEN";
+  board[29].function = "CLOSE";
+  board[30].function = "OPEN";
+  board[31].function = "CLOSE";
+  board[32].function = "OPEN";
+  board[33].function = "CLOSE";
+
+  board[34].function = "OPEN";
+  board[35].function = "CLOSE";
+  board[36].function = "OPEN";
+  board[37].function = "CLOSE";
+  board[38].function = "OPEN";
+  board[39].function = "CLOSE";
+
 }
 
 // ========== Main loop ========== //
@@ -116,10 +144,9 @@ void loop() {
 
 // ========== Program mask out new string from serial and write to board ========== //
 void writeToBoard() {
-  //  Command example AWA100255
-  //  AW = cmd. Length 2 char
-  //  A10 = pin ('A' is for analog, 0 (zero) for digital) Length 3 char
-  //  0255 = chars pin value. Length 4 char
+  // cmd: Length 2 char - Not in use
+  // pin: Length 3 char
+  // value: Length 4 char
 
   cmd   = inputString.substring(0, 2);
   pin   = inputString.substring(2, 5).toInt();
@@ -127,15 +154,24 @@ void writeToBoard() {
 
   for (int pinId = 1 ; pinId <= 69; pinId++) {
 
-    if (pin == pinId && board[pinId].type == "DO") {      
+    if (pin == pinId && board[pinId].type == "DO") {
       //Check if sensor is low before setting output
       if (digitalRead(board[pin].sensorId) == LOW)  {
-        digitalWrite(pin, value);     
+        digitalWrite(pin, value);
+      }
+
+      // Write zero to the opposite direction of the valve to prevent both directions being set at the same time
+      if (board[pin].function = "CLOSE") {
+        digitalWrite(pin-1, 0);
+      } 
+      else if (board[pin].function = "OPEN") {
+        digitalWrite(pin+1, 0);
       }
 
       break;
 
-    } else if (pin == pinId && board[pinId].type == "PWM") {
+    } 
+    else if (pin == pinId && board[pinId].type == "PWM") {
       analogWrite(pin, value);
 
       break;
