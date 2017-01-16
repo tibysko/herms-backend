@@ -10,9 +10,6 @@ const TEMPERATURE_PIN = 'T2_HE_WORT_OUT';
 
 class MltPidController extends PidController{
   constructor() {
-    let offset = parameterController.getValue(T2_OFFSET);
-    let scaling = parameterController.getValue(T2_SCALING);
-
     super(NAME, LONG_NAME, T2_OFFSET, T2_SCALING, TEMPERATURE_PIN);
   }
 }
