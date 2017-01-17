@@ -3,87 +3,54 @@
 const fs = require('fs');
 const path = require('path');
 const uuidV4 = require('uuid/v4');
+const async = require('async');
 
+const BoardConstants = require('../board/board-controller').BoardConstants;
+const boardController = require('../board/board-controller').BoardController;
 const logger = require('../core/logger');
-const ValveConstants = require('../valve/valve-constants');
-const BoardConstants = require('../board/board-constants');
-
-var async = require('async');
+const activatePhaseUtil = require('./activate-phase-util');
+const ValveConstants = require('../valve/valve-controller').ValveConstants;
+const valveController = require('../valve/valve-controller').ValveController;
 
 const PHASES_FILE = './phases.json';
 
 class PhaseController {
 
-  constructor(valveController, board) {
-    this.board = board;
+  constructor() {
+    this.activatePhaseUtil = activatePhaseUtil;
+    this.boardController = boardController;
     this.moduleName = 'PhaseController';
     this.phases = JSON.parse(fs.readFileSync(path.join(__dirname, (PHASES_FILE))));
     this.valveController = valveController;
   };
 
   activatePhase(id) {
-    let foundPhase = this._findPhase(id);
+    let phase = this._findPhase(id);
 
-    if (!foundPhase) {
+    if (!phase) {
       let err = 'Phase [' + id + '] not found';
       logger.logError(this.moduleName, 'activatePhase', err);
 
       return new Error(err);
     }
 
-    // stop pumps
-    this.board.writePin('HW_PUMP', BoardConstants.PIN_LOW, function () {});
-    this.board.writePin('WORT_PUMP', BoardConstants.PIN_LOW, function () {});
-
-    let valves = this.valveController.getValves();
-
-    console.log(JSON.stringify(foundPhase));
-
-    async.eachSeries(foundPhase.valves, (item, callback) => {
-      setTimeout(() => {
-        let newState = (item.state === ValveConstants.OPENED) ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
-        this.valveController.setState(item.name, newState, function () {});
-        callback();
-      }, 200);
-    }, function (err) {
-      console.log('done');
-    });
-
-    /*
-      let phaseValves = foundPhase.valves;
-      let i = 0;
-      let length = phaseValves.length;
-
-      let ref = setInterval(() => {
-        if (i < length) {
-          let newState = (phaseValves[i].state === ValveConstants.OPENED) ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
-          this.valveController.setState(phaseValves[i].name, newState, function () {});
-        } else {
-          clearInterval(ref);
-        }
-        i = i + 1;
-      }, 200);*/
+    //If any functions in the series pass an error to its callback, no more functions are run,
+    //and _resolveResult is immediately called with the value of the error,
+    async.series([
+      cb => this.boardController.writePin('HW_PUMP', BoardConstants.PIN_LOW, cb),
+      cb => this.boardController.writePin('WORT_PUMP', BoardConstants.PIN_LOW, cb),
+      cb => this.activatePhaseUtil.closeValves(cb),
+      cb => setTimeout(cb, 10000), // wait 10 s until check closed valves
+      cb => this.activatePhaseUtil.isAllValvesClosed(cb),
+      cb => this.activatePhaseUtil.setValvesForPhase(phase, cb),
+      cb => setTimeout(cb, 10000), // wait 10 s until check valves
+      cb => this.activatePhaseUtil.checkValves(phase, cb),
+      cb => this._updateActivePhase(phase, this.phases, cb)
+    ], (err, results) => this._resolveResult(err, results, phase));
 
 
-    /* for (let valve of foundPhase.valves) {
-       let newState = (valve.state === ValveConstants.OPENED) ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
-       console.log(valve.name + ' ' + newState);
-       this.valveController.setState(valve.name, newState, function () {});
-     }*/
-
-    setTimeout(() => this._checkValves(foundPhase), 20000); // check valve state after 6000 ms
-
-    // set phase to active and "deactivate" all others
-    for (let phase of this.phases) {
-      phase.activated = false;
-    }
-    foundPhase.activated = true;
-
-    this._savePhasesToFile();
-
-    return foundPhase;
+    return phase;
   }
-
 
   createPhase(phase) {
     let validationError = this._validatePhase(phase);
@@ -162,32 +129,30 @@ class PhaseController {
     return this.phases;
   }
 
-  _checkValves(activatedPhase) {
-    let valves = this.valveController.getValves();
-    let valvesNotOk = [];
+  _findPhase(id) {
+    return this.phases.find(phase => phase.id === id);
+  }
 
-    for (let valve of valves) {
-      let desiredState = activatedPhase[valve.name] === ValveConstants.OPENED ? ValveConstants.OPENED : ValveConstants.CLOSED;
+  _resolveResult(err, results, phase) {
+    if (err) {
+      logger.logError(this.moduleName, '_resolveResult', err);
+    }
+  }
 
-      if (desiredState !== valve.state) {
-        valvesNotOk.push(valve.name);
-      }
+  _savePhasesToFile() {
+    fs.writeFileSync(path.join(__dirname, PHASES_FILE), JSON.stringify(this.phases), null, '  ');
+  }
+
+  _updateActivePhase(activatedPhase, cb) {
+    // set phase to active and "deactivate" all others
+    for (let phase of this.phases) {
+      phase.activated = false;
     }
 
-    async.eachSeries(foundPhase.valves, (item, callback) => {
-      setTimeout(() => {
-        // Stop all valves movement 
-        this.valveController.setState(valve.name, ValveConstants.STOP_CLOSE, function () {});
-        this.valveController.setState(valve.name, ValveConstants.STOP_OPEN, function () {});
-        callback();
-      }, 200);
-    }, function (err) {
-      console.log('done');
-    });
+    activatedPhase.activated = true;
 
-    if (valvesNotOk.length > 0) {
-      logger.logError(this.moduleName, 'activatePhase', 'The following valves was not set: ' + JSON.stringify(valvesNotOk));
-    }
+    this._savePhasesToFile();
+    cb(null);
   }
 
   _validatePhase(phase) {
@@ -206,22 +171,6 @@ class PhaseController {
     }
   }
 
-  _findPhase(id) {
-    let foundPhase;
-
-    for (let phase of this.phases) {
-      if (phase.id === id) {
-        foundPhase = phase;
-        break;
-      }
-    }
-
-    return foundPhase;
-  }
-
-  _savePhasesToFile() {
-    fs.writeFileSync(path.join(__dirname, PHASES_FILE), JSON.stringify(this.phases), null, '  ');
-  }
 }
 
-module.exports = PhaseController;
+module.exports = new PhaseController();

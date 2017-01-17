@@ -1,68 +1,65 @@
 ﻿"use strict";
-
-const socketio = require('./socket-io');
 var winston = require('winston');
-
+const socketio = require('../socket-server');
 
 winston.add(require('winston-daily-rotate-file'), {
-    level: 'error',
-    filename: './logs/filelog-error.log'
-})
+  level: 'error',
+  filename: './logs/filelog-error.log'
+});
 
 class Logger {
 
-    static logInfo(moduleName, functionName, message) {
-        Logger.log('info', message, moduleName, functionName);
+  logInfo(moduleName, functionName, message) {
+    this.log('info', message, moduleName, functionName);
+  }
+
+  logError(moduleName, functionName, message) {
+    this.log('error', message, moduleName, functionName);
+  }
+
+  logWarning(moduleName, functionName, message) {
+    this.log('warn', message, moduleName, functionName);
+  }
+
+  log(level, message, moduleName, functionName) {
+    let metadata = {
+      module: moduleName,
+      function: functionName
     }
 
-    static logError(moduleName, functionName, message) {
-        Logger.log('error', message, moduleName, functionName);
-    }
+    winston.log(level, message, metadata);
+    socketio.emit(level, message);
+  }
 
-    static logWarning(moduleName, functionName, message) {
-        Logger.log('warn', message, moduleName, functionName);
-    }
+  loggErrorAndExecuteCb(moduleName, functionName, message, cb) {
+    Logger.logError(moduleName, functionName, message, cb);
+    let err = new Error("message");
+    cb(new Error(message));
+  }
 
-    static log(level, message, moduleName, functionName) {
-        let metadata = {
-            module: moduleName,
-            function: functionName
-        }
+  readLogs(cb) {
+    var options = {
+      from: new Date - 24 * 60 * 60 * 1000,
+      until: new Date,
+      limit: 10,
+      start: 0,
+      order: 'desc',
+      fields: ['message', 'timestamp', 'level', 'function', 'module']
+    };
 
-        winston.log(level, message, metadata);
-        socketio.emit(level, message);
-    }
+    //
+    // Find items logged between today and yesterday.
+    //
 
-    static loggErrorAndExecuteCb(moduleName, functionName, message, cb){
-        Logger.logError(moduleName, functionName, message, cb);
-        let err = new Error("message");
-        console.log('err1: ' + JSON.stringify(err));
-        cb(new Error(message));
-    }
+    winston.query(options, function (err, results) {
+      if (err) {
+        throw err;
+      }
 
-    static readLogs(cb) {
-        var options = {
-            from: new Date - 24 * 60 * 60 * 1000,
-            until: new Date,
-            limit: 10,
-            start: 0,
-            order: 'desc',
-            fields: ['message', 'timestamp', 'level', 'function', 'module']
-        };
-
-        //
-        // Find items logged between today and yesterday.
-        //
-
-        winston.query(options, function (err, results) {
-            if (err) {
-                throw err;
-            }
-
-            cb(results);
-        });
-    }
+      cb(results);
+    });
+  }
 
 }
 
-module.exports = Logger;
+module.exports = new Logger();

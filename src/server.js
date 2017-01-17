@@ -9,9 +9,9 @@ var path = require('path');
 
 const config = require('./config/config');
 const logger = require('./core/logger');
-const io = require('./core/socket-io');
+const io = require('./socket-server');
 const routes = require('./routes');
-var herms = require('./herms');
+const herms = require('./herms');
 
 var app = express();
 const env = process.env;
@@ -25,18 +25,15 @@ if (env.FRONTEND_PATH && fs.existsSync(env.FRONTEND_PATH)) {
 
 app.use(bodyParser.json());
 app.use(cors());
-// compress all requests 
-app.use(compression());
-
-// register api routes
-app.use('/api', routes);
+app.use(compression()); // compress all requests 
+app.use('/api', routes); // register api routes
 
 // Start backend
 app.listen(config.port, function () {
-  logger.logInfo("server", 'app.listen', 'Server started on ' + config.port);
+  logger.logInfo('server', 'app.listen', 'Server started on ' + config.port);
 
   herms.start();
-
+/*
   // Setup websocket
   herms.on('controllers', (data) => {
     io.emit('controllers', data);
@@ -49,6 +46,6 @@ app.listen(config.port, function () {
   herms.on('pins', (data) => {
     io.emit('pins', data);
   });
-
+*/
 
 });

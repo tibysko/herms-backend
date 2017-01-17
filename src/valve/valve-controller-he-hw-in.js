@@ -1,5 +1,8 @@
-const ValveConstants = require('./valve-constants');
+const boardController = require('../board/board-controller').BoardController;
 const parameterController = require('../parameters/parameter-controller');
+const pidController = require('../pid/mlt-pid-controller');
+const ValveConstants = require('./valve-controller').ValveContants;
+const valveController = require('./valve-controller').ValveController;
 
 const HYSTERESIS = 'HE_HW_IN_Hysteresis';
 const VALVE_STEP = 'HE_HW_IN_Step';
@@ -7,42 +10,27 @@ const INTERVAL = 'HE_HW_IN_Interval';
 
 class ValveControllerHeHwIn {
 
-  constructor(pidController, valveController, board) {
-    
+  constructor() {
+    this.boardController = boardController;
+    this.parameterController = parameterController;
     this.pidController = pidController;
     this.valveController = valveController;
-    this.board = board;
-    this.pidControllerName = '';
+
     this.output = 0;
     this.temperature = 0;
     this.valveHysteresis = 5;
     this.valveStep = 25;
     this.valveSetPoint = 0;
-    this.valveActPos = 0; 
+    this.valveActPos = 0;
     this.tempMode = '';
 
-    parameterController.on('data', (data) => {
-      console.log('valveStep: ' + data[VALVE_STEP].value);
-      this.valveHysteresis =  parseFloat(data[HYSTERESIS].value);
-      this.valveStep = parseFloat(data[VALVE_STEP].value);
-    });
+    this._updateParameters();
+    this._setupListeners();
 
-    this.pidController.on('data', (data) => {
-      this.pidControllerName = data.name;
-      this.output = data.output;
-      this.temperature = data.temperature;
-    });
-
-    this.board.on('data', (data) => {
-      if (data['HE_HW_IN_ACTPOS']) {
-        this.valveActPos = data['HE_HW_IN_ACTPOS'].value;
-      }
-    });
-
-    setInterval(() => this.computeValvePos(), INTERVAL);
+    setInterval(() => this._computeValvePos(), INTERVAL);
   }
 
-  computeValvePos() {    
+  _computeValvePos() {
     if (this.tempMode !== this.pidController.getMode()) {
       this.tempMode = this.pidController.getMode();
       this.valveController.setState('HE_HW_IN', ValveConstants.STOP_CLOSE, function () {});
@@ -67,6 +55,31 @@ class ValveControllerHeHwIn {
       }
     }
   }
+
+  _setupListeners() {
+    this.parameterController.on('data', () => {
+      this._updateParameters();
+    });
+
+    this.pidController.on('data', (data) => {
+      this.output = data.output;
+      this.temperature = data.temperature;
+    });
+
+    this.boardController.on('data', (data) => {
+      if (data['HE_HW_IN_ACTPOS']) {
+        this.valveActPos = data['HE_HW_IN_ACTPOS'].value;
+      }
+    });
+  }
+
+  _updateParameters() {
+    let valveHysteresis = this.parameterController.getValue(HYSTERESIS);
+    let valveStep = this.parameterController.getValue(VALVE_STEP);
+
+    this.valveHysteresis = parseFloat(valveHysteresis);
+    this.valveStep = parseFloat(valveStep);
+  }
 }
 
-module.exports = ValveControllerHeHwIn;
+module.exports = new ValveControllerHeHwIn();

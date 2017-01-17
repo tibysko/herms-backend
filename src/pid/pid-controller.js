@@ -3,96 +3,69 @@
 const EventEmitter = require('events');
 
 const logger = require('../core/logger');
+const boardController = require('../board/board-controller').BoardController;
 const parameterController = require('../parameters/parameter-controller');
 const PID = require('./pid');
 
-const T1_OFFSET = 't1_offset';
-const T1_SCALING = 't1_scaling';
-
 class PidController extends EventEmitter {
 
-  constructor(board, name, longName, heaterPinName, temperaturePinName) {
+  constructor(name, longName,offsetParameter, scalingParameter, temperaturePinName) {
     super(); // EventEmitter constructor 
 
     this.actTemperatureValue = 0;
-    this.board = board;
+    this.boardController = boardController;
     this.dummyId = -10; // dummy value
-    this.heaterPinName = heaterPinName;
-    this.name = name; // pid-controller name, used in logging
+    this.logger = logger;
     this.longName = longName;
-    this.pidController = {};
+    this.moduleName = 'PidController';
+    this.name = name;
+    this.PID = {};
+    this.parameterController = parameterController;
     this.process = this.dummyId;
     this.temperaturePinName = temperaturePinName;
+    this.tempOffset = parameterController.getValue(offsetParameter);;
+    this.tempScaling = parameterController.getValue(scalingParameter);;
 
-    // pidController default setings    
-    this.Kp = 300;
-    this.Ki = 100;
-    this.Kd = 50;
-    this.setPoint = 0;
-    this.timeframe = 1000;
-    this.tempScaling = 1;
-    this.tempOffset = 0;
-
-    parameterController.on('data', (data) => {
-      this.tempOffset =  parseFloat(data[T1_OFFSET].value);
-      this.tempScaling = parseFloat(data[T1_SCALING].value);
-    });
+    this._initPid(); // init PID with default settings. Later we should read this from a database
   }
 
   start() {
     if (this.process !== this.dummyId) {
-      logger.logInfo(this.name, 'start', 'Already started');
+      this.logger.logInfo(this.moduleName, 'start', 'Already started');
       return;
     }
 
-    logger.logInfo(this.name, 'start', 'Starting with settings: Kp=' + this.Kp + ' Ki=' + this.Ki + ' Kd=' + this.Kd + ' setPoint=' + this.setPoint);
-
-    this.board.on('data', (data) => {
-      this.actTemperatureValue = data[this.temperaturePinName].value;
-    });
-
-    this.pidController = new PID(this.actTemperatureValue, this.setPoint, this.Kp, this.Ki, this.Kd, 'direct');
-
-    this.pidController.setSampleTime(this.timeframe);
-    this.pidController.setOutputLimits(0, 255);
-    this.pidController.setMode('manual');
-    this.pidController.setOutput(0);
-
-    logger.logInfo(this.name, 'start', 'Starting intervall...');
+    this.logger.logInfo(this.moduleName, 'start', 'Starting with settings: Kp=' + this.Kp + ' Ki=' + this.Ki + ' Kd=' + this.Kd + ' setPoint=' + this.setPoint);
 
     this.process = setInterval(() => {
       let currTemp = (this.actTemperatureValue / this.tempScaling) + this.tempOffset;
 
-      this.pidController.setInput(currTemp);
-      this.pidController.compute();
-      let output = this.pidController.getOutput();
-
-      if (this.heaterPinName) {
-        this.board.writePin(this.heaterPinName, output, function () {});
-      }
+      this.PID.setInput(currTemp);
+      this.PID.compute();
+      let output = this.PID.getOutput();
 
       this.emit('data', {
-        name: this.name,
         output: output,
-        temperature: currTemp
+        temperature: currTemp,
+        name: this.longName
       });
 
     }, this.timeframe);
   }
 
   stop() {
-    logger.logInfo(this.name, 'start', 'Stopping pid ...');
+    this.logger.logInfo(this.moduleName, 'start', 'Stopping pid ...');
 
     clearInterval(this.process);
   }
 
   setConfig(config) {
-    logger.logInfo(this.name, 'setConfig', 'Setting config: ' + JSON.stringify(config));
+    this.logger.logInfo(this.moduleName, 'setConfig', 'Setting config: ' + JSON.stringify(config));
 
-    this.pidController.setPoint(config.setPoint);
-    this.pidController.setOutput(config.output);
-    this.pidController.setTunings(config.kp, config.ki, config.kd);
-    this.pidController.setMode(config.mode);
+    this.PID.setPoint(config.setPoint);
+    this.PID.setOutput(config.output);
+    this.PID.setTunings(config.kp, config.ki, config.kd);
+    this.PID.setMode(config.mode);
   }
 
   getStatus() {
@@ -100,12 +73,12 @@ class PidController extends EventEmitter {
       name: this.name,
       longName: this.longName,
       config: {
-        kp: this.pidController.getKp(),
-        ki: this.pidController.getKi(),
-        kd: this.pidController.getKd(),
-        mode: this.pidController.getMode(),
-        output: this.pidController.getOutput(),
-        setPoint: this.pidController.getSetPoint()
+        kp: this.PID.getKp(),
+        ki: this.PID.getKi(),
+        kd: this.PID.getKd(),
+        mode: this.PID.getMode(),
+        output: this.PID.getOutput(),
+        setPoint: this.PID.getSetPoint()
       },
       data: {}
     }
@@ -118,9 +91,47 @@ class PidController extends EventEmitter {
   }
 
   getMode() {
-    return this.pidController.getMode();
+    return this.PID.getMode();
   }
 
+  setTempOffset(value) {
+    this.tempOffset = value;
+  }
+
+  setTempScaling(value) {
+    this.tempScaling = value;
+  }
+
+  _setupListeners() {
+    parameterController.on('data', (data) => {
+      let offset = parameterController.getValue(T2_OFFSET);
+      let scaling = parameterController.getValue(T2_SCALING);
+
+      this.pidController.setTempOffset(offset);
+      this.pidController.setTempScaling(scaling);
+    });
+
+    this.boardController.on('data', (data) => {
+      this.actTemperatureValue = data[this.temperaturePinName].value;
+    });
+  }
+
+  _initPid() {
+    // pidController default setings    
+    this.Kp = 300;
+    this.Ki = 100;
+    this.Kd = 50;
+    this.setPoint = 0;
+    this.timeframe = 1000;
+    this.tempScaling = 1;
+    this.tempOffset = 0;
+
+    this.PID = new PID(this.actTemperatureValue, this.setPoint, this.Kp, this.Ki, this.Kd, 'direct');
+    this.PID.setSampleTime(this.timeframe);
+    this.PID.setOutputLimits(0, 255);
+    this.PID.setMode('manual');
+    this.PID.setOutput(0);
+  }
 }
 
 module.exports = PidController;
