@@ -7,22 +7,21 @@ router.route('/').get((req, res) => {
 })
 
 router.route('/:name').post((req, res) => {
-  let name = req.params.name;
-  let body = req.body;
+  req.check('name', 'Missing name').notEmpty();
+  req.checkBody('state', 'Missing state').notEmpty();
 
-  if (body && body.state) {
-    valveController.setState(name, body.state, function (err) {
-      if(err){
-        return res.status(400).send(err.message);
-      }
+  req.getValidationResult().then(result => {
+    if (!result.isEmpty()) return res.status(400).send(result.array());
+
+    let name = req.params.name;
+    let state = req.body.state;
+
+    valveController.setState(name, state, err => {
+      if (err) return res.status(500).send(err.message);
 
       return res.status(200).send();
     });
-  } else {
-    res.status(400).send({
-      error: 'body not found'
-    });
-  }
+  });
 });
 
 module.exports = router;

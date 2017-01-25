@@ -1,5 +1,5 @@
 
-const config = require('./config/config');
+const config = require('../config/config');
 
 var io = require('socket.io').listen(config.websocketPort);
 

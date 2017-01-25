@@ -24,7 +24,8 @@ class ValveController extends EventEmitter {
     this.boardController = boardController;
 
     this.boardController.on('data', (pins) => {
-      this._updateValves(pins);
+      if (pins) this._updateValves(pins);
+
       this.emit('data', this.valves);
     });
   }
@@ -32,24 +33,26 @@ class ValveController extends EventEmitter {
   setState(name, state, cb) {
     let valve = this.valves.find(valve => valve.name === name);
 
-    if (valve) {
-      if (state === START_OPEN) {
-        this.boardController.writePin(valve.pin.open, BoardConstants.PIN_HIGH, cb);
-      } else if (state === STOP_OPEN) {
-        this.boardController.writePin(valve.pin.open, BoardConstants.PIN_LOW, cb);
-      } else if (state === START_CLOSE) {
-        this.boardController.writePin(valve.pin.close, BoardConstants.PIN_HIGH, cb);
-      } else if (state === STOP_CLOSE) {
-        this.boardController.writePin(valve.pin.close, BoardConstants.PIN_LOW, cb);
-      } else {
-        let err = 'State [' + state + '] not found';
-        logger.logError(this.moduleName, 'setState', err);
-        cb(new Error(err));
-      }
-    } else {
-      let err = 'Valve [' + name + '] not found';
+    if (!valve) {
+      let err = `Valve ${name} not found`;
       logger.logError(this.moduleName, 'setState', err);
-      cb(new Error(err));
+
+      return cb(new Error(err));
+    }
+
+    if (state === START_OPEN) {
+      this.boardController.writePin(valve.pin.open, BoardConstants.PIN_HIGH, cb);
+    } else if (state === STOP_OPEN) {
+      this.boardController.writePin(valve.pin.open, BoardConstants.PIN_LOW, cb);
+    } else if (state === START_CLOSE) {
+      this.boardController.writePin(valve.pin.close, BoardConstants.PIN_HIGH, cb);
+    } else if (state === STOP_CLOSE) {
+      this.boardController.writePin(valve.pin.close, BoardConstants.PIN_LOW, cb);
+    } else {
+      let err = `State ${state} not found`;
+      logger.logError(this.moduleName, 'setState', err);
+
+      return cb(new Error(err));
     }
   }
 

@@ -19,7 +19,7 @@ class ParameterController extends EventEmitter {
       let errMsg = 'Parameter [' + name + '] not found';
       logger.logError(this.moduleName, 'updateParameter', errMsg);
 
-      return new Error(errMsg);
+      throw new Error(errMsg);
     }
 
     let parameter = this.parameters[name];
@@ -31,7 +31,7 @@ class ParameterController extends EventEmitter {
 
     // Notify listeners of new parameter value
     this.emit('data');
-   
+
     this._saveParameters();
 
     return parameter;
@@ -45,16 +45,14 @@ class ParameterController extends EventEmitter {
     if (!this.parameters[parameterName]) {
       logger.logError(this.moduleName, 'GetParameter', `Parameter ${parameterName} not found`);
       return undefined;
-    } else {
-      return this.parameters[parameterName].value;
     }
 
+    return this.parameters[parameterName].value;
   }
 
   _saveParameters() {
     fs.writeFileSync(path.join(__dirname, PARAMETERS_FILE), JSON.stringify(this.parameters), null, '  ');
   }
-
 }
 
 module.exports = new ParameterController();

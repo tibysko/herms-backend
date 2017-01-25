@@ -1,15 +1,15 @@
 'use strict'
 
-var bodyParser = require('body-parser');
-var cors = require('cors')
-var compression = require('compression');
-var express = require('express');
-var fs = require('fs');
-var path = require('path');
+const bodyParser = require('body-parser');
+const cors = require('cors')
+const compression = require('compression');
+const express = require('express');
+const expressValidator = require('express-validator');
+const fs = require('fs');
+const path = require('path');
 
 const config = require('./config/config');
 const logger = require('./core/logger');
-const io = require('./socket-server');
 const routes = require('./routes');
 const herms = require('./herms');
 
@@ -24,6 +24,14 @@ if (env.FRONTEND_PATH && fs.existsSync(env.FRONTEND_PATH)) {
 }
 
 app.use(bodyParser.json());
+app.use(expressValidator());
+app.use(expressValidator({
+ customValidators: {
+    isArray: function(value) {
+        return Array.isArray(value);
+    }
+ }
+}));
 app.use(cors());
 app.use(compression()); // compress all requests 
 app.use('/api', routes); // register api routes
@@ -33,19 +41,4 @@ app.listen(config.port, function () {
   logger.logInfo('server', 'app.listen', 'Server started on ' + config.port);
 
   herms.start();
-/*
-  // Setup websocket
-  herms.on('controllers', (data) => {
-    io.emit('controllers', data);
-  });
-
-  herms.on('valves', (data) => {
-    io.emit('valves', data);
-  });
-
-  herms.on('pins', (data) => {
-    io.emit('pins', data);
-  });
-*/
-
 });

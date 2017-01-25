@@ -2,24 +2,32 @@ const router = require('express').Router();
 const pidControllerRegistry = require('./pid-controller-registry');
 
 router.route('/:name').post((req, res) => {
-  let body = req.body;
-  let controllerName = req.params.name;
+  req.check('name', 'Name must exists').notEmpty();
+  req.checkBody('kp', 'Kp is missing').notEmpty();
+  req.checkBody('ki', 'Ki is missing').notEmpty();
+  req.checkBody('kd', 'Kd is missing').notEmpty();
+  req.checkBody('mode', 'mode is missing').notEmpty();
+  req.checkBody('output', 'Output is missing').notEmpty();
+  req.checkBody('setPoint', 'Setpoint is missing').notEmpty();
 
-  if (body) {
-    let config = body;
-    pidControllerRegistry.setPidController(controllerName, config);
+  req.getValidationResult().then(result => {
+    if (!result.isEmpty()) return res.status(400).send(result.array());
 
-    res.status(200).send(pidControllerRegistry.getPidControllerStatus());
+    let config = req.body;
+    let controllerName = req.params.name;
 
-  } else {
-    res.status(400).send();
-  }
+    try {
+      pidControllerRegistry.setPidController(controllerName, config);
+      return res.status(200).send(pidControllerRegistry.getPidControllerStatus());
+
+    } catch (err) {
+      return res.status(500).send(err.message);
+    }
+  });
 });
 
 router.route('/').get((req, res) => {
-  let status = pidControllerRegistry.getPidControllerStatus();
-
-  res.send(status);
+  res.send(pidControllerRegistry.getPidControllerStatus());
 });
 
 module.exports = router;

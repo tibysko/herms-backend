@@ -1,4 +1,5 @@
 const boardController = require('../board/board-controller').BoardController;
+const logger = require('../core/logger');
 const parameterController = require('../parameters/parameter-controller');
 const pidController = require('../pid/mlt-pid-controller');
 const ValveConstants = require('./valve-controller').ValveContants;
@@ -7,12 +8,14 @@ const valveController = require('./valve-controller').ValveController;
 const HYSTERESIS = 'HE_HW_IN_Hysteresis';
 const VALVE_STEP = 'HE_HW_IN_Step';
 const INTERVAL = 'HE_HW_IN_Interval';
+const HE_HW_IN = 'HE_HW_IN';
 
 class ValveControllerHeHwIn {
 
   constructor() {
     this.boardController = boardController;
     this.parameterController = parameterController;
+    this.moduleName = 'ValveControllerHeHwIn';
     this.pidController = pidController;
     this.valveController = valveController;
 
@@ -33,8 +36,8 @@ class ValveControllerHeHwIn {
   _computeValvePos() {
     if (this.tempMode !== this.pidController.getMode()) {
       this.tempMode = this.pidController.getMode();
-      this.valveController.setState('HE_HW_IN', ValveConstants.STOP_CLOSE, function () {});
-      this.valveController.setState('HE_HW_IN', ValveConstants.STOP_OPEN, function () {});
+      this.valveController.setState(HE_HW_IN, ValveConstants.STOP_CLOSE, err => this._logg(err, 10));
+      this.valveController.setState(HE_HW_IN, ValveConstants.STOP_OPEN, this._logg(err, 20));
     }
 
     if (this.pidController.getMode().toLowerCase() === 'auto') {
@@ -45,15 +48,19 @@ class ValveControllerHeHwIn {
 
       if (Math.abs(this.valveActPos - this.valveSetPoint) > this.valveHysteresis) {
         if (this.valveActPos > this.valveSetPoint) {
-          this.valveController.setState('HE_HW_IN', ValveConstants.START_CLOSE, function () {});
+          this.valveController.setState(HE_HW_IN, ValveConstants.START_CLOSE, this._logg(err, 30));
         } else {
-          this.valveController.setState('HE_HW_IN', ValveConstants.START_OPEN, function () {});
+          this.valveController.setState(HE_HW_IN, ValveConstants.START_OPEN, this._logg(err, 40));
         }
       } else {
-        this.valveController.setState('HE_HW_IN', ValveConstants.STOP_CLOSE, function () {});
-        this.valveController.setState('HE_HW_IN', ValveConstants.STOP_OPEN, function () {});
+        this.valveController.setState(HE_HW_IN, ValveConstants.STOP_CLOSE, this._logg(err, 50));
+        this.valveController.setState(HE_HW_IN, ValveConstants.STOP_OPEN, this._logg(err, 60));
       }
     }
+  }
+
+  _logg(err, position) {
+    if (err) logger.logError(this.moduleName, 'loggError', `Failed to set valve state for position ${position}`);
   }
 
   _setupListeners() {
