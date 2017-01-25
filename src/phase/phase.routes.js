@@ -7,71 +7,79 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/:id/activate').put((req, res) => {
-  let id = req.params.id;
+  req.check('id', 'Missing id').notEmpty();
 
-  let phase = phaseController.activatePhase(id);
+  req.getValidationResult().then(result => {
+    if (!result.isEmpty) return res.status(400).send(result.array());
 
-  if (phase instanceof Error) {
-    res.status(400).send(phase.message);
-  } else {
-    return res.send(phase);
-  }
+    let id = req.params.id;
+
+    try {
+      let phase = phaseController.activatePhase(id);
+
+      return res.send(phase);
+    } catch (err) {
+      return res.status(500).send(err.message);
+    }
+  });
 });
 
 router.route('/:id').put((req, res) => {
-  let phase = req.body;
-  let phaseId = req.params.id;
+  req.check('id', 'Missing id');
+  req.checkBody('name', 'Missing name').notEmpty();
+  req.checkBody('valves', 'Missing valves and must be an array').notEmpty().isArray();;
 
-  if (!phase) {
-    res.status(400).send('Missing phase on body');
-  } else {
-    let updatedPhase = phaseController.updatePhase(phaseId, phase);
+  req.getValidationResult().then(result => {
+    if (!result.isEmpty()) return res.status(400).send(result.array());
 
-    if (updatedPhase instanceof Error) {
-      res.status(500).send(updatedPhase.message);
-    } else {
+    let phase = req.body;
+    let phaseId = req.params.id
+
+    try {
+      let updatedPhase = phaseController.updatePhase(phaseId, phase);
       res.send(updatedPhase);
+    } catch (err) {
+
+      return res.status(500).send(err.message);
     }
-  }
+  });
 });
 
 router.route('/:id').delete((req, res) => {
-  let phaseId = req.params.id;
+  req.check('id', 'Missing id').notEmpty();
 
-  if (!phaseId) {
-    res.status(400).send({
-      error: 'missing phaseId'
-    });
-  } else {
-    let deletedId = phaseController.deletePhase(phaseId);
+  req.getValidationResult().then(result => {
+    if (!result.isEmpty()) return res.status(400).send(result.array());
 
-    if (deletedId instanceof Error) {
-      res.status(500).send({
-        error: deletedId.message
-      });
-    } else {
-      res.send(deletedId);
+    let phaseId = req.params.id;
+
+    try {
+      let deletedId = phaseController.deletePhase(phaseId);
+
+      return res.send(deletedId);
+    } catch (err) {
+      return res.status(500).send(err.message);
     }
-  }
+  });
 });
 
 router.route('/').post((req, res) => {
-  let phase = req.body;
+  req.checkBody('name', 'Missing name').notEmpty();
+  req.checkBody('valves', 'Missing valves or it is not an annary').notEmpty().isArray();
 
-  if (!phase) {
-    res.status(400).send({
-      'error': 'missing body'
-    });
+  req.getValidationResult().then(result => {
+    if (!result.isEmpty) return res.status(400).send(result.array());
 
-  } else {
-    let newPhase = phaseController.createPhase(phase);
+    let phase = req.body;
 
-    if (newPhase instanceof Error) {
-      res.status(400).send(newPhase.message);
-    } else {
+    try {
+      let newPhase = phaseController.createPhase(phase);
       return res.send(newPhase);
+
+    } catch (err) {
+      return res.status(400).send(err.message);
     }
-  }
+  });
 });
 
 module.exports = router;

@@ -1,6 +1,6 @@
 ﻿"use strict";
 var winston = require('winston');
-const socketio = require('../socket-server');
+const socketServer = require('../data-emitter/socket-server');
 
 winston.add(require('winston-daily-rotate-file'), {
   level: 'error',
@@ -15,6 +15,7 @@ class Logger {
 
   logError(moduleName, functionName, message) {
     this.log('error', message, moduleName, functionName);
+    socketServer.emit('error', message);
   }
 
   logWarning(moduleName, functionName, message) {
@@ -28,7 +29,6 @@ class Logger {
     }
 
     winston.log(level, message, metadata);
-    socketio.emit(level, message);
   }
 
   loggErrorAndExecuteCb(moduleName, functionName, message, cb) {

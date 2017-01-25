@@ -11,7 +11,7 @@ class PidControllerRegistry {
   }
 
   setPidController(name, config) {
-    let controller = {};
+    let controller = undefined;
 
     for (let pidController of this.controllers) {
       if (pidController.getName() === name) {
@@ -20,11 +20,13 @@ class PidControllerRegistry {
       }
     }
 
-    if (controller) {
-      controller.setConfig(config);
-    } else {
-      logger.logWarning(this.moduleName, 'setPidController', 'Could not find controller: ' + name);
+    if (!controller) {
+      let errMsg = `Could not find controller: ${name}`;
+      logger.logError(this.moduleName, 'setPidController', errMsg);
+      throw new Error(errMsg);
     }
+
+    controller.setConfig(config);
   }
 
   getPidControllerStatus() {
@@ -37,8 +39,14 @@ class PidControllerRegistry {
     return controllerData;
   }
 
-  getPidControllers(){
+  getPidControllers() {
     return this.controllers;
+  }
+
+  startPidControllers() {
+    for (let controller of this.getPidControllers()) {
+      controller.start();
+    }
   }
 }
 

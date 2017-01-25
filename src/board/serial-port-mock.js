@@ -3,17 +3,19 @@ const EventEmitter = require('events');
 
 class SerialPortMock extends EventEmitter {
 
-  constructor(usbPort, params, cb) {
+  constructor(usbPort, params) {
     super(); // EventEmitter constructor
     this.moduleName = 'SerialPortMock';
 
     setInterval(() => this._emulateReadBoard, 500);
-
-    setTimeout(cb, 500); // emulate successful serialport 
   }
 
   write(data, cb) {
     logger.logInfo(this.moduleName, 'Write', data.replace('\n', ''));
+    process.nextTick(cb);
+  }
+
+  open(cb) {
     process.nextTick(cb);
   }
 

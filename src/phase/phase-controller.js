@@ -13,6 +13,8 @@ const ValveConstants = require('../valve/valve-controller').ValveConstants;
 const valveController = require('../valve/valve-controller').ValveController;
 
 const PHASES_FILE = './phases.json';
+const CLOSING_VALVES_SLEEP = 10000; // ms 
+const ADJUSTING_VALVES_SLEEP = 10000;
 
 class PhaseController {
 
@@ -28,10 +30,10 @@ class PhaseController {
     let phase = this._findPhase(id);
 
     if (!phase) {
-      let err = 'Phase [' + id + '] not found';
+      let err = `Phase ${id} not found`;
       logger.logError(this.moduleName, 'activatePhase', err);
 
-      return new Error(err);
+      throw new Error(err);
     }
 
     //If any functions in the series pass an error to its callback, no more functions are run,
@@ -40,24 +42,19 @@ class PhaseController {
       cb => this.boardController.writePin('HW_PUMP', BoardConstants.PIN_LOW, cb),
       cb => this.boardController.writePin('WORT_PUMP', BoardConstants.PIN_LOW, cb),
       cb => this.activatePhaseUtil.closeValves(cb),
-      cb => setTimeout(cb, 10000), // wait 10 s until check closed valves
+      cb => setTimeout(cb, CLOSING_VALVES_SLEEP), // wait X ms until check closed valves
       cb => this.activatePhaseUtil.isAllValvesClosed(cb),
       cb => this.activatePhaseUtil.setValvesForPhase(phase, cb),
-      cb => setTimeout(cb, 10000), // wait 10 s until check valves
+      cb => setTimeout(cb, ADJUSTING_VALVES_SLEEP), // wait X xs until check valves
       cb => this.activatePhaseUtil.checkValves(phase, cb),
       cb => this._updateActivePhase(phase, this.phases, cb)
     ], (err, results) => this._resolveResult(err, results, phase));
-
 
     return phase;
   }
 
   createPhase(phase) {
     let validationError = this._validatePhase(phase);
-
-    if (validationError instanceof Error) {
-      return validationError;
-    }
 
     let newPhase = {
       'name': phase.name,
@@ -69,9 +66,10 @@ class PhaseController {
       if (valve.name && (valve.state === ValveConstants.OPENED || valve.state === ValveConstants.CLOSED)) {
         newPhase.valves.push(valve);
       } else {
-        let errMsg = 'Phase [ ' + phase.name + ' ], invalid valve state : ' + valve.state + ' for valve: ' + valve.name;
+        let errMsg = `Phase ${phase.name}, invalid valve state : ${valve.state} for valve: ${valve.name}`;
         logger.logError(this.moduleName, 'createPhase', errMsg);
-        return new Error(errMsg);
+        
+        throw new Error(errMsg);
       }
     }
 
@@ -85,16 +83,13 @@ class PhaseController {
   updatePhase(id, phase) {
     let validationError = this._validatePhase(phase);
 
-    if (validationError instanceof Error) {
-      return validationError;
-    }
-
     let existingPhase = this._findPhase(id);
 
     if (!existingPhase) {
-      let errMsg = 'Phase [' + id + '] not found';
+      let errMsg = `Phase ${id} not found`;
       logger.logError(this.moduleName, 'updatePhase', errMsg);
-      return new Error(errMsg);
+      
+      throw new Error(errMsg);
     }
 
     existingPhase.name = phase.name;
@@ -110,9 +105,9 @@ class PhaseController {
     let existingPhase = this._findPhase(id);
 
     if (!existingPhase) {
-      let err = 'Could not find phase with id ' + id;
+      let err = `Could not find phase with id ${id}`;
       logger.logError(this.module, 'deletePhase', err);
-      return new Error(err);
+      throw new Error(err);
     }
 
     // create new array and filter out removed phase
@@ -150,7 +145,6 @@ class PhaseController {
     }
 
     activatedPhase.activated = true;
-
     this._savePhasesToFile();
     cb(null);
   }
@@ -160,17 +154,14 @@ class PhaseController {
       let errMsg = 'Name not provided';
       logger.logError(this.moduleName, 'createPhase', errMsg);
 
-      return new Error('name note provided');
+      throw new Error('errMsg');
     } else if (!phase.valves) {
       let errMsg = 'Valves not provided';
       logger.logError(this.moduleName, 'createPhase', errMsg);
 
-      return new Error(errMsg);
-    } else {
-      return undefined;
+      throw new Error(errMsg);
     }
   }
-
 }
 
 module.exports = new PhaseController();

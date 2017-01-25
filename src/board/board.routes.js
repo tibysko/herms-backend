@@ -9,21 +9,22 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/:name').post((req, res) => {
-  let pinName = req.params.name;
-  let value = req.body.pinValue;
+  req.check('name', 'Missing pin').notEmpty();
+  req.checkBody('pinValue', 'Missing pinValue').notEmpty();
+  req.checkBody('pinValue', 'Pin value must be boolean').isBoolean();
 
-  boardController.writePin(pinName, value, (err) => {
-    if (err) {
-      res.status(400).send({
-        error: err.message
-      });
-    } else {
-      res.send({
-        pin: pinName,
-        value: value
-      });
-    }
+  req.getValidationResult().then(result => {
+    if (!result.isEmpty()) return res.status(400).send(result.array());
+
+    let pinName = req.params.name;
+    let value = req.body.pinValue;
+
+    boardController.writePin(pinName, value, err => {
+      if (err) return res.status(500).send(err);
+
+      return res.send();
+    });
   });
-});
+})
 
 module.exports = router;

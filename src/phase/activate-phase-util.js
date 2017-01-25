@@ -9,6 +9,7 @@ const valveController = require('../valve/valve-controller').ValveController;
 class PhaseUtil {
 
   constructor() {
+    this.moduleName = 'PhaseUtil';
     this.valveController = valveController;
   }
 
@@ -49,11 +50,13 @@ class PhaseUtil {
       if (valve.state !== ValveConstants.CLOSED) {
         let err = `Valve ${valve.name} not closed`;
         logger.logError(this.moduleName, '_isAllValvesClosed', err);
+
         return callback(new Error(err));
       }
-
-      callback(null);
     }
+
+    // everythin was ok, return
+    callback(null);
   }
 
   setValvesForPhase(phase, callback) {
