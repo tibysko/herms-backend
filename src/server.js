@@ -6,7 +6,6 @@ const compression = require('compression');
 const express = require('express');
 const expressValidator = require('express-validator');
 const fs = require('fs');
-const path = require('path');
 
 const config = require('./config/config');
 const logger = require('./core/logger');
@@ -24,7 +23,6 @@ if (env.FRONTEND_PATH && fs.existsSync(env.FRONTEND_PATH)) {
 }
 
 app.use(bodyParser.json());
-app.use(expressValidator());
 app.use(expressValidator({
  customValidators: {
     isArray: function(value) {

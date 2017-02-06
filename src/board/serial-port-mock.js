@@ -7,7 +7,7 @@ class SerialPortMock extends EventEmitter {
     super(); // EventEmitter constructor
     this.moduleName = 'SerialPortMock';
 
-    setInterval(() => this._emulateReadBoard, 500);
+    setInterval(() => this._emulateReadBoard, 1000);
   }
 
   write(data, cb) {

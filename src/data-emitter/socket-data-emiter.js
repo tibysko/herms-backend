@@ -1,5 +1,5 @@
 /**
- * This class is responsible for sending all "live" data to the frontend with one exception!
+ * This class is responsible for sending all "live" data to the frontend with one exception (errors)!
  * All errors logged in core/logger is also emitted to the fronted. 
  * 
  */
@@ -10,7 +10,7 @@ const pidDataAggregator = require('./pid-data-aggregator');
 const socketServer = require('./socket-server');
 const valveController = require('../valve/valve-controller').ValveController;
 
-const UPDATE_INTERVAL = 100;
+const UPDATE_INTERVAL = 500; // ms
 
 class SocketDataEmitter {
   constructor() {}
