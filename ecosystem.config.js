@@ -45,7 +45,8 @@ module.exports = {
       env: {
         USB_PORT: "com3",
         BACKEND_PORT: 8081,
-        BACKEND_WEBSOCKET_PORT: 8082
+        BACKEND_WEBSOCKET_PORT: 8082,
+        MOCK: "true"
       }
     }
   }
