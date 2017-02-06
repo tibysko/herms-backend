@@ -41,7 +41,7 @@ module.exports = {
       repo: "https://github.com/tibysko/herms-backend.git",
       path: "/home/node/backend",
       exec_mode: 'fork',
-      "post-deploy": "npm install && pm2 startOrRestart ecosystem.json",
+      "post-deploy": "npm install && pm2 startOrRestart ecosystem.config.js",
       env: {
         USB_PORT: "com3",
         BACKEND_PORT: 8081,
