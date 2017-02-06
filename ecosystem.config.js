@@ -17,32 +17,32 @@ module.exports = {
    * http://pm2.keymetrics.io/docs/usage/deployment/
    */
   deploy: {
-    production: {
+      production: {
       user: "pi",
-      host: "192.168.1.146", 
+      host: "192.168.1.146",
       ref: "origin/master",
       repo: "https://github.com/tibysko/herms-backend.git",
       path: "/home/pi/herms/backend",
       exec_mode: 'fork',
       "post-deploy": "npm install && pm2 startOrRestart ecosystem.config.js --env production",
       env: {
-        NODE_ENV: production,
+        NODE_ENV: "production",
         USB_PORT: "/dev/ttyACM0",
         BACKEND_PORT: 8081,
         BACKEND_WEBSOCKET_PORT: 8082
 
       }
-    },dev: {
+    },
+    dev: {
       user: "node",
-      host: "192.168.99.100", 
+      host: "192.168.99.100",
       port: "22022",
       ref: "origin/master",
       repo: "https://github.com/tibysko/herms-backend.git",
       path: "/home/node/backend",
       exec_mode: 'fork',
-      "post-deploy": "npm install && pm2 startOrRestart ecosystem.config.js --env production",
+      "post-deploy": "npm install && pm2 startOrRestart ecosystem.json",
       env: {
-        NODE_ENV: production,
         USB_PORT: "com3",
         BACKEND_PORT: 8081,
         BACKEND_WEBSOCKET_PORT: 8082
