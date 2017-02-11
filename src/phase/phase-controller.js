@@ -47,7 +47,7 @@ class PhaseController {
       cb => this.activatePhaseUtil.setValvesForPhase(phase, cb),
       cb => setTimeout(cb, ADJUSTING_VALVES_SLEEP), // wait X xs until check valves
       cb => this.activatePhaseUtil.checkValves(phase, cb),
-      cb => this._updateActivePhase(phase, this.phases, cb)
+      cb => this._updateActivePhase(phase, cb)
     ], (err, results) => this._resolveResult(err, results, phase));
 
     return phase;
@@ -146,6 +146,7 @@ class PhaseController {
 
     activatedPhase.activated = true;
     this._savePhasesToFile();
+   
     cb(null);
   }
 

@@ -14,13 +14,15 @@ class PhaseUtil {
   }
 
   checkValves(activatedPhase, cb) {
+    logger.logInfo(this.moduleName, 'checkValves', 'Checking valves position according to phase..')
+
     let valves = this.valveController.getValves();
     let valvesNotOk = [];
 
     for (let valve of valves) {
-      let desiredState = activatedPhase[valve.name] === ValveConstants.OPENED ? ValveConstants.OPENED : ValveConstants.CLOSED;
-
-      if (desiredState !== valve.state) {
+      let phaseValve = activatedPhase.valves.find(phaseValve => phaseValve.name === valve.name);
+      
+      if (phaseValve.state !== valve.state) {
         valvesNotOk.push(valve.name);
       }
     }
@@ -31,39 +33,46 @@ class PhaseUtil {
 
       return cb(new Error(err));
     } else {
+      logger.logInfo(this.moduleName, 'checkValves', 'Valves position ok.')
+
       return cb(null); // all ok!
     }
   }
 
   closeValves(callback) {
     let valves = this.valveController.getValves();
+    logger.logInfo(this.moduleName, 'closeValves', 'Closing valves...');
 
     async.eachSeries(valves, (valve, cb) => {
-      this.valveController.setState(valve.name, ValveConstants.STOP_CLOSE, cb);
+      this.valveController.setState(valve.name, ValveConstants.START_CLOSE, cb);
     }, callback);
   }
 
   isAllValvesClosed(callback) {
     let valves = this.valveController.getValves();
+    logger.logInfo(this.moduleName, 'isAllValvesClosed', 'Check all valves closed...');
 
     for (let valve of valves) {
       if (valve.state !== ValveConstants.CLOSED) {
         let err = `Valve ${valve.name} not closed`;
-        logger.logError(this.moduleName, '_isAllValvesClosed', err);
+        logger.logError(this.moduleName, 'isAllValvesClosed', err);
 
         return callback(new Error(err));
       }
     }
 
+    logger.logInfo(this.moduleName, 'isAllValvesClosed', 'All valves closed!');
     // everythin was ok, return
     callback(null);
   }
 
   setValvesForPhase(phase, callback) {
-    async.eachSeries(phase.valves, (valve, cb) => {
-      let desiredState = activatedPhase[valve.name] === ValveConstants.OPENED ? ValveConstants.OPENED : ValveConstants.CLOSED;
+    logger.logInfo(this.moduleName, 'setValvesForPhase', 'Ajusting valves for new phase...');
 
-      this.valveController.setState(valve.name, desiredState, cb);
+    async.eachSeries(phase.valves, (valve, cb) => {
+      let valveCmd = phase[valve.name] === ValveConstants.OPENED ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
+
+      this.valveController.setState(valve.name, valveCmd, cb);
     }, callback);
   }
 }
