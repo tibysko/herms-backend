@@ -47,7 +47,13 @@ class ParameterController extends EventEmitter {
       return undefined;
     }
 
-    return this.parameters[parameterName].value;
+    let parameter = this.parameters[parameterName];
+
+    if (parameter.dataType && parameter.dataType === 'float') {
+      return parseFloat(this.parameters[parameterName].value);
+    } else {
+      return this.parameters[parameterName].value;
+    }
   }
 
   _saveParameters() {

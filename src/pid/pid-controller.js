@@ -7,9 +7,11 @@ const boardController = require('../board/board-controller').BoardController;
 const parameterController = require('../parameters/parameter-controller');
 const PID = require('./pid');
 
+const TIME_FRAME = 1000;
+
 class PidController extends EventEmitter {
 
-  constructor(name, longName,offsetParameter, scalingParameter, temperaturePinName) {
+  constructor(name, longName, offsetParameter, scalingParameter, temperaturePinName) {
     super(); // EventEmitter constructor 
 
     this.actTemperatureValue = 0;
@@ -21,12 +23,13 @@ class PidController extends EventEmitter {
     this.name = name;
     this.PID = {};
     this.parameterController = parameterController;
+    this.offsetParameter = offsetParameter;
+    this.scalingParameter = scalingParameter;
     this.process = this.dummyId;
     this.temperaturePinName = temperaturePinName;
-    this.tempOffset = parameterController.getValue(offsetParameter);;
-    this.tempScaling = parameterController.getValue(scalingParameter);;
 
     this._initPid(); // init PID with default settings. Later we should read this from a database
+    this._setupListeners();
   }
 
   start() {
@@ -35,7 +38,7 @@ class PidController extends EventEmitter {
       return;
     }
 
-    this.logger.logInfo(this.moduleName, 'start', 'Starting with settings: Kp=' + this.Kp + ' Ki=' + this.Ki + ' Kd=' + this.Kd + ' setPoint=' + this.setPoint);
+    this.logger.logInfo(this.moduleName, 'start', `Starting ${this.name} with settings: Kp=${this.Kp} Ki=${this.Ki} Kd=${this.Kd} setPoint=${this.setPoint}`);
 
     this.process = setInterval(() => {
       let currTemp = (this.actTemperatureValue / this.tempScaling) + this.tempOffset;
@@ -47,10 +50,10 @@ class PidController extends EventEmitter {
       this.emit('data', {
         output: output,
         temperature: currTemp,
-        name: this.longName
+        name: this.name
       });
 
-    }, this.timeframe);
+    }, TIME_FRAME);
   }
 
   stop() {
@@ -78,9 +81,12 @@ class PidController extends EventEmitter {
         kd: this.PID.getKd(),
         mode: this.PID.getMode(),
         output: this.PID.getOutput(),
-        setPoint: this.PID.getSetPoint()
+        setPoint: this.PID.getSetPoint(),
+        tempOffset: this.tempOffset,
+        tempScaling: this.tempScaling
       },
-      data: {}
+      data: {
+      }
     }
 
     return status;
@@ -104,14 +110,14 @@ class PidController extends EventEmitter {
 
   _setupListeners() {
     parameterController.on('data', (data) => {
-      let offset = parameterController.getValue(T2_OFFSET);
-      let scaling = parameterController.getValue(T2_SCALING);
+      let offset = parameterController.getValue(this.offsetParameter);
+      let scaling = parameterController.getValue(this.scalingParameter);
 
       this.pidController.setTempOffset(offset);
       this.pidController.setTempScaling(scaling);
     });
 
-    this.boardController.on('data', (data) => {
+    this.boardController.on('data', data => {
       this.actTemperatureValue = data[this.temperaturePinName].value;
     });
   }
@@ -122,12 +128,11 @@ class PidController extends EventEmitter {
     this.Ki = 100;
     this.Kd = 50;
     this.setPoint = 0;
-    this.timeframe = 1000;
-    this.tempScaling = 1;
-    this.tempOffset = 0;
+    this.tempOffset = parameterController.getValue(this.offsetParameter);
+    this.tempScaling = parameterController.getValue(this.scalingParameter);
 
     this.PID = new PID(this.actTemperatureValue, this.setPoint, this.Kp, this.Ki, this.Kd, 'direct');
-    this.PID.setSampleTime(this.timeframe);
+    this.PID.setSampleTime(TIME_FRAME);
     this.PID.setOutputLimits(0, 255);
     this.PID.setMode('manual');
     this.PID.setOutput(0);
