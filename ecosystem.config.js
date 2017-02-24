@@ -35,7 +35,7 @@ module.exports = {
     },
     aws: {
       user: "ubuntu",
-      host: "52.41.104.226",
+      host: "52.11.194.229",
       port: "22",
       ref: "origin/master",
       repo: "https://github.com/tibysko/herms-backend.git",
