@@ -7,8 +7,6 @@ let SerialPort = require('serialport');
 const config = require('../config/config');
 const logger = require('../core/logger');
 
-console.log("Mock: ", process.env);
-
 if (process.env.MOCK) {
   logger.logWarning('Board-controller', 'Mock', 'Starting with mocked SerialPort')
   SerialPort = require('./serial-port-mock');
