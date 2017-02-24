@@ -46,6 +46,7 @@ module.exports = {
         NODE_ENV: "production",
         BACKEND_PORT: 8081,
         BACKEND_WEBSOCKET_PORT: 8082,
+        "OLA": "SANT",
         MOCK: "true"
       }
     }
