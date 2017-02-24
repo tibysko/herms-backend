@@ -43,7 +43,7 @@ module.exports = {
       exec_mode: 'fork',
       "post-deploy": "npm install && pm2 startOrRestart ecosystem.config.js",
       env: {
-        USB_PORT: "com3",
+        NODE_ENV: "production",
         BACKEND_PORT: 8081,
         BACKEND_WEBSOCKET_PORT: 8082,
         MOCK: "true"
