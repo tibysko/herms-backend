@@ -17,7 +17,7 @@ module.exports = {
    * http://pm2.keymetrics.io/docs/usage/deployment/
    */
   deploy: {
-      production: {
+    production: {
       user: "pi",
       host: "192.168.1.146",
       ref: "origin/master",
@@ -33,13 +33,13 @@ module.exports = {
 
       }
     },
-    dev: {
-      user: "node",
-      host: "192.168.99.100",
-      port: "22022",
+    aws: {
+      user: "ubuntu",
+      host: "52.41.104.226",
+      port: "22",
       ref: "origin/master",
       repo: "https://github.com/tibysko/herms-backend.git",
-      path: "/home/node/backend",
+      path: "/home/ubuntu/herms/backend",
       exec_mode: 'fork',
       "post-deploy": "npm install && pm2 startOrRestart ecosystem.config.js",
       env: {
