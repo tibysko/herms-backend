@@ -1,11 +1,9 @@
 module.exports = {
 
   "apps": [
-
-
     {
       "name": "Backend",
-      "script": "src/server.js"
+      "script": "src/server.js",
       "env": {
         "NODE_ENV": "production",
         "USB_PORT": "/dev/ttyACM0",
@@ -18,7 +16,6 @@ module.exports = {
       }
     }
   ],
-
 
   "deploy": {
     "production": {
