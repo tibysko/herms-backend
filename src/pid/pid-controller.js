@@ -41,8 +41,9 @@ class PidController extends EventEmitter {
     this.logger.logInfo(this.moduleName, 'start', `Starting ${this.name} with settings: Kp=${this.Kp} Ki=${this.Ki} Kd=${this.Kd} setPoint=${this.setPoint}`);
 
     this.process = setInterval(() => {
-      let currTemp = (this.actTemperatureValue / this.tempScaling) + this.tempOffset;
-
+      let parsedTemp = parseFloat(this.actTemperatureValue); 
+      let currTemp = (parsedTemp / this.tempScaling) + this.tempOffset;
+      
       this.PID.setInput(currTemp);
       this.PID.compute();
       let output = this.PID.getOutput();
@@ -110,11 +111,9 @@ class PidController extends EventEmitter {
 
   _setupListeners() {
     parameterController.on('data', (data) => {
-      let offset = parameterController.getValue(this.offsetParameter);
-      let scaling = parameterController.getValue(this.scalingParameter);
+      this.tempOffset = parameterController.getValue(this.offsetParameter);
+      this.tempScaling = parameterController.getValue(this.scalingParameter);
 
-      this.pidController.setTempOffset(offset);
-      this.pidController.setTempScaling(scaling);
     });
 
     this.boardController.on('data', data => {

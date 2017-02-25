@@ -11,7 +11,7 @@ class SerialPortMock extends EventEmitter {
   }
 
   write(data, cb) {
-    logger.logInfo(this.moduleName, 'Write', data.replace('\n', ''));
+    //logger.logInfo(this.moduleName, 'Write', data.replace('\n', ''));
     process.nextTick(cb);
   }
 

@@ -29,11 +29,10 @@ class ParameterController extends EventEmitter {
 
     logger.logInfo(this.moduleName, 'updateParameter', '[' + name + ']: ' + oldValue + ' => ' + value);
 
-    // Notify listeners of new parameter value
-    this.emit('data');
-
     this._saveParameters();
 
+    // Notify listeners of new parameter value
+    this.emit('data');
     return parameter;
   }
 
@@ -50,9 +49,9 @@ class ParameterController extends EventEmitter {
     let parameter = this.parameters[parameterName];
 
     if (parameter.dataType && parameter.dataType === 'float') {
-      return parseFloat(this.parameters[parameterName].value);
+      return parseFloat(parameter.value);
     } else {
-      return this.parameters[parameterName].value;
+      return parameter.value;
     }
   }
 
