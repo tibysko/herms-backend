@@ -1,4 +1,3 @@
-const hermsConfigPath = 
 
 module.exports = {
 
@@ -11,7 +10,7 @@ module.exports = {
         "USB_PORT": "/dev/ttyACM0",
         "BACKEND_PORT": "8081",
         "BACKEND_WEBSOCKET_PORT": "8082",
-        "CONFIG_PATH": "~/herms-config" 
+        "CONFIG_PATH": "/home/ubuntu/herms-config" 
       },
 
       "env_aws": {

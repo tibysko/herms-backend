@@ -1,10 +1,16 @@
 ﻿"use strict";
-const winston = require('winston');
+const fs = require('fs');
 const DailyRotateFile = require('winston-daily-rotate-file');
+const winston = require('winston');
 
 const socketServer = require('../data-emitter/socket-server');
 
+const logDir = 'log';
 const tsFormat = () => (new Date()).toLocaleTimeString();
+
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
 
 winston.configure({
   transports: [
@@ -16,7 +22,7 @@ winston.configure({
     new(DailyRotateFile)({
       level: 'error',
       timestamp: tsFormat,
-      filename: './logs/filelog-error.log'
+      filename: `${logDir}/filelog-error.log`
     })
   ]
 })
