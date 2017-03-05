@@ -27,14 +27,23 @@ class LevelControllerHlt {
     this.spargeActive = false; //Todo show in gui
     this.doughInActive = false; //Todo show in gui
     this.stateValve = 0;
-
-    this._updateParameters();
-    this._setupListeners();
-
-    this.checkLevelHlt();
+    // this._checkLevelHlt();
   }
 
-  checkLevelHlt() {
+  start() {
+    this._updateParameters();
+    this._setupListeners();
+  }
+
+  getWaterLevel() {
+    return this.actLevelHlt;
+  }
+
+  /**
+   * Private methods
+   */
+
+  _checkLevelHlt() {
 
     switch (this.stateValve) {
       // Manual mode
@@ -113,12 +122,13 @@ class LevelControllerHlt {
 
   _setupListeners() {
     this.parameterController.on('data', () => {
-     this._updateParameters();
+      this._updateParameters();
     });
 
     this.boardController.on('data', (data) => {
-      if (data['L1_HLT']) {
-        this.actLevelHlt = (data['L1_HLT'].value / this.levelScaling) + this.levelOffset;
+      if (data['L1_HLT'] && data['L1_HLT'].value) {
+        let l1HltValue = parseFloat(data['L1_HLT'].value);
+        this.actLevelHlt = (l1HltValue / this.levelScaling) + this.levelOffset;
       }
       if (data['MLT_HW_IN_CLOSED']) {
         this.valveClosed = data['MLT_HW_IN_CLOSED'].value;
@@ -128,12 +138,9 @@ class LevelControllerHlt {
   }
 
   _updateParameters() {
-    let levelScaling = this.parameterController.getValue(L1_SCALING);
-    let levelOffset = this.parameterController.getValue(L1_OFFSET);
-
-    this.levelScaling = parseFloat(levelScaling);
-    this.levelOffset = parseFloat(levelOffset);
+    this.levelScaling = this.parameterController.getValue(L1_SCALING);
+    this.levelOffset = this.parameterController.getValue(L1_OFFSET);
   }
 }
 
-module.exports = LevelControllerHlt;
+module.exports = new LevelControllerHlt();

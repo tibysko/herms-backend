@@ -9,6 +9,7 @@ const logger = require('../core/logger');
 const pidDataAggregator = require('./pid-data-aggregator');
 const socketServer = require('./socket-server');
 const valveController = require('../valve/valve-controller').ValveController;
+const levelControllerHlt = require('../valve/level-controller-hlt');
 
 const UPDATE_INTERVAL = 500; // ms
 
@@ -22,6 +23,14 @@ class SocketDataEmitter {
       socketServer.emit('controllers', pidDataAggregator.getData());
       socketServer.emit('valves', valveController.getValves());
       socketServer.emit('pins', boardController.getPins());
+
+      let systemStatus = {
+        HLT: {
+          waterLevel: levelControllerHlt.getWaterLevel()
+        }
+      }
+
+      socketServer.emit('system', systemStatus);
     }, UPDATE_INTERVAL);
   }
 }
