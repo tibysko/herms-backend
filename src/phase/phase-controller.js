@@ -7,12 +7,13 @@ const async = require('async');
 
 const BoardConstants = require('../board/board-controller').BoardConstants;
 const boardController = require('../board/board-controller').BoardController;
+const config = require('../config/config');
 const logger = require('../core/logger');
 const activatePhaseUtil = require('./activate-phase-util');
 const ValveConstants = require('../valve/valve-controller').ValveConstants;
 const valveController = require('../valve/valve-controller').ValveController;
 
-const PHASES_FILE = './phases.json';
+const PHASES_FILE = `${config.configPath}/phases.json`;
 const CLOSING_VALVES_SLEEP = 10000; // ms 
 const ADJUSTING_VALVES_SLEEP = 10000;
 
@@ -22,7 +23,7 @@ class PhaseController {
     this.activatePhaseUtil = activatePhaseUtil;
     this.boardController = boardController;
     this.moduleName = 'PhaseController';
-    this.phases = JSON.parse(fs.readFileSync(path.join(__dirname, (PHASES_FILE))));
+    this.phases = JSON.parse(fs.readFileSync(PHASES_FILE));
     this.valveController = valveController;
   };
 
@@ -135,7 +136,7 @@ class PhaseController {
   }
 
   _savePhasesToFile() {
-    fs.writeFileSync(path.join(__dirname, PHASES_FILE), JSON.stringify(this.phases), null, '  ');
+    fs.writeFileSync(PHASES_FILE, JSON.stringify(this.phases), null, '  ');
   }
 
   _updateActivePhase(activatedPhase, cb) {

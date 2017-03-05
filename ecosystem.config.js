@@ -1,3 +1,5 @@
+const hermsConfigPath = 
+
 module.exports = {
 
   "apps": [
@@ -8,7 +10,8 @@ module.exports = {
         "NODE_ENV": "production",
         "USB_PORT": "/dev/ttyACM0",
         "BACKEND_PORT": "8081",
-        "BACKEND_WEBSOCKET_PORT": "8082"
+        "BACKEND_WEBSOCKET_PORT": "8082",
+        "CONFIG_PATH": "~/herms-config" 
       },
 
       "env_aws": {

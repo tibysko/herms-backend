@@ -33,7 +33,7 @@ class BoardController extends EventEmitter {
       autoOpen: false
     });
 
-    this.pins = JSON.parse(fs.readFileSync(path.join(__dirname, './pins.json')));
+    this.pins = JSON.parse(fs.readFileSync(`${config.configPath}/pins.json`));
 
     // Initialize pins with value 0
     for (let currPin in this.pins) {

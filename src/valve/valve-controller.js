@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 const fs = require('fs');
-const path = require('path');
 
+const config = require('../config/config');
 const logger = require('../core/logger');
 const boardController = require('../board/board-controller').BoardController;
 const BoardConstants = require('../board/board-controller').BoardConstants;
@@ -14,13 +14,15 @@ const STOP_OPEN = 'STOP_OPEN';
 const START_CLOSE = 'START_CLOSE';
 const STOP_CLOSE = 'STOP_CLOSE';
 
+const VALVES_FILE = `${config.configPath}/valves.json`;
+
 class ValveController extends EventEmitter {
 
   constructor() {
     super();
 
     this.moduleName = 'ValveController';
-    this.valves = JSON.parse(fs.readFileSync(path.join(__dirname, ("./valves.json"))));
+    this.valves = JSON.parse(fs.readFileSync(VALVES_FILE));
     this.boardController = boardController;
 
     this.boardController.on('data', (pins) => {

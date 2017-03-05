@@ -1,17 +1,18 @@
+const config = require('../config/config');
 const EventEmitter = require('events');
 const fs = require('fs');
 const path = require('path');
 
 const logger = require('../core/logger');
 
-const PARAMETERS_FILE = './parameters.json';
+const PARAMETERS_FILE = `${config.configPath}/parameters.json`;
 
 class ParameterController extends EventEmitter {
   constructor() {
     super(); // EventEmitter constructor
 
     this.moduleName = 'ParameterController';
-    this.parameters = JSON.parse(fs.readFileSync(path.join(__dirname, (PARAMETERS_FILE))));
+    this.parameters = JSON.parse(fs.readFileSync(PARAMETERS_FILE));
   }
 
   updateParameter(name, value) {
@@ -56,7 +57,7 @@ class ParameterController extends EventEmitter {
   }
 
   _saveParameters() {
-    fs.writeFileSync(path.join(__dirname, PARAMETERS_FILE), JSON.stringify(this.parameters), null, '  ');
+    fs.writeFileSync(PARAMETERS_FILE, JSON.stringify(this.parameters), null, '  ');
   }
 }
 
