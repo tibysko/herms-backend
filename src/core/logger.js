@@ -1,11 +1,25 @@
 ﻿"use strict";
-var winston = require('winston');
+const winston = require('winston');
+const DailyRotateFile = require('winston-daily-rotate-file');
+
 const socketServer = require('../data-emitter/socket-server');
 
-winston.add(require('winston-daily-rotate-file'), {
-  level: 'error',
-  filename: './logs/filelog-error.log'
-});
+const tsFormat = () => (new Date()).toLocaleTimeString();
+
+winston.configure({
+  transports: [
+    new(winston.transports.Console)({
+      timestamp: tsFormat,
+      level: 'info',
+      colorize: true,
+    }),
+    new(DailyRotateFile)({
+      level: 'error',
+      timestamp: tsFormat,
+      filename: './logs/filelog-error.log'
+    })
+  ]
+})
 
 class Logger {
 

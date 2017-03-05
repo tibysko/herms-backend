@@ -9,6 +9,7 @@ const boardController = require('./board/board-controller').BoardController;
 const pidControllerRegistry = require('./pid/pid-controller-registry');
 const logger = require('./core/logger');
 const socketDataEmiter = require('./data-emitter/socket-data-emiter');
+const valveControllerHeHwIn = require('./valve/valve-controller-he-hw-in');
 
 class Herms extends EventEmitter {
   constructor() {
@@ -17,6 +18,7 @@ class Herms extends EventEmitter {
     this.boardController = boardController;
     this.pidControllerRegistry = pidControllerRegistry;
     this.socketDataEmiter = socketDataEmiter;
+    this.valveControllerHeHwIn = valveControllerHeHwIn;
   }
 
   start() {
@@ -26,6 +28,7 @@ class Herms extends EventEmitter {
       this.boardController.start();
       this.pidControllerRegistry.startPidControllers();
       this.socketDataEmiter.start();
+      this.valveControllerHeHwIn.start();
     });
   }
 }

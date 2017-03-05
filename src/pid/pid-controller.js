@@ -107,6 +107,11 @@ class PidController extends EventEmitter {
 
   setTempScaling(value) {
     this.tempScaling = value;
+    this.PID.set
+  }
+
+  setOutputLimits(min, max){
+    this.PID.setOutputLimits(min, max);
   }
 
   _setupListeners() {
