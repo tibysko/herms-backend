@@ -66,9 +66,12 @@ class PhaseUtil {
 
   setValvesForPhase(phase, callback) {
     logger.logInfo(this.moduleName, 'setValvesForPhase', 'Ajusting valves for new phase...');
+    logger.logInfo(this.moduleName, 'setValvesForPhase', 'Valves', { valves: phase.valves });
 
     async.eachSeries(phase.valves, (valve, cb) => {
-      let valveCmd = phase[valve.name] === ValveConstants.OPENED ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
+      let phaseValve = phase.valves.find(phaseValve => phaseValve.name === valve.name);
+      let valveCmd = phaseValve.state === ValveConstants.OPENED ? ValveConstants.START_OPEN : ValveConstants.START_CLOSE;
+      logger.logInfo(this.moduleName, 'setValvesForPhase', `Adjusting valve ${valve.name} to ${JSON.stringify(valveCmd)}`);
 
       this.valveController.setState(valve.name, valveCmd, cb);
     }, callback);

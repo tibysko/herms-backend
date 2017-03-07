@@ -87,7 +87,7 @@ class ValveControllerHeHwIn {
 
     this.boardController.on('data', (data) => {
       if (data['HE_HW_IN_ACTPOS']) {
-        this.valveActPos = data['HE_HW_IN_ACTPOS'].value;
+        this.valveActPos = data['HE_HW_IN_ACTPOS'].value; //(l1HltValue / this.levelScaling) + this.levelOffset; Behöver parametrar HE_HW_IN_Scaling, HE_HW_IN_Offset 
       }
     });
   }
