@@ -9,6 +9,8 @@ const HYSTERESIS = 'HE_HW_IN_Hysteresis';
 const VALVE_STEP = 'HE_HW_IN_Step';
 const HE_HW_IN_Interval = 'HE_HW_IN_Interval';
 const HE_HW_IN = 'HE_HW_IN';
+const VALVE_SCALING = 'HE_HW_IN_Scaling';
+const VALVE_OFFSET = 'HE_HW_IN_Offset';
 
 class ValveControllerHeHwIn {
 
@@ -22,6 +24,8 @@ class ValveControllerHeHwIn {
     this.output = 0;
     this.temperature = 0;
     this.valveHysteresis = 5;
+    this.valveScaling = 1;
+    this.valveOffset = 0;
     this.interval = 1000; // needs to be 
     this.intervalRef = {};
     this.valveStep = 25;
@@ -41,6 +45,10 @@ class ValveControllerHeHwIn {
 
     // Start program loop
     this._restartLoop();
+  }
+
+  getValvePos() {
+    return this.valveActPos;
   }
 
   _computeValvePos() {
@@ -87,7 +95,8 @@ class ValveControllerHeHwIn {
 
     this.boardController.on('data', (data) => {
       if (data['HE_HW_IN_ACTPOS']) {
-        this.valveActPos = data['HE_HW_IN_ACTPOS'].value; //(l1HltValue / this.levelScaling) + this.levelOffset; Behöver parametrar HE_HW_IN_Scaling, HE_HW_IN_Offset 
+        let valveValue = parseFloat(data['HE_HW_IN_ACTPOS'].value);
+        this.valveActPos = (valveValue / this.valveScaling) + this.valveOffset;
       }
     });
   }
@@ -95,6 +104,8 @@ class ValveControllerHeHwIn {
   _updateParameters() {
     this.valveHysteresis = this.parameterController.getValue(HYSTERESIS);
     this.valveStep = this.parameterController.getValue(VALVE_STEP);
+    this.valveScaling = this.parameterController.getValue(VALVE_SCALING);
+    this.valveOffset = this.parameterController.getValue(VALVE_OFFSET);
     this.interval = this.parameterController.getValue(HE_HW_IN_Interval);
   }
 
@@ -105,4 +116,5 @@ class ValveControllerHeHwIn {
   }
 }
 
+   
 module.exports = new ValveControllerHeHwIn();

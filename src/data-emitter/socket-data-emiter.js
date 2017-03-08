@@ -9,6 +9,7 @@ const logger = require('../core/logger');
 const pidDataAggregator = require('./pid-data-aggregator');
 const socketServer = require('./socket-server');
 const valveController = require('../valve/valve-controller').ValveController;
+const valveControllerHeHwIn = require('../valve/valve-controller-he-hw-in');
 const levelControllerHlt = require('../valve/level-controller-hlt');
 
 const UPDATE_INTERVAL = 500; // ms
@@ -26,7 +27,8 @@ class SocketDataEmitter {
 
       let systemStatus = {
         HLT: {
-          waterLevel: levelControllerHlt.getWaterLevel()
+          waterLevel: levelControllerHlt.getWaterLevel(),
+          HeHwInActPos: valveControllerHeHwIn.getValvePos()
         }
       }
 
