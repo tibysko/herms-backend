@@ -15,7 +15,7 @@ const levelControllerHlt = require('../valve/level-controller-hlt');
 const UPDATE_INTERVAL = 500; // ms
 
 class SocketDataEmitter {
-  constructor() {}
+  constructor() { }
 
   start() {
     logger.logInfo('SocketDataEmitter', 'start', 'Starting to emit data over websocket');
@@ -28,6 +28,8 @@ class SocketDataEmitter {
       let systemStatus = {
         HLT: {
           waterLevel: levelControllerHlt.getWaterLevel(),
+        },
+        HE: {
           HeHwInActPos: valveControllerHeHwIn.getValvePos()
         }
       }
