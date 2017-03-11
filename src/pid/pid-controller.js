@@ -41,9 +41,9 @@ class PidController extends EventEmitter {
     this.logger.logInfo(this.moduleName, 'start', `Starting ${this.name} with settings: Kp=${this.Kp} Ki=${this.Ki} Kd=${this.Kd} setPoint=${this.setPoint}`);
 
     this.process = setInterval(() => {
-      let parsedTemp = parseFloat(this.actTemperatureValue); 
+      let parsedTemp = parseFloat(this.actTemperatureValue);
       let currTemp = (parsedTemp / this.tempScaling) + this.tempOffset;
-      
+
       this.PID.setInput(currTemp);
       this.PID.compute();
       let output = this.PID.getOutput();
@@ -70,6 +70,7 @@ class PidController extends EventEmitter {
     this.PID.setOutput(config.output);
     this.PID.setTunings(config.kp, config.ki, config.kd);
     this.PID.setMode(config.mode);
+    this.PID.setOutputLimits(config.outputLimits.min, config.outputLimits.max);
   }
 
   getStatus() {
@@ -83,6 +84,7 @@ class PidController extends EventEmitter {
         mode: this.PID.getMode(),
         output: this.PID.getOutput(),
         setPoint: this.PID.getSetPoint(),
+        outputLimits: this.PID.getOutputLimits(),
         tempOffset: this.tempOffset,
         tempScaling: this.tempScaling
       },
@@ -110,7 +112,7 @@ class PidController extends EventEmitter {
     this.PID.set
   }
 
-  setOutputLimits(min, max){
+  setOutputLimits(min, max) {
     this.PID.setOutputLimits(min, max);
   }
 

@@ -80,7 +80,7 @@ PID.prototype.compute = function () {
         // Remember some variables for next time
         this.lastInput = input;
         this.lastTime = now;
-        
+
         return true;
     }
     else {
@@ -263,6 +263,13 @@ PID.prototype.getInput = function () {
 
 PID.prototype.getSetPoint = function () {
     return this.mySetpoint;
+};
+
+PID.prototype.getOutputLimits = function () {
+    return {
+        min: this.outMin,
+        max: this.outMax
+    }
 };
 
 module.exports = PID;
