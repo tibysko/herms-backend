@@ -42,7 +42,8 @@ class PidController extends EventEmitter {
 
     this.process = setInterval(() => {
       let parsedTemp = parseFloat(this.actTemperatureValue);
-      let currTemp = (parsedTemp / this.tempScaling) + this.tempOffset;
+      let currTemp = Math.round((10.0 * ((parsedTemp / this.tempScaling) + this.tempOffset))) / 10;
+      
 
       this.PID.setInput(currTemp);
       this.PID.compute();
@@ -138,7 +139,7 @@ class PidController extends EventEmitter {
     this.tempScaling = parameterController.getValue(this.scalingParameter);
 
     this.PID = new PID(this.actTemperatureValue, this.setPoint, this.Kp, this.Ki, this.Kd, 'direct');
-    this.PID.setSampleTime(TIME_FRAME);
+    this.PID.setSampleTime(200);  //Send to FRONTEND
     this.PID.setOutputLimits(0, 255);
     this.PID.setMode('manual');
     this.PID.setOutput(0);

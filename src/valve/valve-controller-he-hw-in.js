@@ -96,7 +96,7 @@ class ValveControllerHeHwIn {
     this.boardController.on('data', (data) => {
       if (data['HE_HW_IN_ACTPOS']) {
         let valveValue = parseFloat(data['HE_HW_IN_ACTPOS'].value);
-        this.valveActPos = (valveValue / this.valveScaling) + this.valveOffset;
+        this.valveActPos = Math.round(((valveValue / this.valveScaling) + this.valveOffset));
       }
     });
   }

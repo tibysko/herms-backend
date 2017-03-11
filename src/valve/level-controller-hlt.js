@@ -128,7 +128,7 @@ class LevelControllerHlt {
     this.boardController.on('data', (data) => {
       if (data['L1_HLT'] && data['L1_HLT'].value) {
         let l1HltValue = parseFloat(data['L1_HLT'].value);
-        this.actLevelHlt = (l1HltValue / this.levelScaling) + this.levelOffset;
+        this.actLevelHlt = Math.round(((l1HltValue / this.levelScaling) + this.levelOffset));
       }
       if (data['MLT_HW_IN_CLOSED']) {
         this.valveClosed = data['MLT_HW_IN_CLOSED'].value;
