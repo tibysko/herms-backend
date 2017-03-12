@@ -56,27 +56,26 @@ PID.prototype.compute = function () {
     var now = this.millis();
     var timeChange = (now - this.lastTime);
     if (timeChange >= this.SampleTime) {
+            // Compute all the working error variables
+            var input = this.input;
+            var error = this.mySetpoint - input;
+            this.ITerm += (this.ki * error);
 
-        // Compute all the working error variables
-        var input = this.input;
-        var error = this.mySetpoint - input;
-        this.ITerm += (this.ki * error);
+            if (this.ITerm > this.outMax) this.ITerm = this.outMax;
+            else if (this.ITerm < this.outMin) this.ITerm = this.outMin;
 
-        if (this.ITerm > this.outMax) this.ITerm = this.outMax;
-        else if (this.ITerm < this.outMin) this.ITerm = this.outMin;
+            var dInput = input - this.lastInput;
+            // Compute PID Output
+            var output = (this.kp * error + this.ITerm - this.kd * dInput) * this.setDirection;
 
-        var dInput = input - this.lastInput;
-        // Compute PID Output
-        var output = (this.kp * error + this.ITerm - this.kd * dInput) * this.setDirection;
-
-        if (output > this.outMax) {
-            output = this.outMax;
-        }
-        else if (output < this.outMin) {
-            output = this.outMin;
-        }
-        this.myOutput = output;
-
+            if (output > this.outMax) {
+                output = this.outMax;
+            }
+            else if (output < this.outMin) {
+                output = this.outMin;
+            }
+            this.myOutput = output;
+    
         // Remember some variables for next time
         this.lastInput = input;
         this.lastTime = now;
