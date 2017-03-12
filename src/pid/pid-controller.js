@@ -6,7 +6,6 @@ const logger = require('../core/logger');
 const boardController = require('../board/board-controller').BoardController;
 const parameterController = require('../parameters/parameter-controller');
 const PID = require('./pid');
-
 const TIME_FRAME = 1000;
 
 class PidController extends EventEmitter {
@@ -27,6 +26,8 @@ class PidController extends EventEmitter {
     this.scalingParameter = scalingParameter;
     this.process = this.dummyId;
     this.temperaturePinName = temperaturePinName;
+    this.filterTemp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
 
     this._initPid(); // init PID with default settings. Later we should read this from a database
     this._setupListeners();
@@ -41,10 +42,21 @@ class PidController extends EventEmitter {
     this.logger.logInfo(this.moduleName, 'start', `Starting ${this.name} with settings: Kp=${this.Kp} Ki=${this.Ki} Kd=${this.Kd} setPoint=${this.setPoint}`);
 
     this.process = setInterval(() => {
-      let parsedTemp = parseFloat(this.actTemperatureValue);
-      let currTemp = Math.round((10.0 * ((parsedTemp / this.tempScaling) + this.tempOffset))) / 10;
-      
+      let filteredTemp = 0;
+      var i = 0;
 
+      let parsedTemp = parseFloat(this.actTemperatureValue);
+      let scaledTemp = (parsedTemp / this.tempScaling) + this.tempOffset;
+      this.filterTemp[0] = scaledTemp;
+
+      for (i = 10; i > 0; i--) {
+        this.filterTemp[i] = this.filterTemp[i - 1];
+      }
+      for (i = 1; i < 11; i++) {
+        filteredTemp += this.filterTemp[i];
+      }
+      let currTemp = Math.round((10.0 * (filteredTemp / 10))) / 10;
+      
       this.PID.setInput(currTemp);
       this.PID.compute();
       let output = this.PID.getOutput();

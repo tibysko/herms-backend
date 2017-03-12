@@ -155,8 +155,8 @@ void writeToBoard() {
   for (int pinId = 1 ; pinId <= 69; pinId++) {
 
     if (pin == pinId && board[pinId].type == "DO") {
-      //Check if sensor is low before setting output
-      if (digitalRead(board[pin].sensorId) == LOW)  {
+      //Check if sensor is high (NC) before setting output
+      if (digitalRead(board[pin].sensorId) == HIGH)  {
         digitalWrite(pin, value);
       }
 
@@ -216,13 +216,13 @@ void writeToSerial() {
 void checkLimits() {
   // Check opened and closed signals for valves and shut valve off if in position
   for (int pinId = VALVES_RB2_START ; pinId <= VALVES_RB2_END; pinId++) {
-    if (digitalRead(board[pinId].sensorId) == HIGH)  {
+    if (digitalRead(board[pinId].sensorId) == LOW)  {
       digitalWrite(pinId, LOW);
     }
   }
 
   for (int pinId = VALVES_RB3_4_START ; pinId <= VALVES_RB3_4_END; pinId++) {
-    if (digitalRead(board[pinId].sensorId) == HIGH)  {
+    if (digitalRead(board[pinId].sensorId) == LOW)  {
       digitalWrite(pinId, LOW);
     }
   }

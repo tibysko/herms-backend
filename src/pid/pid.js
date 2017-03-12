@@ -56,26 +56,54 @@ PID.prototype.compute = function () {
     var now = this.millis();
     var timeChange = (now - this.lastTime);
     if (timeChange >= this.SampleTime) {
-            // Compute all the working error variables
-            var input = this.input;
-            var error = this.mySetpoint - input;
-            this.ITerm += (this.ki * error);
+        // Compute all the working error variables
+        var input = this.input; //
+        var error = this.mySetpoint - input; //
 
-            if (this.ITerm > this.outMax) this.ITerm = this.outMax;
-            else if (this.ITerm < this.outMin) this.ITerm = this.outMin;
+        // Calculate Integral
+        this.ITerm += error;
 
-            var dInput = input - this.lastInput;
-            // Compute PID Output
-            var output = (this.kp * error + this.ITerm - this.kd * dInput) * this.setDirection;
+        //Limit ITerm
+        if (this.ki > 0) {
+            if (this.ITerm > this.outMax / this.ki) this.ITerm = this.outMax / this.ki;
+            else if (this.ITerm < 0) this.ITerm = 0;
+        }
+        else {
+            this.ITerm = 0;
+        }
+        var dInput = input - this.lastInput;
+        // Compute PID Output
+        var output = ((this.kp * error) + (this.ITerm * this.ki) + (this.kd * dInput)) * this.setDirection;
 
-            if (output > this.outMax) {
-                output = this.outMax;
-            }
-            else if (output < this.outMin) {
-                output = this.outMin;
-            }
-            this.myOutput = output;
-    
+        if (output > this.outMax) {
+            output = this.outMax;
+        }
+        else if (output < this.outMin) {
+            output = this.outMin;
+        }
+        this.myOutput = output;
+
+        /*     // Compute all the working error variables
+             var input = this.input;
+             var error = this.mySetpoint - input;
+             this.ITerm += (this.ki * error);
+ 
+             if (this.ITerm > this.outMax) this.ITerm = this.outMax;
+             else if (this.ITerm < this.outMin) this.ITerm = this.outMin;
+ 
+             var dInput = input - this.lastInput;
+             // Compute PID Output
+             var output = (this.kp * error + this.ITerm - this.kd * dInput) * this.setDirection;
+ 
+             if (output > this.outMax) {
+                 output = this.outMax;
+             }
+             else if (output < this.outMin) {
+                 output = this.outMin;
+             }
+             this.myOutput = output;
+             */
+
         // Remember some variables for next time
         this.lastInput = input;
         this.lastTime = now;
