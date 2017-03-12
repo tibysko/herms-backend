@@ -31,7 +31,11 @@ class ValveControllerHeHwIn {
     this.valveStep = 25;
     this.valveSetPoint = 0;
     this.valveActPos = 0;
-    this.tempMode = '';
+    this.pidMode = '';
+    this.stopCmdSent = false;
+    this.startCloseSent = false;
+    this.startOpenSent = false;
+
   }
 
   start() {
@@ -51,27 +55,45 @@ class ValveControllerHeHwIn {
     return this.valveActPos;
   }
 
-  _computeValvePos() {
-    if (this.tempMode !== this.pidController.getMode()) {
-      this.tempMode = this.pidController.getMode();
+  _checkPidMode() {
+    if (this.pidMode !== this.pidController.getMode()) {
+      this.pidMode = this.pidController.getMode();
       this.valveController.setState(HE_HW_IN, ValveConstants.STOP_CLOSE, err => this._logg(err, 10));
       this.valveController.setState(HE_HW_IN, ValveConstants.STOP_OPEN, err => this._logg(err, 20));
     }
+  }
 
-    if (this.pidController.getMode().toLowerCase() === 'auto') {
+
+
+  _computeValvePos() { 
+    if (this.pidMode.toLowerCase() === 'auto') {
       if (Math.abs(this.output - this.valveSetPoint) > this.valveStep || this.output >= 100) {
         this.valveSetPoint = this.output;
       }
 
       if (Math.abs(this.valveActPos - this.valveSetPoint) > this.valveHysteresis) {
+        this.stopCmdSent = false;
+
         if (this.valveActPos > this.valveSetPoint) {
-          this.valveController.setState(HE_HW_IN, ValveConstants.START_CLOSE, err => this._logg(err, 30));
+          if (!this.startCloseSent) {
+            this.valveController.setState(HE_HW_IN, ValveConstants.START_CLOSE, err => this._logg(err, 30));
+            this.startCloseSent = true;
+          }
         } else {
-          this.valveController.setState(HE_HW_IN, ValveConstants.START_OPEN, err => this._logg(err, 40));
+          if (!this.startOpenSent) {
+            this.valveController.setState(HE_HW_IN, ValveConstants.START_OPEN, err => this._logg(err, 40));
+            this.startOpenSent = true;
+          }
         }
-      } else {
-        this.valveController.setState(HE_HW_IN, ValveConstants.STOP_CLOSE, err => this._logg(err, 50));
-        this.valveController.setState(HE_HW_IN, ValveConstants.STOP_OPEN, err => this._logg(err, 60));
+      }
+      else {
+        this.startCloseSent = false;
+        this.startOpenSent = false;
+        if (!this.stopCmdSent) {
+          this.valveController.setState(HE_HW_IN, ValveConstants.STOP_CLOSE, err => this._logg(err, 50));
+          this.valveController.setState(HE_HW_IN, ValveConstants.STOP_OPEN, err => this._logg(err, 60));
+          this.stopCmdSent = true;
+        }
       }
     }
   }
@@ -97,9 +119,10 @@ class ValveControllerHeHwIn {
       if (data['HE_HW_IN_ACTPOS']) {
         let valveValue = parseFloat(data['HE_HW_IN_ACTPOS'].value);
         this.valveActPos = Math.round((10.0 * ((valveValue / this.valveScaling) + this.valveOffset))) / 10;
+        this._computeValvePos()
       }
     });
-  }    
+  }
 
   _updateParameters() {
     this.valveHysteresis = this.parameterController.getValue(HYSTERESIS);
@@ -112,9 +135,9 @@ class ValveControllerHeHwIn {
   _restartLoop() {
     logger.logInfo(this.moduleName, '_restartLoop', 'Restarting loop...');
     clearInterval(this.intervalRef);
-    this.intervalRef = setInterval(() => this._computeValvePos(), this.interval);
+    this.intervalRef = setInterval(() => this._checkPidMode(), this.interval);
   }
 }
 
-   
+
 module.exports = new ValveControllerHeHwIn();
