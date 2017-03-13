@@ -84,6 +84,8 @@ class PidController extends EventEmitter {
     this.PID.setTunings(config.kp, config.ki, config.kd);
     this.PID.setMode(config.mode);
     this.PID.setOutputLimits(config.outputLimits.min, config.outputLimits.max);
+    this.PID.setSampleTime(config.sampleTime);  
+    this.PID.setErrThreshold(config.errThreshold);
   }
 
   getStatus() {
@@ -98,6 +100,8 @@ class PidController extends EventEmitter {
         output: this.PID.getOutput(),
         setPoint: this.PID.getSetPoint(),
         outputLimits: this.PID.getOutputLimits(),
+        errThreshold: this.PID.getErrThreshold(),
+        sampleTime: this.PID.getSampleTime(), 
         tempOffset: this.tempOffset,
         tempScaling: this.tempScaling
       },
@@ -128,6 +132,14 @@ class PidController extends EventEmitter {
   setOutputLimits(min, max) {
     this.PID.setOutputLimits(min, max);
   }
+  
+  setSampleTime(value) {
+    this.PID.setSampleTime(value);
+  }
+
+ setErrThreshold(value) {
+    this.PID.setErrThreshold(value);
+  }
 
   _setupListeners() {
     parameterController.on('data', (data) => {
@@ -151,10 +163,12 @@ class PidController extends EventEmitter {
     this.tempScaling = parameterController.getValue(this.scalingParameter);
 
     this.PID = new PID(this.actTemperatureValue, this.setPoint, this.Kp, this.Ki, this.Kd, 'direct');
-    this.PID.setSampleTime(200);  //Send to FRONTEND
+    this.PID.setSampleTime(200);  
+    this.PID.setErrThreshold(0);
     this.PID.setOutputLimits(0, 255);
     this.PID.setMode('manual');
     this.PID.setOutput(0);
+    
   }
 }
 

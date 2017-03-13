@@ -18,7 +18,7 @@ var PID = function (Input, Setpoint, Kp, Ki, Kd, ControllerDirection) {
     this.setTunings(Kp, Ki, Kd);
     this.setControllerDirection(ControllerDirection);
     this.lastTime = this.millis() - this.SampleTime;
-
+    this.errThreshold = 0;
     this.ITerm = 0;
     this.myOutput = 0;
 };
@@ -60,6 +60,11 @@ PID.prototype.compute = function () {
         var input = this.input; //
         var error = this.mySetpoint - input; //
 
+        // Check threshold
+        if (Math.abs(error) < this.errThreshold) {
+            error = 0;
+        }
+
         // Calculate Integral
         this.ITerm += error;
 
@@ -71,7 +76,7 @@ PID.prototype.compute = function () {
         else {
             this.ITerm = 0;
         }
-        var dInput = input - this.lastInput;
+        var dInput = this.lastInput - input;
         // Compute PID Output
         var output = ((this.kp * error) + (this.ITerm * this.ki) + (this.kd * dInput)) * this.setDirection;
 
@@ -82,27 +87,6 @@ PID.prototype.compute = function () {
             output = this.outMin;
         }
         this.myOutput = output;
-
-        /*     // Compute all the working error variables
-             var input = this.input;
-             var error = this.mySetpoint - input;
-             this.ITerm += (this.ki * error);
- 
-             if (this.ITerm > this.outMax) this.ITerm = this.outMax;
-             else if (this.ITerm < this.outMin) this.ITerm = this.outMin;
- 
-             var dInput = input - this.lastInput;
-             // Compute PID Output
-             var output = (this.kp * error + this.ITerm - this.kd * dInput) * this.setDirection;
- 
-             if (output > this.outMax) {
-                 output = this.outMax;
-             }
-             else if (output < this.outMin) {
-                 output = this.outMin;
-             }
-             this.myOutput = output;
-             */
 
         // Remember some variables for next time
         this.lastInput = input;
@@ -132,8 +116,11 @@ PID.prototype.setTunings = function (Kp, Ki, Kd) {
 
     this.SampleTimeInSec = (this.SampleTime) / 1000;
     this.kp = Kp;
-    this.ki = Ki * this.SampleTimeInSec;
-    this.kd = Kd / this.SampleTimeInSec;
+    this.ki = Ki;
+    this.kd = Kd;
+    //    this.ki = Ki * this.SampleTimeInSec;
+    //    this.kd = Kd / this.SampleTimeInSec;
+
 };
 
 /**
@@ -143,11 +130,15 @@ PID.prototype.setTunings = function (Kp, Ki, Kd) {
 PID.prototype.setSampleTime = function (NewSampleTime) {
     if (NewSampleTime > 0) {
         var ratio = NewSampleTime / (1.0 * this.SampleTime);
-        this.ki *= ratio;
-        this.kd /= ratio;
+        //        this.ki *= ratio;
+        //        this.kd /= ratio;
         this.SampleTime = Math.round(NewSampleTime);
     }
 };
+
+PID.prototype.setErrThreshold = function (val) {
+    this.errThreshold = val;
+}
 
 /**
  * SetOutput( )
@@ -270,6 +261,14 @@ PID.prototype.getKd = function () {
 
 PID.prototype.getKi = function () {
     return this.dispKi;
+};
+
+PID.prototype.getSampleTime = function () {
+    return this.SampleTime;
+};
+
+PID.prototype.getErrThreshold = function () {
+    return this.errThreshold;
 };
 
 PID.prototype.getMode = function () {
