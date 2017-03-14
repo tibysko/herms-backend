@@ -155,15 +155,15 @@ class PidController extends EventEmitter {
 
   _initPid() {
     // pidController default setings    
-    this.Kp = 300;
-    this.Ki = 100;
-    this.Kd = 50;
+    this.Kp = 5;
+    this.Ki = 20;
+    this.Kd = 0;
     this.setPoint = 0;
     this.tempOffset = parameterController.getValue(this.offsetParameter);
     this.tempScaling = parameterController.getValue(this.scalingParameter);
 
     this.PID = new PID(this.actTemperatureValue, this.setPoint, this.Kp, this.Ki, this.Kd, 'direct');
-    this.PID.setSampleTime(200);  
+    this.PID.setSampleTime(1000);  
     this.PID.setErrThreshold(0);
     this.PID.setOutputLimits(0, 255);
     this.PID.setMode('manual');
