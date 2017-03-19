@@ -59,9 +59,10 @@ PID.prototype.compute = function () {
         // Compute all the working error variables
         var input = this.input; //
         var error = this.mySetpoint - input; //
+        var errThres = this.errThreshold / 10;
 
         // Check threshold
-        if (Math.abs(error) < this.errThreshold) {
+        if (Math.abs(error) < errThres) {
             error = 0;
         }
 
