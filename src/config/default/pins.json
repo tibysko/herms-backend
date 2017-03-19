@@ -96,43 +96,43 @@
         "comments": "Reläbrygga 3.4"
     },
     "30": {
-        "name": "MLT_WORT_OUT_OPEN",
+        "name": "SPARE", 
         "mode": "DW",
         "id": "30",
-        "comments": "Reläbrygga 3.5"
+        "comments": "Reläbrygga 3.5 //MLT_WORT_OUT_OPEN OLD"
     },
     "31": {
-        "name": "MLT_WORT_OUT_CLOSE",
+        "name": "SPARE", 
         "mode": "DW",
         "id": "31",
-        "comments": "Reläbrygga 3.6"
+        "comments": "Reläbrygga 3.6 //MLT_WORT_OUT_CLOSE OLD"
     },
     "32": {
-        "name": "MLT_KET_BYPASS_OPEN",
+        "name": "MLT_WORT_OUT_OPEN", 
         "mode": "DW",
         "id": "32",
-        "comments": "Reläbrygga 3.7"
+        "comments": "Reläbrygga 3.7 //MLT_KET_BYPASS_OPEN OLD"
     },
     "33": {
-        "name": "MLT_KET_BYPASS_CLOSE",
+        "name": "MLT_WORT_OUT_CLOSE", 
         "mode": "DW",
         "id": "33",
-        "comments": "Reläbrygga 3.8"
+        "comments": "Reläbrygga 3.8 //MLT_KET_BYPASS_CLOSE OLD"
     },
     "34": {
-        "name": "KET_RECIRC_OPEN",
+        "name": "SPARE", 
         "mode": "DW",
         "id": "34",
-        "comments": "Reläbrygga 4.1"
+        "comments": "Reläbrygga 4.1 //KET_RECIRC_OPEN OLD"
     },
     "35": {
-        "name": "KET_RECIRC_CLOSE",
+        "name": "SPARE", 
         "mode": "DW",
         "id": "35",
-        "comments": "Reläbrygga 4.2"
+        "comments": "Reläbrygga 4.2 //KET_RECIRC_CLOSE OLD"
     },
     "36": {
-        "name": "KET_WORT_IN_OPEN",
+        "name": "KET_WORT_IN_OPEN", 
         "mode": "DW",
         "id": "36",
         "comments": "Reläbrygga 4.3"
@@ -174,46 +174,46 @@
         "comments": "Reläbrygga 3.3"
     },
     "43": {
-        "name": "MLT_WORT_IN_CLOSED",
+        "name": "MLT_WORT_IN_CLOSED", 
         "mode": "DR",
         "id": "43",
         "comments": "Reläbrygga 3.4"
     },
     "44": {
-        "name": "MLT_WORT_OUT_OPENED",
+        "name": "SPARE", 
         "mode": "DR",
         "id": "44",
-        "comments": "Reläbrygga 3.5"
+        "comments": "Reläbrygga 3.5 //MLT_WORT_OUT_OPENED OLD"
     },
     "45": {
-        "name": "MLT_WORT_OUT_CLOSED",
+        "name": "SPARE", 
         "mode": "DR",
         "id": "45",
-        "comments": "Reläbrygga 3.6"
+        "comments": "Reläbrygga 3.6 //MLT_WORT_OUT_CLOSED OLD"
     },
     "46": {
-        "name": "MLT_KET_BYPASS_OPENED",
+        "name": "MLT_WORT_OUT_OPENED", 
         "mode": "DR",
         "id": "46",
-        "comments": "Reläbrygga 3.7"
+        "comments": "Reläbrygga 3.7 //MLT_KET_BYPASS_OPENED OLD"
     },
     "47": {
-        "name": "MLT_KET_BYPASS_CLOSED",
+        "name": "MLT_WORT_OUT_CLOSED", 
         "mode": "DR",
         "id": "47",
-        "comments": "Reläbrygga 3.8"
+        "comments": "Reläbrygga 3.8 //MLT_KET_BYPASS_CLOSED OLD"
     },
     "48": {
-        "name": "KET_RECIRC_OPENED",
+        "name": "SPARE", 
         "mode": "DR",
         "id": "48",
-        "comments": "Reläbrygga 4.1"
+        "comments": "Reläbrygga 4.1 //KET_RECIRC_OPENED OLD"
     },
     "49": {
-        "name": "KET_RECIRC_CLOSED",
+        "name": "SPARE", 
         "mode": "DR",
         "id": "49",
-        "comments": "Reläbrygga 4.2"
+        "comments": "Reläbrygga 4.2 //KET_RECIRC_CLOSED OLD"
     },
     "50": {
         "name": "KET_WORT_IN_OPENED",

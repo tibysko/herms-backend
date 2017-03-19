@@ -34,30 +34,7 @@
             "setPos": ""
         }
     },
-    {
-        "name": "MLT_KET_BYPASS",
-        "status": "",
-        "pin": {
-            "opened": "MLT_KET_BYPASS_OPENED",
-            "closed": "MLT_KET_BYPASS_CLOSED",
-            "actPos": "",
-            "open": "MLT_KET_BYPASS_OPEN",
-            "close": "MLT_KET_BYPASS_CLOSE",
-            "setPos": ""
-        }
-    },
-    {
-        "name": "KET_RECIRC",
-        "status": "",
-        "pin": {
-            "opened": "KET_RECIRC_OPENED",
-            "closed": "KET_RECIRC_CLOSED",
-            "actPos": "",
-            "open": "KET_RECIRC_OPEN",
-            "close": "KET_RECIRC_CLOSE",
-            "setPos": ""
-        }
-    },
+   
     {
         "name": "KET_WORT_IN",
         "status": "",
