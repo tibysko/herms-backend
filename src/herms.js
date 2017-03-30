@@ -11,6 +11,8 @@ const levelControllerHLT = require('./valve/level-controller-hlt');
 const pidControllerRegistry = require('./pid/pid-controller-registry');
 const socketDataEmiter = require('./data-emitter/socket-data-emiter');
 const valveControllerHeHwIn = require('./valve/valve-controller-he-hw-in');
+const db = require('./db/db');
+const pidStatistics = require('./statistics/pid-statistics');
 
 
 class Herms extends EventEmitter {
@@ -33,6 +35,7 @@ class Herms extends EventEmitter {
       this.socketDataEmiter.start();
       this.valveControllerHeHwIn.start();
       this.levelControllerHLT.start();
+      pidStatistics.start();
     });
   }
 }
