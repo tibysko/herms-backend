@@ -19,7 +19,7 @@ class SocketDataEmitter {
 
   start() {
     logger.logInfo('SocketDataEmitter', 'start', 'Starting to emit data over websocket');
-
+ 
     setInterval(() => {
       socketServer.emit('controllers', pidDataAggregator.getData());
       socketServer.emit('valves', valveController.getValves());
@@ -31,6 +31,9 @@ class SocketDataEmitter {
         },
         HE: {
           HeHwInActPos: valveControllerHeHwIn.getValvePos()
+        },
+        MLT: {
+          mltOutTemp: valveControllerHeHwIn.getMltOutTemp()
         }
       }
 

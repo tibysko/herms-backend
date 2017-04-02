@@ -251,6 +251,12 @@
         "id": "55",
         "comments": "Temppuck 2"
     },
+    "56": {
+        "name": "T3_MLT_WORT_OUT",
+        "mode": "AR",
+        "id": "55",
+        "comments": "Temppuck 3"
+    },
     "57": {
         "name": "L1_HLT",
         "mode": "AR",

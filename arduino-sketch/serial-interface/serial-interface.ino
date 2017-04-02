@@ -159,7 +159,7 @@ void writeToBoard() {
       if (digitalRead(board[pin].sensorId) == HIGH)  {
         digitalWrite(pin, value);
       }
-
+/*
       // Write zero to the opposite direction of the valve to prevent both directions being set at the same time
       if (board[pin].function = "CLOSE") {
         digitalWrite(pin-1, 0);
@@ -167,7 +167,7 @@ void writeToBoard() {
       else if (board[pin].function = "OPEN") {
         digitalWrite(pin+1, 0);
       }
-
+*/
       break;
 
     } 

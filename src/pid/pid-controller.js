@@ -60,11 +60,13 @@ class PidController extends EventEmitter {
       this.PID.setInput(currTemp);
       this.PID.compute();
       let output = this.PID.getOutput();
+      let setPoint = this.PID.getSetPoint();
 
       this.emit('data', {
         output: output,
         temperature: currTemp,
-        name: this.name
+        name: this.name,
+        setPoint: setPoint
       });
 
     }, TIME_FRAME);
