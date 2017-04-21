@@ -246,15 +246,15 @@
         "comments": "Temppuck 1"
     },
     "55": {
-        "name": "T2_HE_WORT_OUT",
+        "name": "T2_MLT_WORT_OUT",
         "mode": "AR",
         "id": "55",
         "comments": "Temppuck 2"
     },
     "56": {
-        "name": "T3_MLT_WORT_OUT",
+        "name": "T3_HE_WORT_OUT",
         "mode": "AR",
-        "id": "55",
+        "id": "56",
         "comments": "Temppuck 3"
     },
     "57": {

@@ -8,8 +8,6 @@ const valveController = require('./valve-controller').ValveController;
 const VALVE_STEP = 'HE_HW_IN_Step';
 const HE_HW_IN_HYST = 'HE_HW_IN_Hysteresis';
 const HE_HW_IN = 'HE_HW_IN';
-const VALVE_SCALING = 'HE_HW_IN_Scaling';
-const VALVE_OFFSET = 'HE_HW_IN_Offset';
 const HE_HW_IN_Interval = 'HE_HW_IN_Interval';
 const MLTOUTTEMP_OFFSET = 't3_offset';
 const MLTOUTTEMP_SCALING = 't3_scaling';
@@ -29,8 +27,6 @@ class ValveControllerHeHwIn {
 
     this.valveHysteresis = 5;
 
-    this.valveScaling = 1;
-    this.valveOffset = 0;
     this.interval = 1000; // needs to be 
     this.intervalRef = {};
     this.valveStep = 25;
@@ -41,9 +37,9 @@ class ValveControllerHeHwIn {
     this.startCloseSent = false;
     this.startOpenSent = false;
 
-    this.mltOutTempScaling = 1;
-    this.mltOutTempOffset = 0;
-    this.mltOutTempFiltered = 0;
+    this.tempHeOutScaling = 1;
+    this.tempHeOutOffset = 0;
+    this.tempHeOutFiltered = 0;
 
 
   }
@@ -61,11 +57,8 @@ class ValveControllerHeHwIn {
     this._restartLoop();
   }
 
-  getValvePos() {
-    return this.valveActPos;
-  }
-  getMltOutTemp() {
-    return this.mltOutTempFiltered;
+  getTempHeOut() {
+    return this.tempHeOutFiltered;
   }
 
   _checkPidMode() {
@@ -113,24 +106,18 @@ class ValveControllerHeHwIn {
   });
 
     this.boardController.on('data', (data) => {
-      if (data['HE_HW_IN_ACTPOS']) {
-        let valveValue = parseFloat(data['HE_HW_IN_ACTPOS'].value);
-        this.valveActPos = Math.round((10.0 * ((valveValue / this.valveScaling) + this.valveOffset))) / 10;
-      }
-      if (data['T3_MLT_WORT_OUT']) {
-        let temp = parseFloat(data['T3_MLT_WORT_OUT'].value);
-        this.mltOutTempFiltered = Math.round((10.0 * ((temp / this.mltOutTempScaling) + this.mltOutTempOffset))) / 10;
+      if (data['T3_HE_WORT_OUT']) {
+        let temp = parseFloat(data['T3_HE_WORT_OUT'].value);
+        this.tempHeOutFiltered = Math.round((10.0 * ((temp / this.tempHeOutScaling) + this.tempHeOutOffset))) / 10;
       }
     });
   }
 
   _updateParameters() {
     this.valveHysteresis = this.parameterController.getValue(HE_HW_IN_HYST);
-    this.valveScaling = this.parameterController.getValue(VALVE_SCALING);
-    this.valveOffset = this.parameterController.getValue(VALVE_OFFSET);
     this.interval = this.parameterController.getValue(HE_HW_IN_Interval);
-    this.mltOutTempScaling = this.parameterController.getValue(MLTOUTTEMP_SCALING);
-    this.mltOutTempOffset = this.parameterController.getValue(MLTOUTTEMP_OFFSET);
+    this.tempHeOutScaling = this.parameterController.getValue(MLTOUTTEMP_SCALING);
+    this.tempHeOutOffset = this.parameterController.getValue(MLTOUTTEMP_OFFSET);
   }
 
   _restartLoop() {

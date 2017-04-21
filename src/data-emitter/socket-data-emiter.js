@@ -26,14 +26,10 @@ class SocketDataEmitter {
       socketServer.emit('pins', boardController.getPins());
 
       let systemStatus = {
-        HLT: {
-          waterLevel: levelControllerHlt.getWaterLevel(),
-        },
-        HE: {
-          HeHwInActPos: valveControllerHeHwIn.getValvePos()
-        },
-        MLT: {
-          mltOutTemp: valveControllerHeHwIn.getMltOutTemp()
+        data: {
+          waterLevelHlt: levelControllerHlt.getWaterLevel(),
+          tempHeOut: valveControllerHeHwIn.getTempHeOut(),
+         // tempMltOut: valveControllerHeHwIn.getTempMltOut()
         }
       }
 
